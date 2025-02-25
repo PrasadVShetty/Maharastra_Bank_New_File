@@ -1,0 +1,55 @@
+/* custom CSS Begins */
+
+.e_a_8474018e{
+    padding: 0px;
+    
+  }
+  .t_e_8474018e {  
+     max-width: 100%;
+}
+
+
+.buttonexcel {  
+  /* background: #0c78b8 !important;
+  color: #fff !important;
+  margin-left: 10px;
+  font-weight: 600;
+  border-color: #0c78b8 !important; */
+  background: #fff !important;
+  color: #0c78b8!important;
+  margin-left: 10px;
+  padding: 3px 10px !important;
+  font-weight: 700;
+  border-color: #0c78b8!important;
+  border-radius: 5px !important;
+}
+table{
+  width: 100%;
+ }
+.dataTables_wrapper .dataTables_paginate .paginate_button
+{
+  padding: 0.2em 0.7em !important;
+}
+.dataTables_length{  padding-top: 5px; }
+.dataTables_filter{ padding-top: 5px;}
+.dataTables_wrapper .dataTables_paginate .paginate_button{
+  color: #0c78b8 !important;
+}
+.dataTables_wrapper .dataTables_paginate .paginate_button:hover {
+  color: white !important;
+  border: 1px solid #0c78b8 !important;
+  background-color: #0c78b8 !important;
+  background: linear-gradient(to bottom, #248bc7 0%, #0c78b8 100%) !important;
+}
+.dataTables_wrapper .dataTables_paginate .paginate_button:active{
+  border: 1px solid #0c78b8 !important;
+  background-color: #0c78b8 !important;
+  background: linear-gradient(to bottom, #248bc7 0%, #0c78b8 100%) !important;
+}
+table.dataTable thead th, table.dataTable tfoot th {
+  font-weight: bold;
+  text-align: left;
+}
+caption, th {
+  text-align: left;
+}
