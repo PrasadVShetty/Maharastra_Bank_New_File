@@ -1,0 +1,10 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/spfx/client-side-extension-manifest.schema.json",
+  "id": "1ea8c58b-0ee0-4e5d-825d-72fe8c4104f2",
+  "alias": "EasyApprovalMenuBarApplicationCustomizer",
+  "componentType": "Extension",
+  "extensionType": "ApplicationCustomizer",  
+  "version": "*",
+  "manifestVersion": 2,  
+  "requiresCustomScript": false
+}

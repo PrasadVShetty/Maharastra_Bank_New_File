@@ -1,0 +1,22 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/spfx/client-side-web-part-manifest.schema.json",
+  "id": "dc76ad79-6597-48dc-84cf-e46eedc8a3cd",
+  "alias": "EasyApprovalChecklistWebPart",
+  "componentType": "WebPart",
+  "version": "*",
+  "manifestVersion": 2,
+  "requiresCustomScript": false,
+  "supportedHosts": ["SharePointWebPart", "TeamsPersonalApp", "TeamsTab", "SharePointFullPage"],
+  "supportsThemeVariants": true,
+
+  "preconfiguredEntries": [{
+    "groupId": "5c03119e-3074-46fd-976b-c60198311f70", 
+    "group": { "default": "Advanced" },
+    "title": { "default": "EasyApprovalChecklist" },
+    "description": { "default": "EasyApprovalChecklist description" },
+    "officeFabricIconFontName": "Page",
+    "properties": {
+      "description": "EasyApprovalChecklist"
+    }
+  }]
+}

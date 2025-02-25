@@ -1,0 +1,150 @@
+
+:global{
+    .commandBar {
+        width: 100%;
+        background-color: white;
+        color: gray;
+        ///height: 40px;
+        border-radius: 15px;
+        height: auto;
+        z-index: 99;
+    }
+    .hamburger {
+        outline: none;
+        // removes default border on button element
+        border: 0;
+        height: 35px;
+        width: 35px;
+        line-height: 20px;
+        outline: none;
+        //padding: 0.5rem;
+        border-radius: 50%;
+        background-color: #0083ff;
+        cursor: pointer;
+        transition: background-color 0.2s ease-in-out;
+      // positions the icon to the right and center aligns it vertically
+        position: absolute;
+        // top: 50%;
+        right: 25px;
+        transform: translateY(-50%);
+        display: none;
+        color: #fff;
+      }
+      .hamburger:hover {
+        background-color: #2642af;
+        outline: none;
+      }
+      .app_ac7bab4f .commandBar_ac7bab4f{
+        display: flex;
+      align-items: center;
+  }
+  @media screen and (max-width: 768px) {
+    .hamburger {
+      display: block;
+      right: 65px;
+    }
+    .commandBar {
+        display: none;
+      }
+      .expanded{
+        display: block;
+        margin-top: 201px;
+        width: 100%;
+        position: absolute;
+      }
+     .ms-CommandBar{
+        display: block;
+        height: auto;
+     }
+     .ms-CommandBar > div{
+        display: block;
+     }
+     .mobClass{
+        position: absolute;
+        right: 0;
+     }
+     .logoutmobile{
+        position: absolute;
+        right: 0;
+     }
+  }
+}
+@media screen and (max-width: 768px) {   
+    .commandBar {
+        display: none;
+      }
+      .expanded{
+        display: block;
+      }
+  }
+
+.app {
+    @media screen and (max-width: 300px) {
+        :global(.ms-CommandBarItem) {
+            display: block !important;
+        }
+        .mobClass{
+            display: none;
+        }
+    }
+    @media screen and (max-width: 450px) {
+        :global(.ms-CommandBarItem) {
+            display: block !important;
+        }
+        .mobClass{
+           // display: none;
+           font-size: inherit;
+        }
+    }
+
+    .top {
+        height: 55px;
+        text-align: left;
+        line-height: 2.5;
+        font-weight: bold;
+        display: flex;
+        align-items: center;
+        justify-content: left;
+        background-color: white;
+        border-radius: 5px;
+        // border-style:groove; 
+        border: 1px solid #50b4e6;
+    }
+    .bottom,
+    a,
+    a:visited,
+    a:hover {
+        height: 55px;
+        text-align: center;
+        line-height: 2.5;
+        font-weight: bold;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: orange;
+    }
+    .commandBar {
+        width: 100%;
+        background-color: white;
+        color: gray;
+              height: 40px;
+        border-radius: 15px;
+    }
+    span{
+        color: gray;
+        i{
+            color:gray;
+        }
+    }
+    a {
+        text-decoration: none;
+        color: orange;
+        padding-left: 10px;
+        padding-right: 10px;
+    }
+    .divAtt{
+        background-color: white;
+        padding: 5px;
+        width: 100%;
+    }
+}

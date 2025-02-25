@@ -1,0 +1,43 @@
+
+require("./PaperlessApprovalEdit.module.css");
+const styles = {
+  column: 'column_aa92ab1f',
+  frame: 'frame_aa92ab1f',
+  paperlessApprovalEdit: 'paperlessApprovalEdit_aa92ab1f',
+  container: 'container_aa92ab1f',
+  editcontainer: 'editcontainer_aa92ab1f',
+  formrow: 'formrow_aa92ab1f',
+  row: 'row_aa92ab1f',
+  maxscroll: 'maxscroll_aa92ab1f',
+  tableresponsive: 'tableresponsive_aa92ab1f',
+  tbl: 'tbl_aa92ab1f',
+  Mcolumn: 'Mcolumn_aa92ab1f',
+  'ms-Grid': 'ms-Grid_aa92ab1f',
+  Tcolumn: 'Tcolumn_aa92ab1f',
+  Vcolumn: 'Vcolumn_aa92ab1f',
+  overlay: 'overlay_aa92ab1f',
+  overlayContent: 'overlayContent_aa92ab1f',
+  fontRed: 'fontRed_aa92ab1f',
+  title: 'title_aa92ab1f',
+  subTitle: 'subTitle_aa92ab1f',
+  description: 'description_aa92ab1f',
+  hideElement: 'hideElement_aa92ab1f',
+  picker: 'picker_aa92ab1f',
+  button: 'button_aa92ab1f',
+  label: 'label_aa92ab1f',
+  lbl: 'lbl_aa92ab1f',
+  hideElementManager: 'hideElementManager_aa92ab1f',
+  customFont: 'customFont_aa92ab1f',
+  heading: 'heading_aa92ab1f',
+  panel: 'panel_aa92ab1f',
+  panelsection: 'panelsection_aa92ab1f',
+  expandpanel: 'expandpanel_aa92ab1f',
+  panelbody: 'panelbody_aa92ab1f',
+  CanvasSection: 'CanvasSection_aa92ab1f',
+  mobiledivleft: 'mobiledivleft_aa92ab1f',
+  mobiledivright: 'mobiledivright_aa92ab1f',
+  divFrame: 'divFrame_aa92ab1f',
+  IframeAttachmentCollapse: 'IframeAttachmentCollapse_aa92ab1f'
+};
+
+export default styles;
