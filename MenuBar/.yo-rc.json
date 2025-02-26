@@ -1,0 +1,22 @@
+{
+  "@microsoft/generator-sharepoint": {
+    "plusBeta": false,
+    "isCreatingSolution": true,
+    "nodeVersion": "18.20.6",
+    "sdksVersions": {
+      "@microsoft/microsoft-graph-client": "3.0.2",
+      "@microsoft/teams-js": "2.24.0"
+    },
+    "version": "1.20.0",
+    "libraryName": "easy-approval-menu-bar",
+    "libraryId": "60004090-f217-46bb-9a27-f49c0b359fc4",
+    "environment": "spo",
+    "packageManager": "npm",
+    "solutionName": "EasyApproval_MenuBar",
+    "solutionShortDescription": "EasyApproval_MenuBar description",
+    "skipFeatureDeployment": true,
+    "isDomainIsolated": false,
+    "componentType": "extension",
+    "extensionType": "ApplicationCustomizer"
+  }
+}

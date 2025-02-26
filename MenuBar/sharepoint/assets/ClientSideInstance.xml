@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Elements xmlns="http://schemas.microsoft.com/sharepoint/">
+    <ClientSideComponentInstance
+        Title="EasyApprovalMenuBar"
+        Location="ClientSideExtension.ApplicationCustomizer"
+        ComponentId="1ea8c58b-0ee0-4e5d-825d-72fe8c4104f2"
+        Properties="{&quot;testMessage&quot;:&quot;Test message&quot;}">
+    </ClientSideComponentInstance>
+</Elements>
