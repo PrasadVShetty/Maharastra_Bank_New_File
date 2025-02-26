@@ -1,0 +1,40 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/spfx-build/package-solution.schema.json",
+  "solution": {
+    "name": "easy-approval-document-form-client-side-solution",
+    "id": "37993fa6-2fea-4a82-a2c8-959922e99a92",
+    "version": "1.0.0.0",
+    "includeClientSideAssets": true,
+    "skipFeatureDeployment": true,
+    "isDomainIsolated": false,
+    "developer": {
+      "name": "",
+      "websiteUrl": "",
+      "privacyUrl": "",
+      "termsOfUseUrl": "",
+      "mpnId": "Undefined-1.20.0"
+    },
+    "metadata": {
+      "shortDescription": {
+        "default": "EasyApprovalDocumentForm description"
+      },
+      "longDescription": {
+        "default": "EasyApprovalDocumentForm description"
+      },
+      "screenshotPaths": [],
+      "videoUrl": "",
+      "categories": []
+    },
+    "features": [
+      {
+        "title": "easy-approval-document-form Feature",
+        "description": "The feature that activates elements of the easy-approval-document-form solution.",
+        "id": "21d01ed9-d909-4ee1-baef-e007eae2ef79",
+        "version": "1.0.0.0"
+      }
+    ]
+  },
+  "paths": {
+    "zippedPackage": "solution/easy-approval-document-form.sppkg"
+  }
+}

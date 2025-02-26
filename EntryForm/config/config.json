@@ -1,0 +1,46 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/spfx-build/config.2.0.schema.json",
+  "version": "2.0",
+  "bundles": {
+    "easy-approval-document-form-web-part": {
+      "components": [
+        {
+          "entrypoint": "./lib/webparts/easyApprovalDocumentForm/EasyApprovalDocumentFormWebPart.js",
+          "manifest": "./src/webparts/easyApprovalDocumentForm/EasyApprovalDocumentFormWebPart.manifest.json"
+        }
+      ]
+    },
+    "easy-approval-memo-form-web-part": {
+      "components": [
+        {
+          "entrypoint": "./lib/webparts/easyApprovalMemoForm/EasyApprovalMemoFormWebPart.js",
+          "manifest": "./src/webparts/easyApprovalMemoForm/EasyApprovalMemoFormWebPart.manifest.json"
+        }
+      ]
+    },
+    "easy-approval-note-form-web-part": {
+      "components": [
+        {
+          "entrypoint": "./lib/webparts/easyApprovalNoteForm/EasyApprovalNoteFormWebPart.js",
+          "manifest": "./src/webparts/easyApprovalNoteForm/EasyApprovalNoteFormWebPart.manifest.json"
+        }
+      ]
+    },
+    "easy-approval-checklist-web-part": {
+      "components": [
+        {
+          "entrypoint": "./lib/webparts/easyApprovalChecklist/EasyApprovalChecklistWebPart.js",
+          "manifest": "./src/webparts/easyApprovalChecklist/EasyApprovalChecklistWebPart.manifest.json"
+        }
+      ]
+    }
+  },
+  "externals": {},
+  "localizedResources": {
+    "EasyApprovalDocumentFormWebPartStrings": "lib/webparts/easyApprovalDocumentForm/loc/{locale}.js",
+    "EasyApprovalMemoFormWebPartStrings": "lib/webparts/easyApprovalMemoForm/loc/{locale}.js",
+    "ControlStrings": "node_modules/@pnp/spfx-controls-react/lib/loc/{locale}.js",
+    "EasyApprovalNoteFormWebPartStrings": "lib/webparts/easyApprovalNoteForm/loc/{locale}.js",
+    "EasyApprovalChecklistWebPartStrings": "lib/webparts/easyApprovalChecklist/loc/{locale}.js"
+  }
+}

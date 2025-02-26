@@ -1,0 +1,21 @@
+{
+  "@microsoft/generator-sharepoint": {
+    "plusBeta": false,
+    "isCreatingSolution": false,
+    "nodeVersion": "18.20.6",
+    "sdksVersions": {
+      "@microsoft/microsoft-graph-client": "3.0.2",
+      "@microsoft/teams-js": "2.24.0"
+    },
+    "version": "1.20.0",
+    "libraryName": "easy-approval-document-form",
+    "libraryId": "37993fa6-2fea-4a82-a2c8-959922e99a92",
+    "environment": "spo",
+    "packageManager": "npm",
+    "solutionName": "EasyApprovalDocumentForm",
+    "solutionShortDescription": "EasyApprovalDocumentForm description",
+    "skipFeatureDeployment": true,
+    "isDomainIsolated": false,
+    "componentType": "webpart"
+  }
+}
