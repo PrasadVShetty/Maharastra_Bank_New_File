@@ -23,10 +23,13 @@ import { SiteUser } from 'sp-pnp-js/lib/sharepoint/siteusers';
 import * as jQuery from 'jquery';
 import * as $ from 'jquery';
 import { SPComponentLoader } from '@microsoft/sp-loader';
-SPComponentLoader.loadCss('/sites/EasyApproval/SiteAssets/css/styles.css');
+SPComponentLoader.loadCss('../SiteAssets/css/styles.css');
 require('../css/custom.css');
-// SPComponentLoader.loadCss('https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css');  
 
+import html2canvas from "html2canvas";
+import jsPDF from "jspdf";
+
+// SPComponentLoader.loadCss('https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css');  
 const Delete: any = require('../Images/Delete.png');
 const Video: any = require('../Images/Video.png');
 const Annex: any = require('../Images/Upload-Annex.png');
@@ -130,16 +133,58 @@ export default class PNoteFormsEdit extends React.Component<IPaperlessApprovalPr
       spfxContext: this.props.context
     });
     const peoplePickerContext: IPeoplePickerContext = {
-          absoluteUrl: this.props.context.pageContext.web.absoluteUrl,
-          msGraphClientFactory: this.props.context.msGraphClientFactory,
-          spHttpClient: this.props.context.spHttpClient
-        };
+      absoluteUrl: this.props.context.pageContext.web.absoluteUrl,
+      msGraphClientFactory: this.props.context.msGraphClientFactory,
+      spHttpClient: this.props.context.spHttpClient
+    };
+    const generatePDF = async () => {
+      const element = document.getElementById("PDFConvert");
+  
+      if (!element) return;
+  
+      // Show hidden elements before capture
+      document.querySelectorAll('[style*="display: none"]').forEach(el => {
+        (el as HTMLElement).setAttribute("data-hidden", "true");
+        (el as HTMLElement).style.display = "block";
+      });
+  
+      // Ensure all async content is rendered before capture
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+  
+      html2canvas(element, { scale: 2, useCORS: true }).then(canvas => {
+        const imgData = canvas.toDataURL("image/png");
+        const pdf = new jsPDF("p", "mm", "a4");
+        const imgWidth = 210; // A4 width in mm
+        const pageHeight = 297; // A4 height in mm
+        const imgHeight = (canvas.height * imgWidth) / canvas.width;
+        let heightLeft = imgHeight;
+        let position = 0;
+  
+        pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight);
+        heightLeft -= pageHeight;
+  
+        while (heightLeft > 0) {
+          position = heightLeft - imgHeight;
+          pdf.addPage();
+          pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight);
+          heightLeft -= pageHeight;
+        }
+  
+        pdf.save("download.pdf");
+  
+        // Restore hidden elements
+        document.querySelectorAll('[data-hidden="true"]').forEach(el => {
+          (el as HTMLElement).style.display = "none";
+        });
+      });
+    };     
+
     let qstr = window.location.search.split('uid=');
     let uid = 0;
     if (qstr.length > 1) { uid = parseInt(qstr[1]); }
 
     return (
-      <form >
+    <form >
     <div className={styles.paperlessApprovalEdit} style={{ display: "none" }} id="divMain">
     <div className={styles.editcontainer}>
     
@@ -147,6 +192,303 @@ export default class PNoteFormsEdit extends React.Component<IPaperlessApprovalPr
     <div id="divHeadingNew" style={{ display: "block", backgroundColor: "#0c78b8", color: '#fff' }}>
     <h3 style={{ fontSize: "18px", textAlign: "center", color: "white", padding: '5px 0px' }}>Note Workflow Form </h3>
     </div>
+    
+    {/*Added on 11/03/2025*/}                   
+    <div id="PDFConvert" style={{ display: "none"}}>
+    <div className={styles.formrow}>
+    <div id="divHeadingNew" style={{ display: "block", backgroundColor: "#0c78b8", color: '#fff' }}>
+    <h3 style={{ fontSize: "18px", textAlign: "center", color: "white", padding: '5px 0px' }}>Note Workflow Form </h3>
+    </div>
+    </div>
+
+    <div className={styles.formrow + " " + "form-group row"}>
+        <div className={styles.lbl + " " + styles.Tcolumn}>Request#</div>
+        <div id="tdFileRefNo" style={{ display: "none" }}></div>
+        <div className={styles.Vcolumn} id="tdTitle2">
+        </div>
+    </div>
+
+    <br/>
+    <div className={styles.formrow + " " + "form-group row"}>
+    <div className={styles.lbl + " " + styles.Tcolumn}>Requester</div>
+    <div className={styles.Vcolumn} id="tdName2">
+
+    </div>
+    </div>
+    <br />
+    <div className={styles.formrow + " " + "form-group row"}>
+    <div className={styles.lbl + " " + styles.Tcolumn}>Request Date</div>
+    <div className={styles.Vcolumn} id="tdDate2">
+
+    </div>
+    </div>
+    <br />
+    <div className={styles.formrow + " " + "form-group row"}>
+    <div className={styles.lbl + " " + styles.Tcolumn}>Status</div>
+    <div className={styles.Vcolumn} id="tdStatus2">
+
+    </div>
+    </div>
+    <br />
+    <div className={styles.formrow + " " + "form-group row"}>
+    <div className={styles.lbl + " " + styles.Tcolumn}>Current Approver</div>
+    <div className={styles.Vcolumn} id="tdCurrApprover2">
+
+    </div>
+    </div>
+    <br />
+    <div className={styles.formrow + " " + "form-group row"}>
+    <div className={styles.lbl + " " + styles.Tcolumn}>Department</div>
+    <div className={styles.Vcolumn} id="divDepartment2">
+    </div>
+    </div>
+    <br />
+    <br />
+    <div className={styles.formrow + " " + "form-group row"}>
+    <div className={styles.lbl + " " + styles.Tcolumn}>Note For</div>
+    <div className={styles.Vcolumn} id="txtNote2">
+    </div>
+    </div>
+    <br />
+    <br />
+    <div className={styles.formrow + " " + "form-group row"}>
+    <div className={styles.lbl + " " + styles.Tcolumn}>Purpose</div>
+    <div className={styles.Vcolumn} id="txtPurpose2">
+    </div>
+    </div>
+    <br />
+    <br />
+    <div className={styles.formrow + " " + "form-group row"}>
+    <div className={styles.lbl + " " + styles.Tcolumn}>Return Name</div>
+    <div className={styles.Vcolumn} id="txtReturn2">
+    </div>
+    </div>
+    <br />
+    <br />
+    <div className={styles.formrow + " " + "form-group row"}>
+    <div className={styles.lbl + " " + styles.Tcolumn}>Dept Ownership</div>
+    <div className={styles.Vcolumn} id="ddlDeptOwnership2">
+    </div>
+    </div>
+    <br />
+    <br />
+    <div className={styles.formrow + " " + "form-group row"}>
+    <div className={styles.lbl + " " + styles.Tcolumn}>Due Date</div>
+    <div className={styles.Vcolumn} id="txtDueDate2">
+    </div>
+    </div>
+    <br />
+    <div className={styles.formrow + " " + "form-group row"}>
+    <div className={styles.lbl + " " + styles.Tcolumn}>Place</div>
+    <div className={styles.Vcolumn} id="txtPlace2">
+    </div>
+    </div>
+    <br />
+    <div className={styles.formrow + " " + "form-group row"}>
+    <div className={styles.lbl + " " + styles.Tcolumn}>Subject</div>
+    <div className={styles.Vcolumn} id="divSubject2" >
+
+    </div>
+    </div>
+    <br />
+    <div className={styles.formrow + " " + "form-group row"}>
+    <div className={styles.lbl + " " + styles.Tcolumn}>Note Type</div>
+    <div className={styles.Vcolumn} id="divNoteType2" >
+
+    </div>
+    </div>
+    <br />
+    <div className={styles.formrow + " " + "form-group row"} id="RowdivAmount" style={{ display: "none" }} >
+    <div className={styles.lbl + " " + styles.Tcolumn}>Amount</div>
+    <div className={styles.Vcolumn} id="divAmount2" >
+
+    </div>
+    <br />
+    </div>
+    <div className={styles.formrow + " " + "form-group row"} style={{ display: "" }} >
+    <div className={styles.lbl + " " + styles.Tcolumn}>DOP Details</div>
+    <div className={styles.Vcolumn} id="divDOP2" >
+
+    </div>
+    <br />
+    </div>
+
+    <div className={styles.formrow + " " + "form-group row"}>
+    <div className={styles.lbl + " " + styles.Tcolumn}>Client Name/Vendor Name</div>
+    <div className={styles.Vcolumn} id="divClient2" >
+
+    </div>
+    <br />
+    </div>
+    <div className={styles.formrow + " " + "form-group row"} id="divConf" style={{ display: "none" }}>
+    <div className={styles.lbl + " " + styles.Tcolumn}>Confidential</div>
+    <div className={styles.Vcolumn} id="divConfidential2" >
+
+    </div>
+    <br />
+    </div>    
+
+    <div className={styles.lbl + " " + styles.Tcolumn}>Recommenders</div>
+    <div className={styles.formrow + " " + "form-group"}>
+    <div className={styles.lbl + " " + styles.tableresponsive}>
+      <table className={styles.tbl} id="tblMain1" style={{ width: "100%" }}>
+        <tr>
+          <th>SNo</th>
+          <th style={{ width: "40%" }}>Recommender</th>
+          <th>Status</th>
+          <th>Action Date</th>
+        </tr>
+
+        {this.state.RecomselectedItems ? this.state.RecomselectedItems.map((data) => {
+          console.log(data);
+          return data;
+        }) : null}
+
+
+      </table>
+    </div>
+    </div>
+
+
+    <div className={styles.lbl + " " + styles.Tcolumn}>Approvers</div>    
+    <div className={styles.formrow + " " + "form-group"}>
+    <div className={styles.lbl + " " + styles.tableresponsive}>
+
+    <table className={styles.tbl} id="tblMain1" style={{ width: "100%" }}>
+    <tr>
+      <th style={{ width: "10%" }}>SNo</th>
+      <th style={{ width: "40%" }}>Approver</th>
+      <th style={{ width: "25%" }}>Status</th>
+      <th style={{ width: "25%" }}>Action Date</th>
+    </tr>
+
+    {this.state.dpselectedItems ? this.state.dpselectedItems.map((data) => {
+      console.log(data);
+      return data;
+    }) : null}
+
+
+    </table>
+    </div>
+
+    <br></br>
+    <div className={styles.lbl + " " + styles.Tcolumn}>Controllers</div>
+    <div className={styles.formrow + " " + "form-group"}>
+    <div className={styles.lbl + " " + styles.tableresponsive}>
+      <table className={styles.tbl} id="tblMain1" style={{ width: "100%" }}>
+        <tr>
+          <th>SNo</th>
+          <th>Approver</th>
+          <th>Status</th>
+          <th>Action Date</th>
+        </tr>
+
+        {this.state.ControlselectedItems ? this.state.ControlselectedItems.map((data) => {
+          console.log(data);
+          return data;
+        }) : null}
+
+
+      </table>
+    </div>
+    </div>
+
+    <div className={styles.lbl + " " + styles.Tcolumn}>Referrers</div>   
+    <div className={styles.formrow + " " + "form-group"}>
+    <div className={styles.lbl + " " + styles.tableresponsive}>
+      <table className={styles.tbl} id="tblMain1" style={{ width: "100%" }}>
+        <tr>
+          <th>SNo</th>
+          <th>Referred By</th>
+          <th>Referred To</th>
+          <th>Status</th>
+          <th>Action Date</th>
+        </tr>
+
+        {this.state.ReferselectedItems ? this.state.ReferselectedItems.map((data) => {
+          console.log(data);
+          return data;
+        }) : null}
+
+
+      </table>
+    </div>
+    </div>
+        
+    <div className={styles.lbl + " " + styles.Tcolumn}>Comments Log</div>    
+    <div className={styles.formrow + " " + "form-group row"}>
+    <div className={styles.lbl + " " + styles.Mcolumn}>
+      <table className={styles.tbl} id="tblComments" style={{ width: "100%" }}>
+        <tr>
+          <th style={{ width: "10%" }}>SNo</th>
+          <th style={{ width: "60%" }}>Comments</th>
+          <th style={{ width: "20%" }}>Comments By</th>
+        </tr>
+        {this.state.selectedItems ? this.state.CommentsLog.map((data) => {
+          console.log(data);
+          return data;
+        }) : null}
+
+
+      </table>
+    </div>   
+    </div> 
+
+    <div className={styles.lbl + " " + styles.Tcolumn}>Workflow Log</div>    
+    <div className={styles.formrow + " " + "form-group row"}>
+    <div className={styles.lbl + " " + styles.Mcolumn}>
+      <table className={styles.tbl} id="tblHistory" style={{ width: "100%" }}>
+        {this.state.selectedItems ? this.state.WFHistoryLog.map((data) => {
+          console.log(data);
+          return data;
+        }) : null}
+
+
+      </table>
+    </div>
+    </div>
+
+    <div className={styles.lbl + " " + styles.Tcolumn}>Attachments</div>
+    <div className={styles.formrow + " " + "form-group row"}>
+    <div hidden className={styles.Mcolumn} id="divAttach" style={{}}>
+    <label id="lblAttach" style={{}} className="ms-Label">Attach Note</label>
+    </div>
+    <div hidden className="ms-Grid-col ms-u-sm12 block hide" id="divAttachButton" style={{ backgroundColor: "white" }}>
+    <input type='file' style={{}} id='fileUploadInput' required={true} name='myfile' multiple onChange={this.AttachLib} />
+    </div>
+
+    <div className={styles.lbl + " " + styles.Tcolumn}>
+    Main Note
+    </div>
+    <div className={styles.Vcolumn} style={{ backgroundColor: "white" }}>{this.state.Note.map((vals) => {
+    return (<span style={{ position: "relative" }}><a href={"javascript:void(window.open('" + vals + "'))"}>{this.state.Notefilename}</a></span>);
+    })}</div>
+
+    <div className={styles.lbl + " " + styles.Mcolumn}>
+    NoteAnnexures
+    </div>
+
+    <div className={styles.Mcolumn} style={{ backgroundColor: "white" }}>
+    <table className={styles.tbl} id="tblNoteAnnexures" style={{ width: "100%" }}>
+    <tr>
+      <th style={{ width: "10%" }}>SNo</th>
+      <th style={{ width: "15%" }}>Attachment</th>
+      <th style={{ width: "45%" }}>Attached By</th>
+      <th style={{ width: "30%" }}>Date</th>
+    </tr>
+    {this.state.selectedItems ? this.state.attachments.map((Attdata) => {
+      return Attdata;
+    }) : null}
+
+
+    </table>
+    </div>
+    </div>
+    </div>
+
+    </div>       
+    {/*Added on 11/03/2025*/}
+
     </div>
     
     <div className={styles.row} style={{ position: 'relative' }}>
@@ -183,6 +525,7 @@ export default class PNoteFormsEdit extends React.Component<IPaperlessApprovalPr
                     </table>
                   </div>
                 </div>
+
     <div className={styles.row + ' ' + styles.panelsection} id="GeneralCollapse" style={{ backgroundColor: "#50B4E6", display: "none" }}>
     {/* <img src={Expand} onClick={() => { this.Expand('General'); }}></img> */}
     <Icon iconName='CalculatorAddition' onClick={() => { this.Expand('General'); }} />
@@ -883,11 +1226,14 @@ export default class PNoteFormsEdit extends React.Component<IPaperlessApprovalPr
         <div id="btnCancel" style={{ display: "none", paddingRight: '10px' }}>
           <PrimaryButton className={styles.button} style={{ borderRadius: "5%", backgroundColor: "#f00" }} text="Reject" onClick={() => { this.Rejected(); }} />
         </div>
+        <div style={{paddingRight: '10px'}}>
+        <PrimaryButton className={styles.button} id="btnPrint" style={{borderRadius: "5%", backgroundColor: "#50B4E6", paddingRight: '10px' }} text="Print" onClick={generatePDF} />          
+        </div>
 
         <div style={{ display: 'flex' }}>
           <PrimaryButton className={styles.button} id="btnChangeApprover" style={{ display: "none", borderRadius: "5%", backgroundColor: "#50B4E6", paddingRight: '10px' }} text="Change Approver" onClick={() => { this.ChangeApprover(); }} />
           <PrimaryButton className={styles.button} id="btnRefer" style={{ display: "none", borderRadius: "5%", backgroundColor: "#50B4E6", paddingRight: '10px' }} text="Submit" onClick={() => { this.referred(); }} />
-          <PrimaryButton className={styles.button} id="btnReturn" style={{ display: "none", borderRadius: "5%", backgroundColor: "#50B4E6", paddingRight: '10px' }} text="Return" onClick={() => { this.returned(); }} />
+          <PrimaryButton className={styles.button} id="btnReturn" style={{ display: "none", borderRadius: "5%", backgroundColor: "#50B4E6", paddingRight: '10px' }} text="Return" onClick={() => { this.returned(); }} />          
         </div>
         <div style={{ display: 'flex' }}>
           <PrimaryButton className={styles.button} id="btnReturnBack" style={{ display: "none", borderRadius: "5%", backgroundColor: "#50B4E6", paddingRight: '10px' }} text="Submit" onClick={() => { this.returnBack(); }} />
@@ -952,7 +1298,7 @@ export default class PNoteFormsEdit extends React.Component<IPaperlessApprovalPr
     //document.getElementById('fileUploadInput').click();
     let fileUploadInput = document.getElementById("fileUploadInput");
       if (fileUploadInput) {
-      (fileUploadInput as HTMLInputElement).value = ''; // Clear the file input
+        fileUploadInput.click(); // Clear the file input
       }
   }
   /*-- End Upload Attach Function--*/
@@ -1570,37 +1916,16 @@ export default class PNoteFormsEdit extends React.Component<IPaperlessApprovalPr
             this.setState({ CurrAppID: items[0].CurApprover.ID });
             let tdCurrApprover = document.getElementById("tdCurrApprover");
             if(tdCurrApprover)
-            {tdCurrApprover.innerText = items[0].CurApprover.Title;}            
+            {tdCurrApprover.innerText = items[0].CurApprover.Title;}   
+            let tdCurrApprover2 = document.getElementById("tdCurrApprover2");
+            if(tdCurrApprover2)
+            {tdCurrApprover2.innerText = items[0].CurApprover.Title;}          
           }
         }
 
         let Return = "<option value='" + ReqEmail + "'>" + items[0].Requester.Title + "</option>";
 
-        jQuery('select[id="ddlReturnTo"]').append(Return);
-        // document.getElementById("tdStatus").innerText = items[0].Status;
-
-        // document.getElementById("divSubject").innerText = items[0].Subject;
-        // document.getElementById("divComments").innerText = items[0].Comments;
-        // let seqno = items[0].SeqNo;
-        // document.getElementById("divSeqNo").innerText = items[0].SeqNo;
-
-        // let dt = items[0].Created.toString().split("T")[0].split("-");
-        // let date = dt[2]; let mnth = dt[1];
-        // if (date.length == 1) { date = "0" + date; }
-        // if (mnth.length == 1) { mnth = "0" + mnth; }
-        // document.getElementById("tdDate").innerText = date + "-" + mnth + "-" + dt[0];
-        // let dept = items[0].Department;
-        // let Client = items[0].ClientName;
-        // let Amount = items[0].Amount;
-        // document.getElementById("divDepartment").innerText = dept;
-        // document.getElementById("divClient").innerText = Client;
-        // document.getElementById("divConfidential").innerText = items[0].Confidential;
-        // document.getElementById("divDOP").innerText = items[0].DOP;
-        // document.getElementById("divAmount").innerText = Amount;
-        // if (Amount > 0) {
-        //   document.getElementById('RowdivAmount').style.display = 'block';
-        // }
-
+        jQuery('select[id="ddlReturnTo"]').append(Return);        
         let tdStatus = document.getElementById("tdStatus");
         if (tdStatus) tdStatus.innerText = items[0].Status;
 
@@ -1617,8 +1942,55 @@ export default class PNoteFormsEdit extends React.Component<IPaperlessApprovalPr
         if (tdDueDate) tdDueDate.innerText = items[0].DueDate;
         let tdPlace = document.getElementById("txtPlace");
         if (tdPlace) tdPlace.innerText = items[0].Place;
-
         //end
+        //added on 12/03/2025
+        let tdPurpose2 = document.getElementById("txtPurpose2");
+        if (tdPurpose2) tdPurpose2.innerText = items[0].Purpose;
+        let tdNotefor2 = document.getElementById("txtNote2");
+        if (tdNotefor2) tdNotefor2.innerText = items[0].Notefor;
+        let tdReturnName2 = document.getElementById("txtReturn2");
+        if (tdReturnName2) tdReturnName2.innerText = items[0].ReturnName;
+        let tdDeptOwnership2 = document.getElementById("ddlDeptOwnership2");
+        if (tdDeptOwnership2) tdDeptOwnership2.innerText = items[0].DeptOwnership;
+        let tdDueDate2 = document.getElementById("txtDueDate2");
+        if (tdDueDate2) tdDueDate2.innerText = items[0].DueDate;
+        let tdPlace2 = document.getElementById("txtPlace2");
+        if (tdPlace2) tdPlace2.innerText = items[0].Place;
+        let tdTitle2 = document.getElementById("tdTitle2");
+        if (tdTitle2) {
+          tdTitle2.innerText = title;
+        }
+        let tdName2 = document.getElementById("tdName2");
+        if (tdName2) {
+          tdName2.innerText = items[0].Requester.Title;
+        }        
+
+        let tdStatus2 = document.getElementById("tdStatus2");
+        if (tdStatus2) tdStatus2.innerText = items[0].Status;		
+
+        let divDepartment2 = document.getElementById("divDepartment2");
+        if (divDepartment2) divDepartment2.innerText = items[0].Department;
+
+        const divNoteType2 = document.getElementById("divNoteType2");
+        if (divNoteType2) {
+          divNoteType2.innerText = items[0].NoteType;
+        }        
+
+        let divAmount2 = document.getElementById("divAmount2");
+        if (divAmount2) divAmount2.innerText = items[0].Amount;
+
+        let divDOP2 = document.getElementById("divDOP2");
+        if (divDOP2) divDOP2.innerText = items[0].DOP;
+
+        let divClient2 = document.getElementById("divClient2");
+        if (divClient2) divClient2.innerText = items[0].ClientName;		
+
+        let divConfidential2 = document.getElementById("divConfidential2");
+        if (divConfidential2) divConfidential2.innerText = items[0].Confidential;
+
+                
+        //end
+
         let divSubject = document.getElementById("divSubject");
         if (divSubject) divSubject.innerText = items[0].Subject;
 
@@ -1636,6 +2008,9 @@ export default class PNoteFormsEdit extends React.Component<IPaperlessApprovalPr
 
         let tdDate = document.getElementById("tdDate");
         if (tdDate) tdDate.innerText = date + "-" + mnth + "-" + dt[0];
+
+        let tdDate2 = document.getElementById("tdDate2");
+        if (tdDate2) tdDate2.innerText = date + "-" + mnth + "-" + dt[0];
 
         let dept = items[0].Department;
         let Client = items[0].ClientName;
@@ -1757,7 +2132,7 @@ export default class PNoteFormsEdit extends React.Component<IPaperlessApprovalPr
           ownersGroup[0] = "CapApprovals Owners";
           ownersGroup[1] = "CapApprovals " + DeptAlias;
         }
-        else { ownersGroup[0] = "EasyApproval Owners"; ownersGroup[1] = "EasyApproval " + DeptAlias; }
+        else { ownersGroup[0] = "BOMCompliance Owners"; ownersGroup[1] = "BOMCompliance " + DeptAlias; }
         pnp.sp.web.siteUsers.getById(this.state.UserID).groups.get().then((grps: any) => {
           for (let i = 0; i < grps.length; i++) {
             if (ownersGroup.indexOf(grps[i].Title) != -1) {

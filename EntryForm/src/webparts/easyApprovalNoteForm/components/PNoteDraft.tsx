@@ -20,7 +20,7 @@ import * as jQuery from 'jquery';
 import * as $ from "jquery";
 import { SPComponentLoader } from '@microsoft/sp-loader';  
 import { ListItemPicker } from '@pnp/spfx-controls-react/lib/listItemPicker';
-SPComponentLoader.loadCss('/sites/EasyApproval/SiteAssets/css/styles.css');
+SPComponentLoader.loadCss('../SiteAssets/css/styles.css');
 require('../css/custom.css');
 SPComponentLoader.loadCss('https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css');  
 var RefioOutwardObj = [];

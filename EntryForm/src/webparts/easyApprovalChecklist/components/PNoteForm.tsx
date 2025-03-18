@@ -26,7 +26,7 @@ import { ListItemPicker } from '@pnp/spfx-controls-react/lib/listItemPicker';
 
 //require('../css/custom.css');
 //require('/sites/EasyApprovalUATNew/SiteAssets/css/styles.css');
-SPComponentLoader.loadCss('/sites/EasyApproval/SiteAssets/css/styles.css'); 
+SPComponentLoader.loadCss('../SiteAssets/css/styles.css'); 
 //SPComponentLoader.loadCss('https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css');
 // SPComponentLoader.loadCss('https://static2.sharepointonline.com/files/fabric/office-ui-fabric-js/1.4.0/css/fabric.min.css');
 
@@ -118,15 +118,28 @@ export default class PNoteForms extends React.Component<IPaperlessApprovalProps,
   }
     
   addItem = () => {
-    if (this.state.checklist.trim() !== '' && this.state.status !== '') {
-      const newItems = [...this.state.items, { 
-        id: this.state.items.length + 1, 
-        checklist: this.state.checklist, 
-        status: this.state.status // Corrected from status2 to status
-      }];
-      this.setState({ items: newItems, checklist: '', status: '' });
+    const { checklist, status, items } = this.state;
+  
+    // Trim whitespace and validate fields
+    if (!checklist.trim()) {
+      alert("Please enter a checklist item.");
+      return;
     }
-  };
+    if (!status) {
+      alert("Please select a status.");
+      return;
+    }
+  
+    // Add new item to the list
+    const newItems = [...items, { 
+      id: items.length + 1, 
+      checklist: checklist.trim(), 
+      status: status 
+    }];
+  
+    // Update state and reset fields
+    this.setState({ items: newItems, checklist: '', status: '' });
+  };  
   
 
   deleteItem = (id: number) => {
@@ -161,7 +174,7 @@ export default class PNoteForms extends React.Component<IPaperlessApprovalProps,
           <div className={styles.container}>            
             <div className={styles.formrow}>
               <div id="divHeadingNew" style={{textAlign:"center",backgroundColor:"#0c78b8",color:"white",display:"block", fontSize:'18px'}}>
-                <h3 className={styles.heading}>Note Checklist Form </h3>
+                <h3 className={styles.heading}>Note Form </h3>
               </div>
                <div hidden id="divHeadingSubmit" className="ms-Grid-col ms-u-sm10 block" style={{ display: "none" }}>
                 <h3 className={styles.heading} style={{ fontSize: "18px", textAlign: "center", color: "white", top: "5px" }}>Note Form</h3>
@@ -169,15 +182,7 @@ export default class PNoteForms extends React.Component<IPaperlessApprovalProps,
             </div>
 
 
-            <div className={styles.panel}>            
-            {/* <div className={styles.formrow}>
-              <table style={{ width: "100%", backgroundColor: "#0c78b8", textAlign: "left", color:'#f4f4f4' }} className="table table-bordered"><tr>
-                <td style={{ textAlign: "center" }}><b>Requester</b></td><td id="tdName"></td>
-                <td style={{ textAlign: "center" }}><b>Status</b></td><td>New</td>
-                <td style={{ textAlign: "center" }}><b>Creation Date</b></td><td id="tdDate"></td></tr>
-                <tr style={{ display: "none" }}><td colSpan={6} id="tdFY"></td></tr>
-              </table>
-            </div> */}
+            <div className={styles.panel}>                        
             <div className='row pt-2 pb-1 m-0' style={{width:"100%",backgroundColor:"#50B4E6", color:'#fff', justifyItems:'center'}}>
                <div className='col-md-1 col-lg-2 col-sm-4'>
                   <label className='control-form-label'><b>Requester</b></label>
@@ -201,63 +206,42 @@ export default class PNoteForms extends React.Component<IPaperlessApprovalProps,
                </div>
             </div>
 
-            <hr/> 
-            {/* Commented on 16/02/2025 By prasad         */}
-            {/* <div className={styles.formrow + " " + "form-group row"}>
-            <div  className='col-md-3'>
-            <label className={styles.lbl + " " + styles.Reqdlabel}>Department</label>
-            </div>
-              <div className='col-md-9'>
-                <select className='form-control form-control-sm' id="ddlDepartment" onChange={() => this.ChangeDepartment()} title="Select Department" placeholder="Select Department">
-                  <option>Select</option>
-                </select>
-              </div>
-              <br />
-            </div> */}
-
+            <hr/>             
             <div className={styles.formrow + " " + "form-group row"}>
             <div  className='col-md-3'>
               <label className={styles.lbl + " " + styles.Reqdlabel}>Note For</label>
               </div>
               <div className='col-md-9'>
-                <input  type="text" title="Enter Note For" placeholder="Enter Note For" id="txtNote"  className='form-control form-control-sm'/>
-                {/* <input type="text" title="Enter Subject" placeholder="Enter Subject" id="txtSubject" onKeyUp={this.handleKeyUp} /> */}
-                {/* <input type="text" title="Enter Subject" placeholder="Enter Subject" id="txtSubject" onKeyDown={this.handleKeyUp} /> */}
-               </div>             
-            </div> 
+                <input  type="text" title="Enter Note For" placeholder="Enter Note For" id="txtNote"  className='form-control form-control-sm'/>                
+              </div>             
+            </div>
 
-            {/* <div className={styles.formrow + " " + "form-group row"}>
+            <div className={styles.formrow + " " + "form-group row"}>
             <div  className='col-md-3'>
               <label className={styles.lbl + " " + styles.Reqdlabel}>Subject</label>
               </div>
               <div className='col-md-9'>
-                <input  type="text" title="Enter Subject" placeholder="Enter Subject" id="txtSubject"  className='form-control form-control-sm'/>
-                {/* <input type="text" title="Enter Subject" placeholder="Enter Subject" id="txtSubject" onKeyUp={this.handleKeyUp} /> */}
-                {/* <input type="text" title="Enter Subject" placeholder="Enter Subject" id="txtSubject" onKeyDown={this.handleKeyUp} /> */}
-              {/* </div>             
-            </div> */} 
+                <input  type="text" title="Enter Subject" placeholder="Enter Subject" id="txtSubject"  className='form-control form-control-sm'/>                
+              </div>             
+            </div>
 
-            {/* <div className={styles.formrow + " " + "form-group row"}>
+            <div className={styles.formrow + " " + "form-group row"}>
             <div  className='col-md-3'>
               <label className={styles.lbl + " " + styles.Reqdlabel}>Purpose</label>
               </div>
               <div className='col-md-9'>
-                <input  type="text" title="Enter Purpose" placeholder="Enter Purpose" id="txtPurpose"  className='form-control form-control-sm'/>
-                {/* <input type="text" title="Enter Subject" placeholder="Enter Subject" id="txtSubject" onKeyUp={this.handleKeyUp} /> */}
-                {/* <input type="text" title="Enter Subject" placeholder="Enter Subject" id="txtSubject" onKeyDown={this.handleKeyUp} /> */}
-              {/* </div>             
-            </div> */} 
+                <input  type="text" title="Enter Purpose" placeholder="Enter Purpose" id="txtPurpose"  className='form-control form-control-sm'/>                
+              </div>             
+            </div>
             
-            {/* <div className={styles.formrow + " " + "form-group row"}>
+            <div className={styles.formrow + " " + "form-group row"}>
             <div  className='col-md-3'>
-              <label className={styles.lbl + " " + styles.Reqdlabel}>Return Name</label>
+              <label className={styles.lbl + " " + styles.Reqdlabel}>Product Name</label>
               </div>
               <div className='col-md-9'>
-                <input  type="text" title="Enter Return Name" placeholder="Enter Return Name" id="txtReturn"  className='form-control form-control-sm'/> */}
-                {/* <input type="text" title="Enter Subject" placeholder="Enter Subject" id="txtSubject" onKeyUp={this.handleKeyUp} /> */}
-                {/* <input type="text" title="Enter Subject" placeholder="Enter Subject" id="txtSubject" onKeyDown={this.handleKeyUp} /> */}
-              {/* </div>             
-            </div> */}
+                <input  type="text" title="Enter Product Name" placeholder="Enter Product Name" id="txtReturn"  className='form-control form-control-sm'/>                
+              </div>             
+            </div>
             
             <div className={styles.formrow + " " + "form-group row"}>
             <div  className='col-md-3'>
@@ -270,6 +254,113 @@ export default class PNoteForms extends React.Component<IPaperlessApprovalProps,
               </div>
               <br />
             </div>              
+
+            <div className={styles.formrow + " " + "form-group row"}>
+            <div  className='col-md-3'>
+              <label className={styles.lbl + " " + styles.Reqdlabel}>Referred Guidelines</label>
+              </div>
+              <div className='col-md-9'>
+                <input  type="text" title="Enter Referred Guidelines" placeholder="Enter Referred Guidelines" id="txtGuidelines"  className='form-control form-control-sm'/>                
+               </div>             
+            </div> 
+
+            <div className={styles.formrow + " " + "form-group row"}>
+            <div className="col-md-3">
+            <label className={styles.lbl + " " + styles.Reqdlabel}>Vetting Observation</label>
+            </div>
+            <div className="col-md-9">
+            <textarea 
+            title="Enter Vetting Observation" 
+            placeholder="Enter Vetting Observation" 
+            id="txtVetting" 
+            className="form-control form-control-sm"
+            rows={4}
+            style={{}}             
+            />
+            </div>
+            </div>
+
+
+            <div>
+            {/* Checklist Input Field with given styles */}
+            <div className={styles.formrow + " " + "form-group row"}>
+            <div className="col-md-3">
+            <label className={styles.lbl + " " + styles.Reqdlabel}>Checklist</label>
+            </div>
+            <div className="col-md-9">
+            <input
+            type="text"
+            title="Enter Checklist"
+            placeholder="Enter Checklist"
+            value={this.state.checklist}
+            onChange={(e) => this.setState({ checklist: e.target.value || '' })}
+            className="form-control form-control-sm"
+            />
+            </div>
+            </div>
+
+            
+            <div className={styles.formrow + " " + "form-group row"}>
+            <div className="col-md-3">
+            <label className={styles.lbl + " " + styles.Reqdlabel}>Status</label>
+            </div>
+            <div className="col-md-9">
+            <Dropdown
+            selectedKey={this.state.status}
+            onChange={(e, option) => this.setState({ status: option?.key as string })}
+            options={statusOptions}
+            styles={{
+            root: { width: '100%' },
+            dropdown: { backgroundColor: '#fff' },
+            title: { borderRadius: '5px' },
+            }}
+            />
+            </div>
+            </div>
+
+            {/* Add Button */}
+            <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '10px' , paddingRight: '35px'}}>
+            <PrimaryButton iconProps={{ iconName: 'Add' }} onClick={this.addItem} />
+            </div>
+            <br />            
+            
+            {/* Checklist Table */}
+            {this.state.items.length > 0 && (
+            <div style={{ overflowX: 'auto', width: '100%' }}>
+            <table className="table table-bordered" style={{ width: "100%", textAlign: "center" }}>
+            <thead style={{ backgroundColor: "#f4f4f4", fontWeight: "bold" }}>
+            <tr>
+            <th style={{ width: "10%", padding: "8px" }}>Sr No.</th>
+            <th style={{ width: "55%", padding: "8px", wordWrap: "break-word" }}>Checklist</th>
+            <th style={{ width: "20%", padding: "8px" }}>Status</th>
+            <th style={{ width: "15%", padding: "8px" }}>Action</th>
+            </tr>
+            </thead>
+            <tbody>
+            {this.state.items.map((item, index) => (
+            <tr key={item.id}>
+            <td style={{ padding: "8px" }}>{index + 1}</td>
+            <td style={{ padding: "8px", wordWrap: "break-word" }}>{item.checklist}</td>
+            <td style={{ padding: "8px" }}>{item.status}</td>
+            <td style={{ padding: "8px" }}>
+            <PrimaryButton
+            iconProps={{ iconName: 'Delete' }}
+            text="Remove"
+            onClick={() => this.deleteItem(item.id)}
+            styles={{
+            root: { backgroundColor: "#d9534f", color: "#fff", borderRadius: "5px" },
+            rootHovered: { backgroundColor: "#c9302c" },
+            }}
+            />
+            </td>
+            </tr>
+            ))}
+            </tbody>
+            </table>
+            </div>
+            )}
+            </div>            
+            
 
             {/* <div className={styles.formrow + " " + "form-group row"}>
             <div className='col-md-3'>
@@ -293,91 +384,16 @@ export default class PNoteForms extends React.Component<IPaperlessApprovalProps,
             }}
             />
             </div>
-            </div> */}
+            </div> 
 
-            {/* <div className={styles.formrow + " " + "form-group row"}>
+            <div className={styles.formrow + " " + "form-group row"}>
             <div  className='col-md-3'>
               <label className={styles.lbl + " " + styles.Reqdlabel}>Place</label>
               </div>
               <div className='col-md-9'>
-                <input  type="text" title="Enter Place" placeholder="Enter Place" id="txtPlace"  className='form-control form-control-sm'/>
-                {/* <input type="text" title="Enter Subject" placeholder="Enter Subject" id="txtSubject" onKeyUp={this.handleKeyUp} /> */}
-                {/* <input type="text" title="Enter Subject" placeholder="Enter Subject" id="txtSubject" onKeyDown={this.handleKeyUp} /> */}
-              {/* </div>             
-            </div> */} 
-            <div className={styles.formrow + " " + "form-group row"}>
-            <div  className='col-md-3'>
-              <label className={styles.lbl + " " + styles.Reqdlabel}>Referred Guidelines</label>
-              </div>
-              <div className='col-md-9'>
-                <input  type="text" title="Enter Referred Guidelines" placeholder="Enter Referred Guidelines" id="txtGuidelines"  className='form-control form-control-sm'/>
-                {/* <input type="text" title="Enter Subject" placeholder="Enter Subject" id="txtSubject" onKeyUp={this.handleKeyUp} /> */}
-                {/* <input type="text" title="Enter Subject" placeholder="Enter Subject" id="txtSubject" onKeyDown={this.handleKeyUp} /> */}
-               </div>             
-            </div>      
-
-            
-      <div>
-        <TextField
-          label="Checklist"
-          value={this.state.checklist}
-          onChange={(e, newValue) => this.setState({ checklist: newValue || '' })}
-        />
-
-        <Dropdown
-          label="Status"
-          selectedKey={this.state.status}
-          onChange={(e, option) => this.setState({ status: option?.key as string })}
-          options={statusOptions}
-          styles={{
-            root: { width: '200px' }, // Ensures a consistent width
-            dropdown: { backgroundColor: '#fff' },
-            title: { borderRadius: '5px' }, // Rounded corners for consistency            
-          }}
-        />
-        <br/>
-        <PrimaryButton iconProps={{ iconName: 'Add' }} onClick={this.addItem} />
-        <br/>
-        {/* {this.state.items.length > 0 && (
-          <PrimaryButton text="Save Table Data" onClick={this.saveTableData} style={{ marginLeft: '10px' }} />
-        )} */}
-
-      {this.state.items.length > 0 && (
-        <div style={{ overflowX: 'auto', width: '100%' }}>
-        <table className="table table-bordered" style={{ width: "100%", textAlign: "center" }}>
-          <thead style={{ backgroundColor: "#f4f4f4", fontWeight: "bold" }}>
-            <tr>
-              <th style={{ width: "10%", padding: "8px" }}>Sr No.</th>
-              <th style={{ width: "55%", padding: "8px", wordWrap: "break-word" }}>Checklist</th>
-              <th style={{ width: "20%", padding: "8px" }}>Status</th>
-              <th style={{ width: "15%", padding: "8px" }}>Action</th>
-            </tr>
-          </thead>
-          <tbody>
-            {this.state.items.map((item, index) => (
-              <tr key={item.id}>
-                <td style={{ padding: "8px" }}>{index + 1}</td>
-                <td style={{ padding: "8px", wordWrap: "break-word" }}>{item.checklist}</td>
-                <td style={{ padding: "8px" }}>{item.status}</td>
-                <td style={{ padding: "8px" }}>
-                  <PrimaryButton 
-                    iconProps={{ iconName: 'Delete' }} 
-                    text="Remove" 
-                    onClick={() => this.deleteItem(item.id)} 
-                    styles={{
-                      root: { backgroundColor: "#d9534f", color: "#fff", borderRadius: "5px" },
-                      rootHovered: { backgroundColor: "#c9302c" }
-                    }}
-                  />
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-      )}              
-      </div>
-
+                <input  type="text" title="Enter Place" placeholder="Enter Place" id="txtPlace"  className='form-control form-control-sm'/>                
+              </div>             
+            </div>*/}
 
             <div className={styles.formrow + " " + "form-group row"}>
             <div  className='col-md-3'>
@@ -429,7 +445,7 @@ export default class PNoteForms extends React.Component<IPaperlessApprovalProps,
               </div>             
             </div>
 
-            <div className={styles.formrow + " " + "form-group row"} id="divClient" style={{ display: "" }}>
+             {/*<div className={styles.formrow + " " + "form-group row"} id="divClient" style={{ display: "" }}>
             <div className='col-md-3 pr-0'>
               <label className={styles.lbl + " " + styles.Reqdlabel}>Do you want to add Client?</label>
                    </div>
@@ -497,7 +513,8 @@ export default class PNoteForms extends React.Component<IPaperlessApprovalProps,
               <br></br>
               <input type="text" id="txtConfidential" style={{ display: "none" }}  className='form-control form-control-sm'></input>
             </div>
-            </div>
+              </div> */}
+
             <div className={styles.formrow + " " + "form-group row"} style={{ display: "none" }}>
               <div className={styles.lbl}>Comments</div>
               <div className={styles.Vcolumn}>
@@ -514,21 +531,7 @@ export default class PNoteForms extends React.Component<IPaperlessApprovalProps,
                   <table className={styles.tbl} id="tblMain" style={{ width: "100%" }}>
                     <tr>
                       <td style={{ width: "15%", paddingLeft:'10px', fontWeight:700}}>Recommender</td>
-                      <td style={{ width: "70%" }} id="RecommenderPPtd">
-                        {/* <PeoplePicker context={this.props.context}
-                          peoplePickerCntrlclassName={styles.picker}
-                          titleText=""
-                          tooltipMessage={"Enter email address!"}
-                          placeholder={"Person Name or Email address"}
-                          groupName={""} // Leave this blank in case you want to filter from all users
-                          showtooltip={true}
-                          isRequired={false}
-                          ensureUser={true}
-                          disabled={false}
-                          selectedItems={this._getReceivedFrom}
-                          defaultSelectedUsers={this.state.RecpEmail}
-                          errorMessageClassName={styles.hideElementManager}
-                        /> */}
+                      <td style={{ width: "70%" }} id="RecommenderPPtd">                        
                         <PeoplePicker
                         context={peoplePickerContext}
                         //titleText="People Picker"
@@ -567,22 +570,7 @@ export default class PNoteForms extends React.Component<IPaperlessApprovalProps,
                   <table className={styles.tbl} id="tblMain1" style={{ width: "100%" }}>
                     <tr>
                       <td style={{ width: "15%", paddingLeft:'10px', fontWeight:700}}>Approver</td>
-                      <td style={{ width: "70%" }} id="ApproverPPtd">
-                        {/* <PeoplePicker context={this.props.context}
-                          peoplePickerCntrlclassName={styles.picker}
-                          titleText=""
-                          tooltipMessage={"Type and select from suggested names"}
-                          placeholder={"Person Name or Email address"}
-                          personSelectionLimit={1}
-                          groupName={""} // Leave this blank in case you want to filter from all users
-                          showtooltip={true}
-                          isRequired={false}
-                          ensureUser={true}
-                          disabled={false}
-                          selectedItems={this._getManager}
-                          defaultSelectedUsers={this.state.ManagerEmail}
-                          errorMessageClassName={styles.hideElementManager}
-                        /> */}
+                      <td style={{ width: "70%" }} id="ApproverPPtd">                        
                         <PeoplePicker
                         context={peoplePickerContext}
                         //titleText="People Picker"
@@ -623,23 +611,7 @@ export default class PNoteForms extends React.Component<IPaperlessApprovalProps,
                   <table className={styles.tbl} id="tblMain1" style={{ width: "100%" }}>
                     <tr>
                       <td style={{ width: "15%", paddingLeft:'10px', fontWeight:700 }}>Controller</td>
-                      <td style={{ width: "70%" }} id="ControllerPPtd">
-                        {/* <PeoplePicker 
-                        context={this.props.context}
-                          peoplePickerCntrlclassName={styles.picker}
-                          titleText={""}
-                          personSelectionLimit={1}
-                          tooltipMessage={"Type and select from suggested names"}
-                          placeholder={"Person Name or Email address"}
-                          groupName={""} // Leave this blank in case you want to filter from all users
-                          showtooltip={true}
-                          isRequired={false}
-                          ensureUser={true}
-                          disabled={false}
-                          selectedItems={this._getCCPeople}
-                          defaultSelectedUsers={this.state.ccEmail}
-                          errorMessageClassName={styles.hideElementManager}
-                        /> */}
+                      <td style={{ width: "70%" }} id="ControllerPPtd">                        
                         <PeoplePicker
                         context={peoplePickerContext}
                         //titleText="People Picker"
@@ -658,7 +630,6 @@ export default class PNoteForms extends React.Component<IPaperlessApprovalProps,
                         defaultSelectedUsers= {this.state.ccEmail}
                         errorMessageClassName={styles.hideElementManager}
                         />
-
                       </td>
                       <td style={{ width: "10%" }}><label style={{ display: "none" }} id="lblController"></label>
                       <PrimaryButton style={{ width: "80pt", borderRadius: "5%", backgroundColor: "#50B4E6", display: "none" }} 
@@ -698,7 +669,7 @@ export default class PNoteForms extends React.Component<IPaperlessApprovalProps,
                 <div className={styles.Vcolumn}>
                   {this.state.Note.map((vals) => {
                     let filename = vals.split("/")[1];
-                    return (<span style={{ position: "relative", padding: "5px" }}><a href={this.state.Absoluteurl + "/NoteAttach/" + vals}>{filename}</a><img src={Delete} style={{ width: "10pt", height: "10pt", position: "absolute" }} onClick={() => this.DeleteNote(vals)}></img> </span>);
+                    return (<span style={{ position: "relative", padding: "5px" }}><a href={this.state.Absoluteurl + "/ChecklistAttach/" + vals}>{filename}</a><img src={Delete} style={{ width: "10pt", height: "10pt", position: "absolute" }} onClick={() => this.DeleteNote(vals)}></img> </span>);
 
                   })}
 
@@ -720,7 +691,7 @@ export default class PNoteForms extends React.Component<IPaperlessApprovalProps,
                 <div className={styles.Vcolumn}>
                   {this.state.attachments.map((vals) => {
                     let filename = vals.split("/")[1];
-                    return (<span style={{ position: "relative", padding: "5px" }}><a href={this.state.Absoluteurl + "/NoteAnnexures/" + vals}>{filename}</a><img src={Delete} style={{ width: "10pt", height: "10pt", position: "absolute" }} onClick={() => this.DeleteAttachment(vals)}></img> </span>);
+                    return (<span style={{ position: "relative", padding: "5px" }}><a href={this.state.Absoluteurl + "/ChecklistAnnexures/" + vals}>{filename}</a><img src={Delete} style={{ width: "10pt", height: "10pt", position: "absolute" }} onClick={() => this.DeleteAttachment(vals)}></img> </span>);
 
                   })}
 
@@ -1717,302 +1688,63 @@ export default class PNoteForms extends React.Component<IPaperlessApprovalProps,
   /*--End--*/
   /*--Form Submit validation--*/
   private validateForm(): void {
-    //debugger;
-    let allowCreate: boolean = true;
     this.setState({ onSubmission: true });
-    let template = jQuery('#ddlTemplate option:selected').val();
-    //debugger;
-    let Financial = jQuery('#ddlSource option:selected').val();
-    let FinType = jQuery('#ddlFinNote option:selected').val();
-    let Amount = jQuery('#Amount').val();
-    let DOP = jQuery('#ddlDOP option:selected').val();
-    let Department = jQuery('#ddlDepartment option:selected').val();
-    let Exceptional = jQuery('#txtExceptional').val();
-    let Confidential = jQuery('#txtConfidential').val();
-    let Client = $('#txtClient').val();
-    let Approvers = this.state.selectedItems;
-    let filename = this.state.Notefilename;
-    let notetype = this.state.NoteType.toLowerCase();
-    let ClientCheck = this.state.RadioClient;
-    let recpName = this.state.RecpName;
-    let recpEmail = this.state.RecpEmail;
-    let Subject = jQuery('#txtSubject').val();
-    let depItems : any[] = this.state.DepartmentItems;
-    let finNotes : any[] = this.state.FinNotes;
-    let dopItems : any[] = this.state.DOPItems;
-    let arrfinNotes = [];
-    let arrDOPItems = [];
-    let regx = /^[A-Za-z0-9 !@#$()_.-]+$/;
+    let allowCreate = true;
     
-    debugger;
-
-    if (Financial == 'Financial' && FinType != 'Select') {
-      arrfinNotes = $.grep(finNotes, function(n, i){ // just use arr
-        return n.Title == FinType;
-      });
-
-      
-    }
-
-    if (Financial == 'Financial' && DOP != 'Select') {
-      arrDOPItems = $.grep(dopItems, (n, i)=>{ // just use arr
-        return n.Title == DOP;        
-      });
-    }
-
-    // commented on 16/02/2025
-    // if (Department == 'Select') {
-    //   alert('Kindly select the Department!');
-    //   //  document.getElementById('ddlDepartment').trigger("focus");
-    // let ddlDepartment = document.getElementById('ddlDepartment');
-    //   if (ddlDepartment) {
-    //     ddlDepartment.focus();
-    //   }
-    //   allowCreate = false;
-    //   return;
-    // }
-    // else{
-    //   let new_arr = $.grep(depItems, (n:any, i)=>{ // just use arr        
-    //     return n.Dept_Alias == Department;
-    //   });
-
-    //   if(new_arr.length<=0)
-    //   {
-    //     alert('The selected Deparmatent is not available. Kindly select the proper Department!');
-    //     //  document.getElementById('ddlDepartment').focus();
-    // let ddlDepartment = document.getElementById('ddlDepartment');
-    //   if (ddlDepartment) {
-    //     ddlDepartment.focus();
-    //   }
-    //     allowCreate = false;
-    //     return;
-    //   }
-    // }
-
-    if (Subject == '') {
-      alert('Kindly enter Subject!');
-      //  document.getElementById('txtSubject').focus();
-     let ddlDepartment = document.getElementById('txtSubject');
-      if (ddlDepartment) {
-        ddlDepartment.focus();
-      }
-      allowCreate = false;
-      return;
-    }
+    const getValue = (selector: string): string => String(jQuery(selector).val() || '');
+    const focusElement = (selector: string): void => {
+      jQuery(selector).focus();
+  };
+    const showAlert = (message: string, selector: string): void => {
+        alert(message);
+        focusElement(selector);
+    };
     
-    // else if (Subject && Subject.indexOf('http://') > -1) {
-      else if (typeof Subject === 'string' && Subject.indexOf('http://') > -1) {
-      alert('Kindly do not enter http:// in Subject!');
-      //  document.getElementById('txtSubject').focus();
-     let ddlDepartment = document.getElementById('txtSubject');
-      if (ddlDepartment) {
-        ddlDepartment.focus();
-      }
-      allowCreate = false;
-      return;
+    const Notefor = getValue('#txtNote');
+    const Subject = getValue('#txtSubject');
+    const Purpose = getValue('#txtPurpose');
+    const Productname = getValue('#txtReturn');
+    const ddlDeptOwnership = getValue('#ddlDeptOwnership');
+    const referredguidelines = getValue('#txtGuidelines');
+    const Vetting = getValue('#txtVetting');
+    const Financial = getValue('#ddlSource');
+    const FinType = getValue('#ddlFinNote');
+    const Amount = getValue('#Amount');
+    const DOP = getValue('#ddlDOP');
+    const Approvers = this.state.selectedItems;
+    const filename = this.state.Notefilename;
+    const Checklisttable = this.state.items;
+    const regx = /^[A-Za-z0-9 !@#$()_.-]+$/;
+    
+    if (!Notefor) { showAlert('Kindly enter Note For!', '#txtNote'); return; }
+    if (!Subject) { showAlert('Kindly enter Subject!', '#txtSubject'); return; }
+    if (Subject.indexOf('http://') > -1 || Subject.indexOf('https://') > -1) {
+        showAlert('Kindly do not enter URLs in Subject!', '#txtSubject'); return;
     }
-    // else if (Subject && Subject.indexOf('https://') > -1) {
-      else if (typeof Subject === 'string' && Subject.indexOf('http://') > -1) {
-      alert('Kindly do not enter https:// in Subject!');
-      //  document.getElementById('txtSubject').focus();
-     let ddlDepartment = document.getElementById('txtSubject');
-      if (ddlDepartment) {
-        ddlDepartment.focus();
-      }
-      allowCreate = false;
-      return;
+    if (!regx.test(Subject)) { showAlert('Subject contains special characters!', '#txtSubject'); return; }
+    if (Subject.length > 250) { showAlert('Max 250 chars are allowed in Subject!', '#txtSubject'); return; }
+    if (!Purpose) { showAlert('Kindly enter Purpose!', '#txtPurpose'); return; }
+    if (!Productname) { showAlert('Kindly enter Product Name!', '#txtReturn'); return; }
+    if (ddlDeptOwnership === 'Select') { showAlert('Kindly select the Department Ownership!', '#ddlDeptOwnership'); return; }
+    if (!referredguidelines) { showAlert('Kindly enter the Referred Guidelines!', '#txtGuidelines'); return; }
+    if (!Vetting) { showAlert('Kindly enter Vetting Observation!', '#txtVetting'); return; }
+    if (Checklisttable.length === 0) { showAlert('Kindly enter Checklist!', '#ddlDeptOwnership'); return; }
+    
+    if (Financial === 'Select') { showAlert('Kindly select the Note Type!', '#ddlSource'); return; }
+    if (Financial !== 'Financial' && Financial !== 'Non-Financial') { showAlert('Invalid Note Type selected!', '#ddlSource'); return; }
+    if (Financial === 'Financial' && FinType === 'Select') { showAlert('Kindly select the Financial Note Type!', '#ddlFinNote'); return; }
+    if (Financial === 'Financial' && (isNaN(Number(Amount)) || !Amount || Amount === '0')) {
+        showAlert('Kindly enter a valid Amount!', '#Amount'); return;
     }
-    else if (!regx.test(String(Subject))) {
-      alert('Subject contains Special Characters!');
-      //  document.getElementById('txtSubject').focus();
-     let ddlDepartment = document.getElementById('txtSubject');
-      if (ddlDepartment) {
-        ddlDepartment.focus();
-      }
-      allowCreate = false;
-      return;
-    }
-    else if (String(Subject).length > 250) {
-      alert('Max 250 chars are allowed in Subject!');
-      //  document.getElementById('txtSubject').focus();
-     let ddlDepartment = document.getElementById('txtSubject');
-      if (ddlDepartment) {
-        ddlDepartment.focus();
-      }
-      allowCreate = false;
-      return;
-    }
-    else if (Financial == 'Select') {
-      alert('Kindly select the Note Type!');
-      //document.getElementById('ddlSource').focus();      
-      let ddlDepartment = document.getElementById('ddlSource');
-      if (ddlDepartment) {
-        ddlDepartment.focus();
-      }
-      allowCreate = false;
-      return;
-    }
-    else if(Financial != 'Financial' && Financial != 'Non-Financial')
-    {
-      alert('The selected Note Type is not available. Kindly select the proper Note Type!');
-      //document.getElementById('ddlSource').focus();
-      let ddlDepartment = document.getElementById('ddlSource');
-      if (ddlDepartment) {
-        ddlDepartment.focus();
-      }
-      allowCreate = false;
-      return;
-    }
-    else if (Financial == 'Financial' && FinType == 'Select') {
-      alert('Kindly select the Financial Note Type!');
-      //document.getElementById('ddlFinNote').focus();
-      let ddlDepartment = document.getElementById('ddlFinNote');
-      if (ddlDepartment) {
-        ddlDepartment.focus();
-      }
-      allowCreate = false;
-      return;
-    }
-    else if (Financial == 'Financial' && FinType != 'Select' && arrfinNotes.length<=0) {
-      alert('The selected Type of Financial Note is not available. Kindly select the proper Type of Financial Note!');
-      //document.getElementById('ddlFinNote').focus();
-      let ddlDepartment = document.getElementById('ddlFinNote');
-      if (ddlDepartment) {
-        ddlDepartment.focus();
-      }
-      allowCreate = false;
-      return;
-    }
-    else if (Financial == 'Financial' && (isNaN(Number(Amount)) || Amount == '' || Amount == '0')) {
-      alert('Kindly enter the Amount!');
-      //document.getElementById('Amount').focus();
-      let ddlDepartment = document.getElementById('Amount');
-      if (ddlDepartment) {
-        ddlDepartment.focus();
-      }
-      allowCreate = false;
-      return;
-    }
-    else if (Financial == 'Financial' && DOP == 'Select') {
-      alert('Kindly Select the DOP details!');
-      //document.getElementById('ddlDOP').focus();
-      let ddlDepartment = document.getElementById('ddlDOP');
-      if (ddlDepartment) {
-        ddlDepartment.focus();
-      }
-      allowCreate = false;
-      return;
-    }
-    else if (Financial == 'Financial' && DOP != 'Select' && arrDOPItems.length<=0) 
-    {
-      alert('The selected DOP Details is not available. Kindly select the proper DOP Details!');
-      //document.getElementById('ddlDOP').focus();
-      let ddlDepartment = document.getElementById('ddlDOP');
-      if (ddlDepartment) {
-        ddlDepartment.focus();
-      }
-      allowCreate = false;
-      return;
-    }
-    else if (ClientCheck == '') {
-      alert('Kindly Select if client name is required!');
-      //document.getElementById('CYes').focus();
-      let ddlDepartment = document.getElementById('CYes');
-      if (ddlDepartment) {
-        ddlDepartment.focus();
-      }
-      allowCreate = false;
-      return;
-    }
-    else if (ClientCheck == 'CYes' && String(Client).trim() == '') {
-      alert('Kindly enter client name!');
-      //document.getElementById('txtClient').focus();
-      let ddlDepartment = document.getElementById('txtClient');
-      if (ddlDepartment) {
-        ddlDepartment.focus();
-      }
-      allowCreate = false;
-      return;
-    }
-    // else if (ClientCheck == 'CYes' && Client && Client.indexOf('http://') > -1) {
-      else if (ClientCheck == 'CYes' && Client && typeof Client === 'string' && Client.indexOf('http://') > -1) {                    
-      alert('Kindly do not enter http:// in Client Name!');
-      //document.getElementById('txtClient').focus();
-      let ddlDepartment = document.getElementById('txtClient');
-      if (ddlDepartment) {
-        ddlDepartment.focus();
-      }
-      allowCreate = false;
-      return;
-    }
-    else if (ClientCheck == 'CYes' && Client && typeof Client === 'string' && Client.indexOf('https://') > -1) {
-      alert('Kindly do not enter https:// in Client Name!');
-      //document.getElementById('txtClient').focus();
-      let ddlDepartment = document.getElementById('txtClient');
-      if (ddlDepartment) {
-        ddlDepartment.focus();
-      }
-      allowCreate = false;
-      return;
-    }
-    else if (ClientCheck == 'CYes' && String(Client).trim() != '' && !regx.test(String(Client))) {
-      alert('Client name contains Special Characters!');
-      //document.getElementById('txtClient').focus();
-      let ddlDepartment = document.getElementById('txtClient');
-      if (ddlDepartment) {
-        ddlDepartment.focus();
-      }
-      allowCreate = false;
-      return;
-    }
-    else if (String(Exceptional).trim() == '') {
-      alert('Kindly select if the note is Exceptional!');
-      //document.getElementById('ExcYes').focus();
-      let ddlDepartment = document.getElementById('ExcYes');
-      if (ddlDepartment) {
-        ddlDepartment.focus();
-      }
-      allowCreate = false;
-      return;
-    }
-    //else if(Department=='HRD' && Confidential.trim()==''){  //Commented by Surendra at 28/1/2022 : As per Sagar mail, divConfidential is available for all department
-    //Commented on 16/02/2024
-    // else if (String(Confidential).trim() == '') {
-    //   alert('Kindly select if the note is Confidential!');
-    //   //document.getElementById('ConfYes').focus();
-    //   let ddlDepartment = document.getElementById('ConfYes');
-    //   if (ddlDepartment) {
-    //     ddlDepartment.focus();
-    //   }
-    //   allowCreate = false;
-    //   return;
-    // }
-    else if (Approvers.length == 0) {
-      alert('Kindly select at least 1 Approver!');
-      //document.getElementById('btnAddApprover').focus();
-      let ddlDepartment = document.getElementById('btnAddApprover');
-      if (ddlDepartment) {
-        ddlDepartment.focus();
-      }
-      allowCreate = false;
-      return;
-    }
-    else if (filename == '') {
-      alert('Kindly select at least 1 Main Note!');
-      //document.getElementById('ddlTemplate').focus();
-      let ddlDepartment = document.getElementById('ddlTemplate');
-      if (ddlDepartment) {
-        ddlDepartment.focus();
-      }
-      allowCreate = false;
-      return;
-    }
-    else {
-      allowCreate = true;
-      this._onShowPanel();
-    }
+    if (Financial === 'Financial' && DOP === 'Select') { showAlert('Kindly select the DOP details!', '#ddlDOP'); return; }
+    
+    if (Approvers.length === 0) { showAlert('Kindly select at least one Approver!', '#btnAddApprover'); return; }
+    if (!filename) { showAlert('Kindly select at least one Main Note!', '#ddlTemplate'); return; }
+    
+    // If all validations pass
+    this._onShowPanel();
+}
 
-  }
   /*--End--*/
   /*--Save Draft function--*/
   private SaveDraft(): void {
@@ -2061,10 +1793,11 @@ export default class PNoteForms extends React.Component<IPaperlessApprovalProps,
     let Confidential = jQuery('#txtConfidential').val();
 
     //added on 16/02/2025
-    // let Notefor = jQuery('#txtNote').val();
-    // let Purpose = jQuery('#txtPurpose').val();
-    // let ReturnName = jQuery('#txtPurpose').val();
+    let Notefor = jQuery('#txtNote').val();
+    let Purpose = jQuery('#txtPurpose').val();
+    let ReturnName = jQuery('#txtReturn').val();
     let DeptOwnership = jQuery('#ddlDeptOwnership option:selected').text();
+    let VettingObservation = jQuery('#txtVetting').val();
     // let DueDate = this.state.selectedDate;
     // let Place = jQuery('#txtPlace').val();
     let Checklisttable = this.state.items;
@@ -2137,11 +1870,12 @@ export default class PNoteForms extends React.Component<IPaperlessApprovalProps,
             ControllerId: ControllerID,
             Status: "Submitted to Recommender#1",
             StatusNo: 1,
-            //Notefor : Notefor,
-            //Purpose : Purpose,
-            //ReturnName : ReturnName,
+            Notefor : Notefor,
+            Purpose : Purpose,
+            ReturnName : ReturnName,
             DeptOwnership : DeptOwnership,
-            RefferedGuidlines:RefferedGuidlines
+            RefferedGuidlines:RefferedGuidlines,
+            VettingObservation:VettingObservation
             //DueDate : DueDate,
             //Place : Place
           }).then((iar: ItemAddResult) => {
@@ -2168,13 +1902,14 @@ export default class PNoteForms extends React.Component<IPaperlessApprovalProps,
               Sitename: 'Main',
               Status: "Submitted to Recommender#1",
               StatusNo: 1,
-              // Notefor : Notefor,
-              // Purpose : Purpose,
-              // ReturnName : ReturnName,
+              Notefor : Notefor,
+              Purpose : Purpose,
+              ReturnName : ReturnName,
               DeptOwnership : DeptOwnership,
+              RefferedGuidlines:RefferedGuidlines,
+              VettingObservation:VettingObservation
               // DueDate : DueDate,
-              // Place : Place,
-              RefferedGuidlines:RefferedGuidlines
+              // Place : Place,              
             })
               .then((iar1: ItemAddResult) => {
                 let WFweb = new Web('WF');
@@ -2201,13 +1936,14 @@ export default class PNoteForms extends React.Component<IPaperlessApprovalProps,
                   ControllerId: ControllerID,
                   Status: "Submitted to Recommender#1",
                   StatusNo: 1,
-                  // Notefor : Notefor,
-                  // Purpose : Purpose,
-                  // ReturnName : ReturnName,
+                  Notefor : Notefor,
+                  Purpose : Purpose,
+                  ReturnName : ReturnName,
                   DeptOwnership : DeptOwnership,
+                  RefferedGuidlines:RefferedGuidlines,
+                  VettingObservation:VettingObservation
                   // DueDate : DueDate,
-                  // Place : Place
-                  RefferedGuidlines:RefferedGuidlines
+                  // Place : Place                  
                 }).then((iar: ItemAddResult) =>{
                   for(var i=0;i<Checklisttable.length;i++)
                   {
@@ -2264,13 +2000,14 @@ export default class PNoteForms extends React.Component<IPaperlessApprovalProps,
             ControllerId: ControllerID,
             Status: "Submitted to Approver#1",
             StatusNo: 6,
-            // Notefor : Notefor,
-            // Purpose : Purpose,
-            // ReturnName : ReturnName,
+            Notefor : Notefor,
+            Purpose : Purpose,
+            ReturnName : ReturnName,
             DeptOwnership : DeptOwnership,
+            RefferedGuidlines:RefferedGuidlines,
+            VettingObservation:VettingObservation
             // DueDate : DueDate,
-            // Place : Place,
-            RefferedGuidlines:RefferedGuidlines
+            // Place : Place,                        
           }).then((iar: ItemAddResult) => {
             console.log(iar.data.ID);
             let id = iar.data.ID;
@@ -2294,10 +2031,12 @@ export default class PNoteForms extends React.Component<IPaperlessApprovalProps,
               Sitename: this.state.Sitename,
               Status: "Submitted to Approver#1",
               StatusNo: 6,
-              // Notefor : Notefor,
-              // Purpose : Purpose,
-              // ReturnName : ReturnName,
+              Notefor : Notefor,
+              Purpose : Purpose,
+              ReturnName : ReturnName,
               DeptOwnership : DeptOwnership,
+              RefferedGuidlines:RefferedGuidlines,
+              VettingObservation:VettingObservation
               // DueDate : DueDate,
               // Place : Place
             }).then((iar1: ItemAddResult) => {
@@ -2327,10 +2066,12 @@ export default class PNoteForms extends React.Component<IPaperlessApprovalProps,
                 ControllerId: ControllerID,
                 Status: "Submitted to Approver#1",
                 StatusNo: 6,
-                // Notefor : Notefor,
-                // Purpose : Purpose,
-                // ReturnName : ReturnName,
+                Notefor : Notefor,
+                Purpose : Purpose,
+                ReturnName : ReturnName,
                 DeptOwnership : DeptOwnership,
+                RefferedGuidlines:RefferedGuidlines,
+                VettingObservation:VettingObservation
                 // DueDate : DueDate,
                 // Place : Place
               }).then((iar: ItemAddResult) =>{
@@ -2378,7 +2119,7 @@ export default class PNoteForms extends React.Component<IPaperlessApprovalProps,
 
   private getCounter(): Promise<any[]> {
       let num : Number[] = [];
-      return pnp.sp.site.rootWeb.lists.getByTitle('Counter').items.select("ID,Title,NoteId,MemoCounter,Department").orderBy("ID asc").getAll().then((items: any[]) => {
+      return pnp.sp.site.rootWeb.lists.getByTitle('Counter').items.select("ID,Title,NoteId,MemoCounter,Department,GroupID").orderBy("ID asc").getAll().then((items: any[]) => {
         num[0] = parseInt(items[0].NoteId) + 1;
         num[1] = items[0].ID;
         num[2] = items[0].GroupID;
@@ -2426,9 +2167,9 @@ export default class PNoteForms extends React.Component<IPaperlessApprovalProps,
     });
     let sitename = this.state.Absoluteurl;
     let web = new Web('Main');
-    let url = sitename + '/NoteAnnexures/' + vals;
+    let url = sitename + '/ChecklistAnnexures/' + vals;
     let fldr = vals.split("/")[0];
-    let fldURL = sitename + '/NoteAnnexures/' + fldr;
+    let fldURL = sitename + '/ChecklistAnnexures/' + fldr;
     web.getFileByServerRelativeUrl(url).recycle().then(data => {
       console.log("File Deleted " + vals);
       web.getFolderByServerRelativeUrl(fldURL).files.get().then((result) => {
@@ -2462,9 +2203,9 @@ export default class PNoteForms extends React.Component<IPaperlessApprovalProps,
       Note: []
     });
     let sitename = this.state.Absoluteurl;
-    let url = sitename + '/NoteAttach/' + vals;
+    let url = sitename + '/ChecklistAttach/' + vals;
     let fldr = vals.split("/")[0];
-    let fldURL = sitename + '/NoteAttach/' + fldr;
+    let fldURL = sitename + '/ChecklistAttach/' + fldr;
     let web = new Web('Main');
     web.getFileByServerRelativeUrl(url).recycle().then(data => {
       console.log("File Deleted " + vals);
@@ -2510,7 +2251,7 @@ export default class PNoteForms extends React.Component<IPaperlessApprovalProps,
     let fileSplit = file.name.split(".");
     let fileType = this.state.AttachType;
     let PermissibleExtns = ['pdf'];
-    let listName = 'NoteAttach';
+    let listName = 'ChecklistAttach';
     let NoteCount = this.state.Note.length;
     let notetype = this.state.NoteType;
     let TotalAnnexures = this.state.attachments.length;
@@ -2520,7 +2261,7 @@ export default class PNoteForms extends React.Component<IPaperlessApprovalProps,
 
     if (fileType != 'Note') {
       PermissibleExtns = ['png', 'jpeg', 'jpg', 'gif', 'pdf', 'doc', 'docx', 'xls', 'xlsx', '.eml'];
-      listName = 'NoteAnnexures';
+      listName = 'ChecklistAnnexures';
     }
     else {
       PermissibleExtns = ['pdf'];

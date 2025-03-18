@@ -25,7 +25,7 @@ import { SPComponentLoader } from '@microsoft/sp-loader';
 import { ListItemPicker } from '@pnp/spfx-controls-react/lib/listItemPicker';
 //require('../css/custom.css');
 //require('/sites/EasyApprovalUATNew/SiteAssets/css/styles.css');
-SPComponentLoader.loadCss('/sites/EasyApproval/SiteAssets/css/styles.css'); 
+SPComponentLoader.loadCss('../SiteAssets/css/styles.css'); 
 //SPComponentLoader.loadCss('https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css');
 // SPComponentLoader.loadCss('https://static2.sharepointonline.com/files/fabric/office-ui-fabric-js/1.4.0/css/fabric.min.css');
 
@@ -2243,7 +2243,7 @@ export default class PNoteForms extends React.Component<IPaperlessApprovalProps,
 
   private getCounter(): Promise<any[]> {
       let num : Number[] = [];
-      return pnp.sp.site.rootWeb.lists.getByTitle('Counter').items.select("ID,Title,NoteId,MemoCounter,Department").orderBy("ID asc").getAll().then((items: any[]) => {
+      return pnp.sp.site.rootWeb.lists.getByTitle('Counter').items.select("ID,Title,NoteId,MemoCounter,Department,GroupID").orderBy("ID asc").getAll().then((items: any[]) => {
         num[0] = parseInt(items[0].NoteId) + 1;
         num[1] = items[0].ID;
         num[2] = items[0].GroupID;
