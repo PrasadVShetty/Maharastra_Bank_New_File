@@ -113,7 +113,10 @@ export default class PNoteForms extends React.Component<IPaperlessApprovalProps,
       checklist: '',
       status2: '',
       items: [],
-      savedData: []      
+      savedData: [],
+      vettingobservation : '',
+      Checklistlabel: '',
+      Title:'' 
     };
   }
     
@@ -134,7 +137,8 @@ export default class PNoteForms extends React.Component<IPaperlessApprovalProps,
     const newItems = [...items, { 
       id: items.length + 1, 
       checklist: checklist.trim(), 
-      status: status 
+      status: status,
+      itemid : 0 
     }];
   
     // Update state and reset fields
@@ -147,6 +151,7 @@ export default class PNoteForms extends React.Component<IPaperlessApprovalProps,
     this.setState({ items: filteredItems });
   };
 
+  
   // saveTableData = () => {
   //   this.setState({ savedData: [...this.state.items] });
   //   console.log('Saved Data:', this.state.items);
@@ -168,6 +173,7 @@ export default class PNoteForms extends React.Component<IPaperlessApprovalProps,
       { key: 'Checked', text: 'Checked' },
       { key: 'NotChecked', text: 'NotChecked' },
     ];
+
     return (
       <form >
         <div className={styles.paperlessApproval}>
@@ -236,7 +242,7 @@ export default class PNoteForms extends React.Component<IPaperlessApprovalProps,
             
             <div className={styles.formrow + " " + "form-group row"}>
             <div  className='col-md-3'>
-              <label className={styles.lbl + " " + styles.Reqdlabel}>Product Name</label>
+              <label className={styles.lbl}>Product Name</label>
               </div>
               <div className='col-md-9'>
                 <input  type="text" title="Enter Product Name" placeholder="Enter Product Name" id="txtReturn"  className='form-control form-control-sm'/>                
@@ -257,7 +263,7 @@ export default class PNoteForms extends React.Component<IPaperlessApprovalProps,
 
             <div className={styles.formrow + " " + "form-group row"}>
             <div  className='col-md-3'>
-              <label className={styles.lbl + " " + styles.Reqdlabel}>Referred Guidelines</label>
+              <label className={styles.lbl}>Referred Guidelines</label>
               </div>
               <div className='col-md-9'>
                 <input  type="text" title="Enter Referred Guidelines" placeholder="Enter Referred Guidelines" id="txtGuidelines"  className='form-control form-control-sm'/>                
@@ -266,12 +272,12 @@ export default class PNoteForms extends React.Component<IPaperlessApprovalProps,
 
             <div className={styles.formrow + " " + "form-group row"}>
             <div className="col-md-3">
-            <label className={styles.lbl + " " + styles.Reqdlabel}>Vetting Observation</label>
+            <label className={styles.lbl}>{this.state.vettingobservation}</label>
             </div>
             <div className="col-md-9">
             <textarea 
-            title="Enter Vetting Observation" 
-            placeholder="Enter Vetting Observation" 
+            title={`Enter ${this.state.vettingobservation}`}
+            placeholder={`Enter ${this.state.vettingobservation}`}
             id="txtVetting" 
             className="form-control form-control-sm"
             rows={4}
@@ -285,13 +291,13 @@ export default class PNoteForms extends React.Component<IPaperlessApprovalProps,
             {/* Checklist Input Field with given styles */}
             <div className={styles.formrow + " " + "form-group row"}>
             <div className="col-md-3">
-            <label className={styles.lbl + " " + styles.Reqdlabel}>Checklist</label>
+            <label className={styles.lbl}>{this.state.Checklistlabel}</label>
             </div>
             <div className="col-md-9">
             <input
             type="text"
-            title="Enter Checklist"
-            placeholder="Enter Checklist"
+            title={`Enter ${this.state.Checklistlabel}`}
+            placeholder={`Enter ${this.state.Checklistlabel}`}
             value={this.state.checklist}
             onChange={(e) => this.setState({ checklist: e.target.value || '' })}
             className="form-control form-control-sm"
@@ -302,7 +308,7 @@ export default class PNoteForms extends React.Component<IPaperlessApprovalProps,
             
             <div className={styles.formrow + " " + "form-group row"}>
             <div className="col-md-3">
-            <label className={styles.lbl + " " + styles.Reqdlabel}>Status</label>
+            <label className={styles.lbl}>Status</label>
             </div>
             <div className="col-md-9">
             <Dropdown
@@ -331,7 +337,7 @@ export default class PNoteForms extends React.Component<IPaperlessApprovalProps,
             <thead style={{ backgroundColor: "#f4f4f4", fontWeight: "bold" }}>
             <tr>
             <th style={{ width: "10%", padding: "8px" }}>Sr No.</th>
-            <th style={{ width: "55%", padding: "8px", wordWrap: "break-word" }}>Checklist</th>
+            <th style={{ width: "55%", padding: "8px", wordWrap: "break-word" }}>{this.state.Checklistlabel}</th>
             <th style={{ width: "20%", padding: "8px" }}>Status</th>
             <th style={{ width: "15%", padding: "8px" }}>Action</th>
             </tr>
@@ -432,7 +438,7 @@ export default class PNoteForms extends React.Component<IPaperlessApprovalProps,
               </div>   
               </div>           
             </div>
-            <div className='FinancialClass' style={{ display: "none" }}>
+            {/* <div className='FinancialClass' style={{ display: "none" }}>
             <div className={styles.formrow + " " + "form-group row"} >
             <div className='col-md-3'>
               <label className={styles.lbl + " " + styles.Reqdlabel}>DOP Details</label>
@@ -443,7 +449,7 @@ export default class PNoteForms extends React.Component<IPaperlessApprovalProps,
                 </select>
               </div>
               </div>             
-            </div>
+            </div> */}
 
              {/*<div className={styles.formrow + " " + "form-group row"} id="divClient" style={{ display: "" }}>
             <div className='col-md-3 pr-0'>
@@ -712,8 +718,8 @@ export default class PNoteForms extends React.Component<IPaperlessApprovalProps,
                 <PrimaryButton className='btn' style={{ width: "25pt", borderRadius: "5%", backgroundColor: "#0c78b8", color:'#fff'  }} text="Submit" onClick={() => { this.validateForm(); }} /> 
                 </div>
 
-              <div id="btnDraft" style={{ display: "none", borderRadius: "5px", marginLeft:'10px' }} >
-                <PrimaryButton className='btn' style={{ width: "25pt", borderRadius: "5%", backgroundColor: "#0c78b8", color:'#fff'  }} text="Save Draft" onClick={() => { this.SaveDraft(); }} />
+              <div id="btnDraft" style={{borderRadius: "5px", marginLeft:'10px' }} >
+                <PrimaryButton className='btn' style={{ width: "25pt", borderRadius: "5%", backgroundColor: "#0c78b8", color:'#fff'  }} text="Save Draft" onClick={() => { this.SaveDraftNew(); }} />
               </div>
 
               <div id="btnCancel" style={{ display: "block", marginLeft:'10px' }}>
@@ -868,9 +874,10 @@ export default class PNoteForms extends React.Component<IPaperlessApprovalProps,
     /*-- To get details from masters(lists) --*/
     this.getDepartments();
     this.getFinNotes();
-    this.getDOP();
+    //this.getDOP();
     this.getFY();
     this.getRestrictedEmails();
+    this.fetchCounterData();
     /*--End--*/
 
   }
@@ -926,19 +933,19 @@ export default class PNoteForms extends React.Component<IPaperlessApprovalProps,
   /*--End--*/
 
   /*-- To get details from DOP master for DOP Details --*/
-  private getDOP() {
-    //debugger;
-    pnp.sp.site.rootWeb.lists.getByTitle('DOP').items.select("ID,Title").orderBy("ID asc").getAll().then((items: any[]) => {
-      //debugger;
-      this.setState({DOPItems: items });
-      let links: string = '';
-      for (let i = 0; i < items.length; i++) {
-        links += "<option value='" + items[i].Title + "'>" + items[i].Title + "</option>";
-      }
-      jQuery('select[id="ddlDOP"]').append(links);
+  // private getDOP() {
+  //   //debugger;
+  //   pnp.sp.site.rootWeb.lists.getByTitle('DOP').items.select("ID,Title").orderBy("ID asc").getAll().then((items: any[]) => {
+  //     //debugger;
+  //     this.setState({DOPItems: items });
+  //     let links: string = '';
+  //     for (let i = 0; i < items.length; i++) {
+  //       links += "<option value='" + items[i].Title + "'>" + items[i].Title + "</option>";
+  //     }
+  //     jQuery('select[id="ddlDOP"]').append(links);
 
-    });
-  }
+  //   });
+  // }
   /*--End--*/
 
   /*-- To Update Recommanders in Approvals list--*/
@@ -1144,6 +1151,15 @@ export default class PNoteForms extends React.Component<IPaperlessApprovalProps,
 
   }
   /*--End--*/
+  /*Added on 29/03/2025 */
+  fetchCounterData = async () => {
+    const num = await this.getCounter();
+    if(num[3] == 'Compliance')
+    {this.setState({ vettingobservation: 'Vetting Observation' });
+    this.setState({Checklistlabel: 'Checklist'});}
+    else{this.setState({ vettingobservation: 'Remarks' });
+    this.setState({Checklistlabel: 'Annexure'});}    
+  };
 
   // Add Controller before submission
   /*-- To Update Controller in CApprovals list--*/
@@ -1710,7 +1726,7 @@ export default class PNoteForms extends React.Component<IPaperlessApprovalProps,
     const Financial = getValue('#ddlSource');
     const FinType = getValue('#ddlFinNote');
     const Amount = getValue('#Amount');
-    const DOP = getValue('#ddlDOP');
+    //const DOP = getValue('#ddlDOP');
     const Approvers = this.state.selectedItems;
     const filename = this.state.Notefilename;
     const Checklisttable = this.state.items;
@@ -1721,14 +1737,14 @@ export default class PNoteForms extends React.Component<IPaperlessApprovalProps,
     if (Subject.indexOf('http://') > -1 || Subject.indexOf('https://') > -1) {
         showAlert('Kindly do not enter URLs in Subject!', '#txtSubject'); return;
     }
-    if (!regx.test(Subject)) { showAlert('Subject contains special characters!', '#txtSubject'); return; }
+    // if (!regx.test(Subject)) { showAlert('Subject contains special characters!', '#txtSubject'); return; }
     if (Subject.length > 250) { showAlert('Max 250 chars are allowed in Subject!', '#txtSubject'); return; }
     if (!Purpose) { showAlert('Kindly enter Purpose!', '#txtPurpose'); return; }
-    if (!Productname) { showAlert('Kindly enter Product Name!', '#txtReturn'); return; }
+    //if (!Productname) { showAlert('Kindly enter Product Name!', '#txtReturn'); return; }
     if (ddlDeptOwnership === 'Select') { showAlert('Kindly select the Department Ownership!', '#ddlDeptOwnership'); return; }
-    if (!referredguidelines) { showAlert('Kindly enter the Referred Guidelines!', '#txtGuidelines'); return; }
-    if (!Vetting) { showAlert('Kindly enter Vetting Observation!', '#txtVetting'); return; }
-    if (Checklisttable.length === 0) { showAlert('Kindly enter Checklist!', '#ddlDeptOwnership'); return; }
+    //if (!referredguidelines) { showAlert('Kindly enter the Referred Guidelines!', '#txtGuidelines'); return; }
+    //if (!Vetting) { showAlert('Kindly enter Vetting Observation!', '#txtVetting'); return; }
+    //if (Checklisttable.length === 0) { showAlert('Kindly enter Checklist!', '#ddlDeptOwnership'); return; }
     
     if (Financial === 'Select') { showAlert('Kindly select the Note Type!', '#ddlSource'); return; }
     if (Financial !== 'Financial' && Financial !== 'Non-Financial') { showAlert('Invalid Note Type selected!', '#ddlSource'); return; }
@@ -1736,7 +1752,7 @@ export default class PNoteForms extends React.Component<IPaperlessApprovalProps,
     if (Financial === 'Financial' && (isNaN(Number(Amount)) || !Amount || Amount === '0')) {
         showAlert('Kindly enter a valid Amount!', '#Amount'); return;
     }
-    if (Financial === 'Financial' && DOP === 'Select') { showAlert('Kindly select the DOP details!', '#ddlDOP'); return; }
+    //if (Financial === 'Financial' && DOP === 'Select') { showAlert('Kindly select the DOP details!', '#ddlDOP'); return; }
     
     if (Approvers.length === 0) { showAlert('Kindly select at least one Approver!', '#btnAddApprover'); return; }
     if (!filename) { showAlert('Kindly select at least one Main Note!', '#ddlTemplate'); return; }
@@ -1778,6 +1794,7 @@ export default class PNoteForms extends React.Component<IPaperlessApprovalProps,
     //debugger;
     this._onClosePanel();
     this.on();
+    jQuery('#btnDraft').remove();
     jQuery('#Createbutton').remove();
     jQuery('#Cancelbutton').remove();
     let FY = jQuery('#tdFY').text();
@@ -1787,7 +1804,7 @@ export default class PNoteForms extends React.Component<IPaperlessApprovalProps,
     let uid = 0;
     let Financial = jQuery('#ddlSource option:selected').text();
     let FinType = jQuery('#ddlFinNote').val();
-    let DOP = jQuery('#ddlDOP').val();
+    //let DOP = jQuery('#ddlDOP').val();
     let Amount = jQuery('#Amount').val();
     let Exceptional = jQuery('#txtExceptional').val();
     let Confidential = jQuery('#txtConfidential').val();
@@ -1798,6 +1815,7 @@ export default class PNoteForms extends React.Component<IPaperlessApprovalProps,
     let ReturnName = jQuery('#txtReturn').val();
     let DeptOwnership = jQuery('#ddlDeptOwnership option:selected').text();
     let VettingObservation = jQuery('#txtVetting').val();
+    let RefferedGuidlines = jQuery('#txtGuidelines').val();
     // let DueDate = this.state.selectedDate;
     // let Place = jQuery('#txtPlace').val();
     let Checklisttable = this.state.items;
@@ -1819,8 +1837,7 @@ export default class PNoteForms extends React.Component<IPaperlessApprovalProps,
       let dept = countVal[3];
       let DeptGroupID = parseInt(countVal[2]);
       let Subj = jQuery('#txtSubject').val();
-      let Comment = jQuery('#txtComments').val();
-      let RefferedGuidlines = jQuery('#txtGuidelines').val()
+      let Comment = jQuery('#txtComments').val();      
       let client = jQuery('#txtClient').val();
       let requester = this.state.UserID;
       let dt = new Date();
@@ -1861,7 +1878,7 @@ export default class PNoteForms extends React.Component<IPaperlessApprovalProps,
             RequesterId: requester,
             NoteFilename: filename,
             NoteType: Financial,
-            DOP: DOP,
+            //DOP: DOP,
             DeptAlias: deptAlias,
             ClientName: client,
             Migrate: "",
@@ -1926,7 +1943,7 @@ export default class PNoteForms extends React.Component<IPaperlessApprovalProps,
                   RequesterId: requester,
                   NoteFilename: filename,
                   NoteType: Financial,
-                  DOP: DOP,
+                  //DOP: DOP,
                   DeptAlias: deptAlias,
                   ClientName: client,
                   Migrate: "",
@@ -1982,7 +1999,7 @@ export default class PNoteForms extends React.Component<IPaperlessApprovalProps,
             Subject: Subj,
             Department: dept,
             Comments: Comment,
-            DOP: DOP,
+            //DOP: DOP,
             Exceptional: Exceptional,
             Confidential: Confidential,
             CurApproverId: approverID,
@@ -2047,7 +2064,7 @@ export default class PNoteForms extends React.Component<IPaperlessApprovalProps,
                 Subject: Subj,
                 Department: dept,
                 Comments: Comment,
-                DOP: DOP,
+                //DOP: DOP,
                 Exceptional: Exceptional,
                 Confidential: Confidential,
                 CurApproverId: approverID,
@@ -2101,7 +2118,7 @@ export default class PNoteForms extends React.Component<IPaperlessApprovalProps,
 
 
     });
-  }
+  }  
   /*--End--*/
 
   /*--get counter from Department List--*/
@@ -2117,6 +2134,7 @@ export default class PNoteForms extends React.Component<IPaperlessApprovalProps,
 
   // }
 
+  
   private getCounter(): Promise<any[]> {
       let num : Number[] = [];
       return pnp.sp.site.rootWeb.lists.getByTitle('Counter').items.select("ID,Title,NoteId,MemoCounter,Department,GroupID").orderBy("ID asc").getAll().then((items: any[]) => {
@@ -2150,6 +2168,154 @@ export default class PNoteForms extends React.Component<IPaperlessApprovalProps,
   
       });
   
+    }
+
+    private SaveDraftNew(): void {
+      //debugger;
+      this._onClosePanel();
+      this.on();
+      jQuery('#btnDraft').remove();    
+      jQuery('#Createbutton').remove();
+      jQuery('#Cancelbutton').remove();
+      let FY = jQuery('#tdFY').text();
+      //let dept = jQuery('#ddlDepartment option:selected').text();
+      //let deptAlias = jQuery('#ddlDepartment option:selected').val();
+      let counter = 0;
+      let uid = 0;
+      let Financial = jQuery('#ddlSource option:selected').text();
+      let FinType = jQuery('#ddlFinNote').val();
+      //let DOP = jQuery('#ddlDOP').val();
+      let Amount = jQuery('#Amount').val();
+      let Exceptional = jQuery('#txtExceptional').val();
+      let Confidential = jQuery('#txtConfidential').val();
+    
+      //added on 16/02/2025
+      let Notefor = jQuery('#txtNote').val();
+      let Purpose = jQuery('#txtPurpose').val();
+      let ReturnName = jQuery('#txtReturn').val();
+      let DeptOwnership = jQuery('#ddlDeptOwnership option:selected').text();
+      let VettingObservation = jQuery('#txtVetting').val();
+      let RefferedGuidlines = jQuery('#txtGuidelines').val();
+      // let DueDate = this.state.selectedDate;
+      // let Place = jQuery('#txtPlace').val();
+      let Checklisttable = this.state.items;
+      if (Financial == 'Financial') {
+        Financial = String(FinType);
+      }
+      if (Amount == '') {
+        Amount = 0;
+      }
+      let Recommenders = this.state.dpselectedItems.length;
+    
+      let filename = this.state.Notefilename;
+    
+      //this.getCounter(String(deptAlias)).then((countVal) => {
+        this.getCounter().then((countVal) => {
+        counter = parseInt(countVal[0]);
+        uid = parseInt(countVal[1]);
+        let deptAlias = countVal[3];
+        let dept = countVal[3];
+        let DeptGroupID = parseInt(countVal[2]);
+        let Subj = jQuery('#txtSubject').val();
+        let Comment = jQuery('#txtComments').val();      
+        let client = jQuery('#txtClient').val();
+        let requester = this.state.UserID;
+        let dt = new Date();
+        let mnth = ("0" + ((dt.getMonth() + 1).toString())).slice(-2);
+        let dat = ("0" + (dt.getDate().toString())).slice(-2);
+        let fulldate = dat + mnth + dt.getFullYear().toString();
+        let title = "Note/" + deptAlias + "/" + fulldate + "/" + counter.toString();
+        // let ControllerID = $('#lblController').text();
+        let ControllerID = 0;
+        var checklistId : number ;
+        // if (ControllerID == '') {ControllerID = String(this.state.ccIDS[0]); }
+        // else { ControllerID = String(parseInt($('#lblController').text())); }
+    
+        if(this.state.ccIDS[0] != undefined){ControllerID = parseInt($('#lblController').text());}
+        
+        
+        this.setState({ attachments: [] });                               
+            let web = new Web('Main');
+            let Approvers : Number[] = [];            
+            console.log("SeqNo: "+this.state.seqno);
+            web.lists.getByTitle('ChecklistNote').items.add({
+              Title: title,
+              SeqNo: this.state.seqno,
+              Subject: Subj,
+              Department: dept,
+              Comments: Comment,
+              Exceptional: Exceptional,
+              Confidential: Confidential,              
+              ApproversId: { results: Approvers },              
+              Amount: Amount,
+              RequesterId: requester,
+              NoteFilename: filename,
+              NoteType: Financial,
+              //DOP: DOP,
+              DeptAlias: deptAlias,
+              ClientName: client,
+              Migrate: "",
+              FY: FY,
+              DeptGroupId: DeptGroupID,
+              ControllerId: ControllerID,
+              Status: "Draft",
+              StatusNo: 12,
+              Notefor : Notefor,
+              Purpose : Purpose,
+              ReturnName : ReturnName,
+              DeptOwnership : DeptOwnership,
+              RefferedGuidlines:RefferedGuidlines,
+              VettingObservation:VettingObservation
+              
+            }).then((iar: ItemAddResult) => {
+              console.log(iar.data.ID);
+              let id = iar.data.ID;
+              checklistId = iar.data.ID;
+              pnp.sp.site.rootWeb.lists.getByTitle("ChecklistNote").items.add({
+                Title: title,
+                Subject: Subj,
+                Department: dept,
+                NoteType: Financial,
+                Exceptional: Exceptional,
+                Confidential: Confidential,
+                SeqNo: this.state.seqno,
+                PID: id,
+                FY: FY,
+                DeptAlias: deptAlias,
+                CurApproverTxt: this.state.MgrName,
+                ClientName: client,
+                DeptGroupId: DeptGroupID,                
+                RequesterId: requester,
+                NoteFilename: filename,
+                Sitename: 'Main',
+                Status: "Draft",
+                StatusNo: 12,
+                Notefor : Notefor,
+                Purpose : Purpose,
+                ReturnName : ReturnName,
+                DeptOwnership : DeptOwnership,
+                RefferedGuidlines:RefferedGuidlines,
+                VettingObservation:VettingObservation                              
+              }).then((iar: ItemAddResult) =>{
+                    for(var i=0;i<Checklisttable.length;i++)
+                    {
+                      pnp.sp.site.rootWeb.lists.getByTitle('Checklist').items.add({
+                      Title: title,
+                      SeqNo: this.state.seqno,
+                      AppId: checklistId ,
+                      Checklist:Checklisttable[i].checklist,
+                      Status:Checklisttable[i].status
+                      });
+                    }                                
+                  }).then(() => {
+                    this.setCounter(uid, counter).then(() => {                      
+                        this.AddWFHistory().then(() => {
+                          this.redirect();
+                        });
+                      });                    
+                  });
+                });
+            });                       
     }
   /*--End--*/
 

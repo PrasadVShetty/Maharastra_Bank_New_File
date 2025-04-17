@@ -38,6 +38,9 @@ const NoteAtt: any = require('../Images/Upload-Note.png');
 const Logo: any = require('../Images/Logo.png');
 const Expand: any = require('../Images/Expand.jpg');
 const Collapse: any = require('../Images/Collapse.jpg');
+const NewLogo : any = require('../Images/BOM-Caps.jpg');
+const BOMYear : any = require('../Images/BOM-Caps-left.png'); 
+
 
 export default class PNoteFormsEdit extends React.Component<IPaperlessApprovalProps, EditState> {
   constructor(props : any) {
@@ -124,7 +127,9 @@ export default class PNoteFormsEdit extends React.Component<IPaperlessApprovalPr
       ReferredCasesLastCount: 0,
       Charsleft: 2000,
       RestrictedEmails: [],
-      ChecklistselectedItems:[]
+      ChecklistselectedItems:[],
+      vettingobservation : '',
+      Checklistlabel: ''
     };
   }
   public render(): React.ReactElement<IPaperlessApprovalProps> {
@@ -240,14 +245,20 @@ export default class PNoteFormsEdit extends React.Component<IPaperlessApprovalPr
     
     {/*Added on 11/03/2025*/}                   
     <div id="PDFConvert" style={{display:'none'}}>
+
+    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0px'}}>
+    <img src={NewLogo} alt="Right Logo" style={{ height: '55px', width: '150px', objectFit: 'contain' }} />
+    <img src={BOMYear} alt="Left Logo" style={{ height: '55px', maxWidth: '100px', objectFit: 'contain' }} />    
+    </div>
+
     <div className={styles.formrow}>
     <div id="divHeadingNew" style={{ display: "block", backgroundColor: "#0c78b8", color: '#fff' }}>
     <h3 style={{ fontSize: "18px", textAlign: "center", color: "white", padding: '5px 0px' }}>Note Workflow Form </h3>
     </div>
-    </div>
+    </div>    
 
     <div className={styles.formrow + " " + "form-group row"}>
-        <div className={styles.lbl + " " + styles.Tcolumn}>Request#</div>
+        <div className={styles.lbl2 }>Request# :</div>
         <div id="tdFileRefNo" style={{ display: "none" }}></div>
         <div className={styles.Vcolumn} id="tdTitle2">
         </div>
@@ -255,94 +266,94 @@ export default class PNoteFormsEdit extends React.Component<IPaperlessApprovalPr
 
     <br/>
     <div className={styles.formrow + " " + "form-group row"}>
-    <div className={styles.lbl + " " + styles.Tcolumn}>Requester</div>
+    <div className={styles.lbl2 }>Requester :</div>
     <div className={styles.Vcolumn} id="tdName2">
-
+    
     </div>
     </div>
     <br />
     <div className={styles.formrow + " " + "form-group row"}>
-    <div className={styles.lbl + " " + styles.Tcolumn}>Request Date</div>
+    <div className={styles.lbl2 }>Request Date :</div>
     <div className={styles.Vcolumn} id="tdDate2">
 
     </div>
     </div>
     <br />
     <div className={styles.formrow + " " + "form-group row"}>
-    <div className={styles.lbl + " " + styles.Tcolumn}>Status</div>
+    <div className={styles.lbl2 }>Status :</div>
     <div className={styles.Vcolumn} id="tdStatus2">
 
     </div>
     </div>
     <br />
     <div className={styles.formrow + " " + "form-group row"}>
-    <div className={styles.lbl + " " + styles.Tcolumn}>Current Approver</div>
+    <div className={styles.lbl2 }>Current Approver :</div>
     <div className={styles.Vcolumn} id="tdCurrApprover2">
 
     </div>
     </div>
     <br />
     <div className={styles.formrow + " " + "form-group row"}>
-    <div className={styles.lbl + " " + styles.Tcolumn}>Department</div>
+    <div className={styles.lbl2 }>Department :</div>
     <div className={styles.Vcolumn} id="divDepartment2">
     </div>
     </div>
     <br />
     <br />
     <div className={styles.formrow + " " + "form-group row"}>
-    <div className={styles.lbl + " " + styles.Tcolumn}>Note For</div>
+    <div className={styles.lbl2 }>Note For :</div>
     <div className={styles.Vcolumn} id="txtNote2">
     </div>
     </div>
     <br />
     <br />
     <div className={styles.formrow + " " + "form-group row"}>
-    <div className={styles.lbl + " " + styles.Tcolumn}>Purpose</div>
+    <div className={styles.lbl2 }>Purpose :</div>
     <div className={styles.Vcolumn} id="txtPurpose2">
     </div>
     </div>
     <br />
     <br />
     <div className={styles.formrow + " " + "form-group row"}>
-    <div className={styles.lbl + " " + styles.Tcolumn}>Return Name</div>
+    <div className={styles.lbl2 }>Product Name :</div>
     <div className={styles.Vcolumn} id="txtReturn2">
     </div>
     </div>
     <br />
     <br />
     <div className={styles.formrow + " " + "form-group row"}>
-    <div className={styles.lbl + " " + styles.Tcolumn}>Dept Ownership</div>
+    <div className={styles.lbl2 }>Dept Ownership :</div>
     <div className={styles.Vcolumn} id="ddlDeptOwnership2">
     </div>
     </div>
     <br />
     <br />    
     <div className={styles.formrow + " " + "form-group row"}>
-    <div className={styles.lbl + " " + styles.Tcolumn}>Subject</div>
+    <div className={styles.lbl2 }>Subject :</div>
     <div className={styles.Vcolumn} id="divSubject2" >
     </div>
     </div>
     <br />
     <div className={styles.formrow + " " + "form-group row"}>
-    <div className={styles.lbl + " " + styles.Tcolumn}>Reffered Guidlines</div>
+    <div className={styles.lbl2 }>Reffered Guidlines :</div>
     <div className={styles.Vcolumn} id="divReffered2" >
     </div>
     </div>
     <br />
     <div className={styles.formrow + " " + "form-group row"}>
-    <div className={styles.lbl + " " + styles.Tcolumn}>Vetting Observation</div>
+    <div className={styles.lbl2 }>{this.state.vettingobservation} :</div>
     <div className={styles.Vcolumn} id="divVetting2" >
     </div>
     </div>
     <br />
     <div className={styles.formrow + " " + "form-group"}>
-    <div className={styles.lbl + " " + styles.Tcolumn}>Checklist</div>
-        <div className={styles.lbl + " " + styles.tableresponsive}>
+    <div className={styles.lbl2 }>{this.state.Checklistlabel} :</div>
+        <div className={styles.lbl2 + " " + styles.tableresponsive}>
             <table className={styles.tbl} id="tblMain100" style={{ width: "100%" }}>
                 <thead>
                     <tr>
                         <th>SNo</th>
-                        <th style={{ width: "40%" }}>Checklist</th>
+                        <th style={{ width: "40%" }}>{this.state.Checklistlabel}</th>
                         <th>Status</th>  
                     </tr>
                 </thead>
@@ -365,7 +376,7 @@ export default class PNoteFormsEdit extends React.Component<IPaperlessApprovalPr
         </div>
     </div>
     <div className={styles.formrow + " " + "form-group row"}>
-    <div className={styles.lbl + " " + styles.Tcolumn}>Note Type</div>
+    <div className={styles.lbl2 }>Note Type :</div>
     <div className={styles.Vcolumn} id="divNoteType2" >
 
     </div>
@@ -374,28 +385,28 @@ export default class PNoteFormsEdit extends React.Component<IPaperlessApprovalPr
      
     <br />    
     <div className={styles.formrow + " " + "form-group row"} id='NoteTypehide'>
-    <div className={styles.lbl + " " + styles.Tcolumn}>Amount</div>
+    <div className={styles.lbl2 }>Amount :</div>
     <div className={styles.Vcolumn} id="divAmount2" >
     </div>
     <br />
     </div>
 
-    <div className={styles.formrow + " " + "form-group row"} id='NoteTypehide3'>
-    <div className={styles.lbl + " " + styles.Tcolumn}>DOP Details</div>
+    {/* <div className={styles.formrow + " " + "form-group row"} id='NoteTypehide3'>
+    <div className={styles.lbl2 }>DOP Details</div>
     <div className={styles.Vcolumn} id="divDOP2" >
     </div>
     <br />
-    </div>
+    </div> */}
 
     <div className={styles.formrow + " " + "form-group row"} id='NoteTypehide4'>
-    <div className={styles.lbl + " " + styles.Tcolumn}>Client Name/Vendor Name</div>
+    <div className={styles.lbl2 }>Client Name/Vendor Name :</div>
     <div className={styles.Vcolumn} id="divClient2" >
     </div>
     <br />    
     </div>
 
     {/* <div className={styles.formrow + " " + "form-group row"} id="divConf" style={{ display: "none" }}>
-    <div className={styles.lbl + " " + styles.Tcolumn}>Confidential</div>
+    <div className={styles.lbl2 + " " + styles.Tcolumn}>Confidential</div>
     <div className={styles.Vcolumn} id="divConfidential2" >
 
     </div>
@@ -403,14 +414,14 @@ export default class PNoteFormsEdit extends React.Component<IPaperlessApprovalPr
     </div>
 
     <div className={styles.formrow + " " + "form-group row"} style={{ display: "none" }}>
-    <div className={styles.lbl + " " + styles.Tcolumn}>Comments</div>
+    <div className={styles.lbl2 + " " + styles.Tcolumn}>Comments</div>
     <div className={styles.Vcolumn} id="divComments2">
     </div>
     </div> */}
 
-    <div className={styles.lbl + " " + styles.Tcolumn}>Recommenders</div>
+    <div className={styles.lbl2 }>Recommenders :</div>
     <div className={styles.formrow + " " + "form-group"}>
-    <div className={styles.lbl + " " + styles.tableresponsive}>
+    <div className={styles.lbl2 + " " + styles.tableresponsive}>
       <table className={styles.tbl} id="tblMain1" style={{ width: "100%" }}>
         <tr>
           <th>SNo</th>
@@ -430,9 +441,9 @@ export default class PNoteFormsEdit extends React.Component<IPaperlessApprovalPr
     </div>
 
 
-    <div className={styles.lbl + " " + styles.Tcolumn}>Approvers</div>    
+    <div className={styles.lbl2 }>Approvers :</div>    
     <div className={styles.formrow + " " + "form-group"}>
-    <div className={styles.lbl + " " + styles.tableresponsive}>
+    <div className={styles.lbl2 + " " + styles.tableresponsive}>
 
     <table className={styles.tbl} id="tblMain1" style={{ width: "100%" }}>
     <tr>
@@ -453,9 +464,9 @@ export default class PNoteFormsEdit extends React.Component<IPaperlessApprovalPr
 
     <br></br>
     <div id="NoteTypehide2">
-    <div className={styles.lbl + " " + styles.Tcolumn}>Controllers</div>
+    <div className={styles.lbl2 }>Controllers :</div>
     <div className={styles.formrow + " " + "form-group"}>
-    <div className={styles.lbl + " " + styles.tableresponsive}>
+    <div className={styles.lbl2 + " " + styles.tableresponsive}>
       <table className={styles.tbl} id="tblMain1" style={{ width: "100%" }}>
         <tr>
           <th>SNo</th>
@@ -475,9 +486,9 @@ export default class PNoteFormsEdit extends React.Component<IPaperlessApprovalPr
     </div>
     </div>    
         
-    <div className={styles.lbl + " " + styles.Tcolumn}>Comments Log</div>    
+    <div className={styles.lbl2 }>Comments Log :</div>    
     <div className={styles.formrow + " " + "form-group row"}>
-    <div className={styles.lbl + " " + styles.Mcolumn}>
+    <div className={styles.lbl2 + " " + styles.Mcolumn}>
       <table className={styles.tbl} id="tblComments" style={{ width: "100%" }}>
         <tr>
           <th style={{ width: "10%" }}>SNo</th>
@@ -494,9 +505,9 @@ export default class PNoteFormsEdit extends React.Component<IPaperlessApprovalPr
     </div>   
     </div> 
 
-    <div className={styles.lbl + " " + styles.Tcolumn}>Workflow Log</div>    
+    <div className={styles.lbl2 }>Workflow Log :</div>    
     <div className={styles.formrow + " " + "form-group row"}>
-    <div className={styles.lbl + " " + styles.Mcolumn}>
+    <div className={styles.lbl2 + " " + styles.Mcolumn}>
       <table className={styles.tbl} id="tblHistory" style={{ width: "100%" }}>
         {this.state.selectedItems ? this.state.WFHistoryLog.map((data) => {
           console.log(data);
@@ -509,7 +520,7 @@ export default class PNoteFormsEdit extends React.Component<IPaperlessApprovalPr
     </div>
     
     <br/>
-    <div className={styles.lbl + " " + styles.Tcolumn}>Attachments</div>
+    <div className={styles.lbl2 }>Attachments :</div>
     <div className={styles.formrow + " " + "form-group row"}>
     <div hidden className={styles.Mcolumn} id="divAttach" style={{}}>
     <label id="lblAttach" style={{}} className="ms-Label">Attach Note</label>
@@ -518,14 +529,15 @@ export default class PNoteFormsEdit extends React.Component<IPaperlessApprovalPr
     <input type='file' style={{}} id='fileUploadInput' required={true} name='myfile' multiple onChange={this.AttachLib} />
     </div>
 
-    <div className={styles.lbl + " " + styles.Tcolumn}>
+    <div className={styles.lbl2 }>
     Main Note
     </div>
-    <div className={styles.Vcolumn} style={{ backgroundColor: "white" }}>{this.state.Note.map((vals) => {
+    <div className={styles.Vcolumn} style={{ backgroundColor: "white", width: "100%" }}>{this.state.Note.map((vals) => {
     return (<span style={{ position: "relative" }}><a href={"javascript:void(window.open('" + vals + "'))"}>{this.state.Notefilename}</a></span>);
     })}</div>
 
-    <div className={styles.lbl + " " + styles.Mcolumn}>
+    <br/>
+    <div className={styles.lbl2 }>
     NoteAnnexures
     </div>
 
@@ -694,20 +706,20 @@ export default class PNoteFormsEdit extends React.Component<IPaperlessApprovalPr
     <br />        
 
     <div className={styles.formrow + " " + "form-group row"}>
-    <div className={styles.lbl + " " + styles.Tcolumn}>Vetting Observation</div>
+    <div className={styles.lbl + " " + styles.Tcolumn}>{this.state.vettingobservation}</div>
     <div className={styles.Vcolumn} id="divVetting" >
     </div>
     </div>
     <br />
 
     <div className={styles.formrow + " " + "form-group"}>
-    <div className={styles.lbl + " " + styles.Tcolumn}>Checklist</div>
+    <div className={styles.lbl + " " + styles.Tcolumn}>{this.state.Checklistlabel}</div>
         <div className={styles.lbl + " " + styles.tableresponsive}>
             <table className={styles.tbl} id="tblMain100" style={{ width: "100%" }}>
                 <thead>
                     <tr>
                         <th>SNo</th>
-                        <th style={{ width: "40%" }}>Checklist</th>
+                        <th style={{ width: "40%" }}>{this.state.Checklistlabel}</th>
                         <th>Status</th>  
                     </tr>
                 </thead>
@@ -744,13 +756,13 @@ export default class PNoteFormsEdit extends React.Component<IPaperlessApprovalPr
     </div>
     <br />
     </div>
-    <div className={styles.formrow + " " + "form-group row"} style={{ display: "" }} >
+    {/* <div className={styles.formrow + " " + "form-group row"} style={{ display: "" }} >
     <div className={styles.lbl + " " + styles.Tcolumn}>DOP Details</div>
     <div className={styles.Vcolumn} id="divDOP" >
 
     </div>
     <br />
-    </div>
+    </div> */}
 
     {/* <div className={styles.formrow + " " + "form-group row"}>
     <div className={styles.lbl + " " + styles.Tcolumn}>Client Name/Vendor Name</div>
@@ -929,123 +941,128 @@ export default class PNoteFormsEdit extends React.Component<IPaperlessApprovalPr
     </div>
     </div>
     </div>  
-
+    
+    
     <div className={styles.row + ' ' + styles.panelsection} id="RefererCollapse" style={{ backgroundColor: "#50B4E6", display: "block", fontSize: "16px" }}>
-              <Icon iconName='CalculatorAddition' onClick={() => { this.Expand('Referer'); }} />
-              {/* <img src={Expand} onClick={() => { this.Expand('Referer'); }}></img> */}
-              <span>Referrers Section</span>
+                  <Icon iconName='CalculatorAddition' onClick={() => { this.Expand('Referer'); }} />
+                  {/* <img src={Expand} onClick={() => { this.Expand('Referer'); }}></img> */}
+                  <span>Referrers Section</span>
     </div>
     <div className={styles.row + ' ' + styles.expandpanel} id="RefererExpand" style={{ display: "none", fontSize: "16px" }}>
-    <div className={styles.panelbody}>
-    {/* <img src={Collapse} onClick={() => { this.Collapse('Referer'); }}></img> */}
-    <Icon iconName='StatusCircleBlock2' onClick={() => { this.Collapse('Referer'); }} />
-    <span> Referrers Section</span>
-    </div>
-    <div className={styles.formrow + " " + "form-group"}>
-    <div className={styles.lbl + " " + styles.tableresponsive}>
-      <table className={styles.tbl} id="tblMain1" style={{ width: "100%" }}>
-        <tr>
-          <th>SNo</th>
-          <th>Referred By</th>
-          <th>Referred To</th>
-          <th>Status</th>
-          <th>Action Date</th>
-        </tr>
+      <div className={styles.panelbody}>
+        {/* <img src={Collapse} onClick={() => { this.Collapse('Referer'); }}></img> */}
+        <Icon iconName='StatusCircleBlock2' onClick={() => { this.Collapse('Referer'); }} />
+        <span> Referrers Section</span>
+      </div>
+      <div className={styles.formrow + " " + "form-group"}>
+        <div className={styles.lbl + " " + styles.tableresponsive}>
+          <table className={styles.tbl} id="tblMain1" style={{ width: "100%" }}>
+            <tr>
+              <th>SNo</th>
+              <th>Referred By</th>
+              <th>Referred To</th>
+              <th>Status</th>
+              <th>Action Date</th>
+            </tr>
 
-        {this.state.ReferselectedItems ? this.state.ReferselectedItems.map((data) => {
-          console.log(data);
-          return data;
-        }) : null}
+            {this.state.ReferselectedItems ? this.state.ReferselectedItems.map((data) => {
+              console.log(data);
+              return data;
+            }) : null}
 
 
-      </table>
-    </div>
-    </div>
+          </table>
+        </div>
+      </div>
     </div>
     <div className={styles.row + ' ' + styles.panelsection} id="ReferCollapse" style={{ backgroundColor: "#50B4E6", display: "none", fontSize: "16px" }}>
-    <Icon iconName='CalculatorAddition' onClick={() => { this.Expand('Refer'); }} />
-    {/* <img src={Expand} onClick={() => { this.Expand('Refer'); }}></img> */}
-    <span>Seek more Information</span>
+      <Icon iconName='CalculatorAddition' onClick={() => { this.Expand('Refer'); }} />
+      {/* <img src={Expand} onClick={() => { this.Expand('Refer'); }}></img> */}
+      <span>Seek more Information</span>
     </div>
     <div className={styles.row + ' ' + styles.expandpanel} id="ReferExpand" style={{ display: "none" }}>
-    <div className={styles.panelbody}>
-    {/* <img src={Collapse} onClick={() => { this.Collapse('Refer'); }}></img> */}
-    <Icon iconName='StatusCircleBlock2' onClick={() => { this.Collapse('Refer'); }} />
-    <span style={{ backgroundColor: "#50B4E6", fontSize: "16px" }}> Seek more Information</span>
-    </div>
+      <div className={styles.panelbody}>
+        {/* <img src={Collapse} onClick={() => { this.Collapse('Refer'); }}></img> */}
+        <Icon iconName='StatusCircleBlock2' onClick={() => { this.Collapse('Refer'); }} />
+        <span style={{ backgroundColor: "#50B4E6", fontSize: "16px" }}> Seek more Information</span>
+      </div>
 
-    <h3 className="text-left" style={{ backgroundColor: "#50B4E6", fontSize: "16px", display: "none" }}>Refer/Return</h3>
-    <div className={styles.formrow + " " + "form-group row"}  >
-    <div className={styles.lbl + " " + styles.Tcolumn}>
-      Do you want to Seek More Informarion?
-    </div>
-    <div className={styles.Vcolumn}>
-      <select id="ddlRefer" onChange={() => this.showDiv('Refer')} >
-        <option value="Yes">Yes</option>
-        <option value="No" selected>No</option>
-      </select>
-    </div>
-    </div>
+      <h3 className="text-left" style={{ backgroundColor: "#50B4E6", fontSize: "16px", display: "none" }}>Refer/Return</h3>
+      <div className={styles.formrow + " " + "form-group row"}  >
+        <div className={styles.lbl + " " + styles.Tcolumn}>
+          Do you want to Seek More Informarion?
+        </div>
+        <div className={styles.Vcolumn}>
+          <select id="ddlRefer" onChange={() => this.showDiv('Refer')} >
+            <option value="Yes">Yes</option>
+            <option value="No" selected>No</option>
+          </select>
+        </div>
+      </div>
 
-    <div className={styles.formrow + " " + "form-group row"} id="divRefer" style={{ display: "none" }}>
-    <div className={styles.lbl + " " + styles.Tcolumn} id="divRefApprover">
-      Select Name
-    </div>
-    <div className={"ms-Grid-col ms-u-sm8 block"} id="ReferPPtd">
-      {/*<div  className={styles.Vcolumn}>*/}
-      {/* <PeoplePicker context={this.props.context}
-        titleText=" "
-        personSelectionLimit={1}
-        groupName={""} // Leave this blank in case you want to filter from all users
-        showtooltip={false}
-        isRequired={false}
-        ensureUser={true}
-        disabled={false}
-        selectedItems={this._getManager}
-        defaultSelectedUsers={this.state.ManagerEmail}
-        errorMessageClassName={styles.hideElementManager}
-      /> */}
-      <PeoplePicker
-      context={peoplePickerContext}                            
-      personSelectionLimit={1}
-      groupName={""} 
-      showtooltip={true}
-      required={true}
-      disabled={false}
-      searchTextLimit={5}
-      onChange={this._getManager}
-      showHiddenInUI={false}
-      ensureUser={true}
-      principalTypes={[PrincipalType.User]}
-      resolveDelay={1000}
-      defaultSelectedUsers= {this.state.ManagerEmail}
-      errorMessageClassName={styles.hideElementManager}
-      />
-    </div>
-    </div>
-    <div className={styles.formrow + " " + "form-group row"} style={{ display: "none" }}>
-    <div className={styles.lbl + " " + styles.Tcolumn}>
-      Do you want to Return?
-    </div>
-    <div className={styles.Vcolumn}>
-      <select id="ddlReturn" onChange={() => this.showDiv('Return')} >
-        <option value="Yes">Yes</option>
-        <option value="No" selected>No</option>
-      </select>
-    </div>
-    </div>
-    <div className={styles.formrow + " " + "form-group row"} id="divReturn" style={{ display: "none" }}>
-    <div className={styles.lbl + " " + styles.Tcolumn}>
-      Select the Name
-    </div>
-    <div className={styles.Vcolumn}>
-      <select id="ddlReturnTo" >
-        <option >Select</option>
-      </select>
-    </div>
-    </div>
+      <div className={styles.formrow + " " + "form-group row"} id="divRefer" style={{ display: "none" }}>
+        <div className={styles.lbl + " " + styles.Tcolumn} id="divRefApprover">
+          Select Name
+        </div>
+        <div className={"ms-Grid-col ms-u-sm8 block"} id="ReferPPtd">
+          {/*<div  className={styles.Vcolumn}>*/}
+          {/* <PeoplePicker context={this.props.context}
+            titleText=" "
+            personSelectionLimit={1}
+            groupName={""} // Leave this blank in case you want to filter from all users
+            showtooltip={false}
+            isRequired={false}
+            ensureUser={true}
+            disabled={false}
+            selectedItems={this._getManager}
+            defaultSelectedUsers={this.state.ManagerEmail}
+            errorMessageClassName={styles.hideElementManager}
+          /> */}
+
+          <PeoplePicker
+          context={peoplePickerContext}
+          //titleText="People Picker"
+          personSelectionLimit={1}
+          groupName={""} 
+          showtooltip={true}
+          required={false}
+          disabled={false}
+          placeholder={"Person Name or Email address"}
+          searchTextLimit={5}
+          onChange={this._getManager}
+          showHiddenInUI={false}
+          ensureUser={true}
+          principalTypes={[PrincipalType.User]}
+          resolveDelay={1000}
+          defaultSelectedUsers= {this.state.ManagerEmail}
+          errorMessageClassName={styles.hideElementManager}
+          />
+        </div>
+      </div>
+      <div className={styles.formrow + " " + "form-group row"} style={{ display: "none" }}>
+        <div className={styles.lbl + " " + styles.Tcolumn}>
+          Do you want to Return?
+        </div>
+        <div className={styles.Vcolumn}>
+          <select id="ddlReturn" onChange={() => this.showDiv('Return')} >
+            <option value="Yes">Yes</option>
+            <option value="No" selected>No</option>
+          </select>
+        </div>
+      </div>
+      <div className={styles.formrow + " " + "form-group row"} id="divReturn" style={{ display: "none" }}>
+        <div className={styles.lbl + " " + styles.Tcolumn}>
+          Select the Name
+        </div>
+        <div className={styles.Vcolumn}>
+          <select id="ddlReturnTo" >
+            <option >Select</option>
+          </select>
+        </div>
+      </div>
 
     </div>  
+    
 
     <div className={styles.row + ' ' + styles.panelsection} id="CommentsCollapse" style={{ backgroundColor: "#50B4E6", display: "block", fontSize: "16px" }}>
               <Icon iconName='CalculatorAddition' onClick={() => { this.Expand('Comments'); }} />
@@ -1080,13 +1097,13 @@ export default class PNoteFormsEdit extends React.Component<IPaperlessApprovalPr
     <div className={styles.row + ' ' + styles.panelsection} id="AnnexureCollapse" style={{ backgroundColor: "#50B4E6", display: "block", fontSize: "16px" }}>
               <Icon iconName='CalculatorAddition' onClick={() => { this.Expand('Annexure'); }} />
               {/* <img src={Expand} onClick={() => { this.Expand('Annexure'); }}></img> */}
-              <span>Attach Digitally Signed Note</span>
+              <span>Attach Digitally Signed Note / Annexures</span>
     </div>
     <div className={styles.row + ' ' + styles.expandpanel} id="AnnexureExpand" style={{ display: "none" }}>
     <div className={styles.panelbody}>
     <Icon iconName='StatusCircleBlock2' onClick={() => { this.Collapse('Annexure'); }} />
     {/* <img src={Collapse} onClick={() => { this.Collapse('Annexure'); }}></img> */}
-    <span>Attach Digitally Signed Note</span>
+    <span>Attach Digitally Signed Note / Annexures</span>
     </div>
     <div className={styles.formrow + " " + "form-group row"} style={{ margin: "0px" }}>
 
@@ -1199,6 +1216,8 @@ export default class PNoteFormsEdit extends React.Component<IPaperlessApprovalPr
     </table>
     </div>
     </div>
+
+    <div style={{display:"none"}}>
     <div className={styles.row + ' ' + styles.panelsection} id="MarkInfoCollapse" style={{ backgroundColor: "#50B4E6", display: "none", fontSize: "16px" }}>
     {/* <img src={Expand} onClick={() => { this.Expand('MarkInfo'); }}></img> */}
     <Icon iconName='CalculatorAddition' onClick={() => { this.Expand('MarkInfo'); }} />
@@ -1264,6 +1283,7 @@ export default class PNoteFormsEdit extends React.Component<IPaperlessApprovalPr
     </div>
     <hr></hr>
     </div>
+    </div>
 
     <div className={styles.formrow + " " + "form-group row"} id="divAdmin" style={{ display: "none" }}>
               <div className={styles.lbl + " " + styles.Tcolumn} >
@@ -1328,7 +1348,7 @@ export default class PNoteFormsEdit extends React.Component<IPaperlessApprovalPr
           <PrimaryButton className={styles.button} style={{ borderRadius: "5%", backgroundColor: "#f00" }} text="Reject" onClick={() => { this.Rejected(); }} />
         </div>
         <div style={{paddingRight: '10px'}}>
-        <PrimaryButton className={styles.button} id="btnPrint" style={{borderRadius: "5%", backgroundColor: "#50B4E6", paddingRight: '10px' }} text="Print" onClick={generatePDF} />          
+        <PrimaryButton className={styles.button} id="btnPrint" style={{borderRadius: "5%", backgroundColor: "#50B4E6", paddingRight: '10px' }} text="Downloadable PDF" onClick={generatePDF} />          
         </div>
 
         <div style={{ display: 'flex' }}>
@@ -1339,7 +1359,7 @@ export default class PNoteFormsEdit extends React.Component<IPaperlessApprovalPr
         <div style={{ display: 'flex' }}>
           <PrimaryButton className={styles.button} id="btnReturnBack" style={{ display: "none", borderRadius: "5%", backgroundColor: "#50B4E6", paddingRight: '10px' }} text="Submit" onClick={() => { this.returnBack(); }} />
           <PrimaryButton className={styles.button} id="btnReferBack" style={{ display: "none", borderRadius: "5%", backgroundColor: "#50B4E6", paddingRight: '10px' }} text="Refer Back" onClick={() => { this.referBack(); }} />
-          <PrimaryButton className={styles.button} id="btnCallBack" style={{ display: "none", borderRadius: "5%", backgroundColor: "#50B4E6", paddingRight: '10px' }} text="Call Back" onClick={() => { this.CallBack(); }} />
+          {/* <PrimaryButton className={styles.button} id="btnCallBack" style={{ display: "none", borderRadius: "5%", backgroundColor: "#50B4E6", paddingRight: '10px' }} text="Call Back" onClick={() => { this.CallBack(); }} />  */}
         </div>
         <div id="btnClose" style={{ display: "none", paddingRight: '10px' }}>
           <PrimaryButton className={styles.button} style={{ borderRadius: "5%", backgroundColor: "#f00" }} text="Close" onClick={() => { this.cancel(); }} />
@@ -1437,7 +1457,7 @@ export default class PNoteFormsEdit extends React.Component<IPaperlessApprovalPr
       this.setFields(uid);
     });
     // End Get Current User PNP call
-
+    this.fetchCounterData();
     setTimeout(() => {
       this.off();
     }, 5000);
@@ -1445,7 +1465,26 @@ export default class PNoteFormsEdit extends React.Component<IPaperlessApprovalPr
   }
   // End On Load Function
 
+  /*Added on 29/03/2025 */
+  fetchCounterData = async () => {
+    const num = await this.getCounter();
+    if(num[3] == 'Compliance')
+    {this.setState({ vettingobservation: 'Vetting Observation' });
+    this.setState({Checklistlabel: 'Checklist'});}
+    else{this.setState({ vettingobservation: 'Remarks' });
+    this.setState({Checklistlabel: 'Annexure'});}    
+  };
 
+  private getCounter(): Promise<any[]> {
+        let num : Number[] = [];
+        return pnp.sp.site.rootWeb.lists.getByTitle('Counter').items.select("ID,Title,NoteId,MemoCounter,Department,GroupID").orderBy("ID asc").getAll().then((items: any[]) => {
+          num[0] = parseInt(items[0].NoteId) + 1;
+          num[1] = items[0].ID;
+          num[2] = items[0].GroupID;
+          num[3] = items[0].Department;
+          return num;
+        });  
+  }
   
 
 
@@ -1964,7 +2003,7 @@ export default class PNoteFormsEdit extends React.Component<IPaperlessApprovalPr
 
         //window.top.location.replace(this.state.Sitename + '/SitePages/NoteApproval.aspx/?Pid=' + uid);
         if (window.top) {
-          window.top.location.replace(this.state.Sitename + '/SitePages/NoteApproval.aspx/?Pid=' + uid);
+          window.top.location.replace(this.state.Sitename + '/SitePages/Checklist.aspx/?Pid=' + uid);
         }
       }
       else {
@@ -2097,8 +2136,8 @@ export default class PNoteFormsEdit extends React.Component<IPaperlessApprovalPr
         let divAmount2 = document.getElementById("divAmount2");
         if (divAmount2) divAmount2.innerText = items[0].Amount;
 
-        let divDOP2 = document.getElementById("divDOP2");
-        if (divDOP2) divDOP2.innerText = items[0].DOP;
+        // let divDOP2 = document.getElementById("divDOP2");
+        // if (divDOP2) divDOP2.innerText = items[0].DOP;
 
         let divClient2 = document.getElementById("divClient2");
         if (divClient2) divClient2.innerText = items[0].ClientName;		
@@ -2154,8 +2193,8 @@ export default class PNoteFormsEdit extends React.Component<IPaperlessApprovalPr
         let divConfidential = document.getElementById("divConfidential");
         if (divConfidential) divConfidential.innerText = items[0].Confidential;
 
-        let divDOP = document.getElementById("divDOP");
-        if (divDOP) divDOP.innerText = items[0].DOP;
+        // let divDOP = document.getElementById("divDOP");
+        // if (divDOP) divDOP.innerText = items[0].DOP;
 
         let divAmount = document.getElementById("divAmount");
         if (divAmount) divAmount.innerText = Amount;
@@ -2760,11 +2799,11 @@ export default class PNoteFormsEdit extends React.Component<IPaperlessApprovalPr
         focusElement(selector);
     };
 
-    if (this.state.AppAttachments.length === 0) {
-      showAlert("Please attach Digitally Signed Note", "#AnnexureExpand");
-      jQuery("#AnnexureExpand").show(); // Ensure the panel expands
-      return; // **Stop the process**
-    }
+    // if (this.state.AppAttachments.length === 0) {
+    //   showAlert("Please attach Digitally Signed Note", "#AnnexureExpand");
+    //   jQuery("#AnnexureExpand").show(); // Ensure the panel expands
+    //   return; // **Stop the process**
+    // }
     
     let allowCreate: boolean = true;
     this.setState({ onSubmission: true });
@@ -4196,7 +4235,7 @@ export default class PNoteFormsEdit extends React.Component<IPaperlessApprovalPr
       return false;
     }
     else {
-      if (confirm('Are you sure you want to upload the Digitally Signed Note?')){if (file != undefined || file != null) {
+      if (confirm('Are you sure you want to upload the Digitally Signed Note / Annexure?')){if (file != undefined || file != null) {
         let SeqNo = this.state.seqno;
         web.folders.getByName('ChecklistAnnexures').folders.add(SeqNo).then(data => {
           console.log("Folder is created at " + data.data.ServerRelativeUrl);

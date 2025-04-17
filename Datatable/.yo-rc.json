@@ -1,0 +1,21 @@
+{
+  "@microsoft/generator-sharepoint": {
+    "plusBeta": false,
+    "isCreatingSolution": false,
+    "nodeVersion": "18.20.6",
+    "sdksVersions": {
+      "@microsoft/microsoft-graph-client": "3.0.2",
+      "@microsoft/teams-js": "2.24.0"
+    },
+    "version": "1.20.0",
+    "libraryName": "easy-approval-data-tables",
+    "libraryId": "d609fcaa-e15d-49b5-ab0b-06c736e89330",
+    "environment": "spo",
+    "packageManager": "npm",
+    "solutionName": "EasyApproval_DataTables",
+    "solutionShortDescription": "EasyApproval_DataTables description",
+    "skipFeatureDeployment": true,
+    "isDomainIsolated": false,
+    "componentType": "webpart"
+  }
+}

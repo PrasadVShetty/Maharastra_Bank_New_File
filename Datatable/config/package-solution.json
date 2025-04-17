@@ -1,0 +1,40 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/spfx-build/package-solution.schema.json",
+  "solution": {
+    "name": "easy-approval-data-tables-client-side-solution",
+    "id": "d609fcaa-e15d-49b5-ab0b-06c736e89330",
+    "version": "1.0.0.0",
+    "includeClientSideAssets": true,
+    "skipFeatureDeployment": true,
+    "isDomainIsolated": false,
+    "developer": {
+      "name": "",
+      "websiteUrl": "",
+      "privacyUrl": "",
+      "termsOfUseUrl": "",
+      "mpnId": "Undefined-1.20.0"
+    },
+    "metadata": {
+      "shortDescription": {
+        "default": "EasyApproval_DataTables description"
+      },
+      "longDescription": {
+        "default": "EasyApproval_DataTables description"
+      },
+      "screenshotPaths": [],
+      "videoUrl": "",
+      "categories": []
+    },
+    "features": [
+      {
+        "title": "easy-approval-data-tables Feature",
+        "description": "The feature that activates elements of the easy-approval-data-tables solution.",
+        "id": "3b4fe399-ee25-4789-9f76-d6b6638ed7e8",
+        "version": "1.0.0.0"
+      }
+    ]
+  },
+  "paths": {
+    "zippedPackage": "solution/easy-approval-data-tables.sppkg"
+  }
+}

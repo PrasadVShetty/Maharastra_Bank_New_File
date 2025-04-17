@@ -72,4 +72,6 @@ import { Dropdown, IDropdownOption } from 'office-ui-fabric-react/lib/components
     Charsleft:number;
     RestrictedEmails:string[];
     ChecklistselectedItems:any[];
+    vettingobservation: String; 
+    Checklistlabel : String;
    }

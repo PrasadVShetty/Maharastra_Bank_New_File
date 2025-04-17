@@ -1237,8 +1237,8 @@ export default class PNoteFormsEdit extends React.Component<IPaperlessApprovalPr
         </div>
         <div style={{ display: 'flex' }}>
           <PrimaryButton className={styles.button} id="btnReturnBack" style={{ display: "none", borderRadius: "5%", backgroundColor: "#50B4E6", paddingRight: '10px' }} text="Submit" onClick={() => { this.returnBack(); }} />
-          <PrimaryButton className={styles.button} id="btnReferBack" style={{ display: "none", borderRadius: "5%", backgroundColor: "#50B4E6", paddingRight: '10px' }} text="Refer Back" onClick={() => { this.referBack(); }} />
-          <PrimaryButton className={styles.button} id="btnCallBack" style={{ display: "none", borderRadius: "5%", backgroundColor: "#50B4E6", paddingRight: '10px' }} text="Call Back" onClick={() => { this.CallBack(); }} />
+          {/* <PrimaryButton className={styles.button} id="btnReferBack" style={{ display: "none", borderRadius: "5%", backgroundColor: "#50B4E6", paddingRight: '10px' }} text="Refer Back" onClick={() => { this.referBack(); }} />
+          <PrimaryButton className={styles.button} id="btnCallBack" style={{ display: "none", borderRadius: "5%", backgroundColor: "#50B4E6", paddingRight: '10px' }} text="Call Back" onClick={() => { this.CallBack(); }} /> */}
         </div>
         <div id="btnClose" style={{ display: "none", paddingRight: '10px' }}>
           <PrimaryButton className={styles.button} style={{ borderRadius: "5%", backgroundColor: "#f00" }} text="Close" onClick={() => { this.cancel(); }} />

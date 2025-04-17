@@ -200,10 +200,17 @@ th {
     @include ms-Grid-col;
     @include ms-xl4;
   }
+  .Hcolumn{
+    @include ms-Grid-col;
+    @include ms-xl3;
+  }
   .Vcolumn {
     @include ms-Grid-col;
     @include ms-xl8;
    
+  }
+  .Vcolumn2 {
+    @include ms-Grid-col;       
   }
   .column {
     @include ms-Grid-col;
@@ -327,6 +334,13 @@ input[type="textarea"]{
   text-rendering: optimizeLegibility;
 	-webkit-font-smoothing: antialiased;
 	font-size:14px;
+}
+.lbl2{
+  font-family: 'Gilroy-Bold';
+  text-rendering: optimizeLegibility;
+	-webkit-font-smoothing: antialiased;
+	font-size:14px;
+  padding-left: 10px;
 }
   .hideElement  {
     display: none;

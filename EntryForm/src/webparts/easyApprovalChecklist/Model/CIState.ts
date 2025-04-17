@@ -4,6 +4,7 @@
       id: number;
       checklist: string;
       status: string;
+      itemid : number;
    }
    export interface CIState {
       selectedItems: any[];
@@ -65,5 +66,8 @@
       checklist: string; 
       status2: string; 
       items: IChecklistItem[]; 
-      savedData: IChecklistItem[];   
+      savedData: IChecklistItem[]; 
+      vettingobservation: String; 
+      Checklistlabel : String;
+      Title: String;
    }

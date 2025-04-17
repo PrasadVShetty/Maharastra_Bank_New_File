@@ -104,9 +104,73 @@ export default class PNoteForms extends React.Component<IPaperlessApprovalProps,
       checklist: '',
       status2: '',
       items: [],
-      savedData: []       
+      savedData: [],
+      vettingobservation : '',
+      Checklistlabel: '',
+      Title:''        
     };
   }
+
+  addItem = () => {
+    const { checklist, status, items } = this.state;
+  
+    // Trim whitespace and validate fields
+    if (!checklist.trim()) {
+      alert("Please enter a checklist item.");
+      return;
+    }
+    if (!status) {
+      alert("Please select a status.");
+      return;
+    }
+  
+    // Add new item to the list
+    const newItems = [...items, { 
+      id: items.length + 1, 
+      checklist: checklist.trim(), 
+      status: status,
+      itemid:0 
+    }];
+  
+    // Update state and reset fields
+    this.setState({ items: newItems, checklist: '', status: '' });
+  };  
+
+  addItemChecklist =(uid : string) => {
+    var newitems2 : any [] ;    
+    debugger;
+    pnp.sp.site.rootWeb.lists.getByTitle("Checklist").items.select("ID,Title,SeqNo,Checklist,AppId,Status").filter(`AppId eq ${uid}`).orderBy("ID", true).get().then((items: any[]) => {
+      debugger;
+      if(items.length > 0)
+      {      
+        newitems2 = items.map((item, index) => ({ id: index, checklist: item.Checklist, status: item.Status, itemid: item.ID}));        
+        this.setState({ items: newitems2});
+      }
+    });
+  }
+  
+  deleteItem = async (id: number, itemid: number) => {
+    console.log(itemid);
+    if(itemid > 0)
+    {
+      const recycleResult = await sp.web.lists .getByTitle("Checklist") .items.getById(itemid) .recycle();
+      if (recycleResult) {
+        console.log(`Successfully recycled item with ID: ${itemid}. Recycle Bin ID: ${recycleResult}`);
+        const filteredItems = this.state.items.filter(item => item.id !== itemid);
+        this.setState({ items: filteredItems });
+      } else {
+        console.error(`Recycling failed for item with ID: ${itemid}`);
+      }
+      const filteredItems = this.state.items.filter(item => item.id !== id);
+      this.setState({ items: filteredItems });
+    } 
+    else
+    {
+      const filteredItems = this.state.items.filter(item => item.id !== id);
+      this.setState({ items: filteredItems });
+    }   
+  };
+
   public render(): React.ReactElement<IPaperlessApprovalProps> {
     const { dpselectedItem, dpselectedItems } = this.state;
     const { name, description } = this.state;
@@ -119,27 +183,35 @@ export default class PNoteForms extends React.Component<IPaperlessApprovalProps,
       msGraphClientFactory: this.props.context.msGraphClientFactory,
       spHttpClient: this.props.context.spHttpClient
     };
+
+    const statusOptions: IDropdownOption[] = [
+      { key: 'Checked', text: 'Checked' },
+      { key: 'NotChecked', text: 'NotChecked' },
+    ];
+
+
+
     return (
       <form >
       <div className={styles.paperlessApproval}>
-        <div className={styles.container}>
-          <div className={styles.formrow}>
-          <div id="divHeadingNew" style={{display:"block",backgroundColor:"#0c78b8", textAlign:'center', color:'#fff'}}>
-          <h3 className={styles.heading}>Note Form </h3> 
-            
-          </div>
-        
-          <div hidden id="divHeadingSubmit" style={{display:"none",backgroundColor:"#0c78b8", textAlign:'center', color:'#fff'}}>
-          <h3  className={styles.heading}>Note Form </h3> 
-          </div>
+      <div className={styles.container}>
+      <div className={styles.formrow}>
+      <div id="divHeadingNew" style={{display:"block",backgroundColor:"#0c78b8", textAlign:'center', color:'#fff'}}>
+      <h3 className={styles.heading}>Note Form </h3> 
 
-          </div>
+      </div>
 
-          <div className='row pt-2 pb-1 m-0' style={{width:"100%",backgroundColor:"#50B4E6", color:'#fff', justifyItems:'center'}}>
+      <div hidden id="divHeadingSubmit" style={{display:"none",backgroundColor:"#0c78b8", textAlign:'center', color:'#fff'}}>
+      <h3  className={styles.heading}>Note Form </h3> 
+      </div>
+
+      </div>
+
+      <div className='row pt-2 pb-1 m-0' style={{width:"100%",backgroundColor:"#50B4E6", color:'#fff', justifyItems:'center'}}>
                <div className='col-md-1 col-lg-2 col-sm-4'>
                   <label className='control-form-label'><b>Requester</b></label>
                </div>
-               <div className='col-md-2 col-lg-2 col-sm-8' id="tdName" style={{borderRight:'1px solid #fff'}} >                
+               <div className='col-md-2 col-lg-2 col-sm-8' id="tdName" style={{borderRight:'1px solid #fff'}}>                
                </div>
 
                <div className='col-md-1 col-lg-2 col-sm-4' >
@@ -158,366 +230,383 @@ export default class PNoteForms extends React.Component<IPaperlessApprovalProps,
                </div>
             </div>
 
-          <hr />
-    
-      <div className={styles.formrow+" "+"form-group row"}>
-      <div className={styles.lbl+" "+styles.Reqdlabel+ ' '+ "col-md-3 col-sm-6"}>Note# 1</div>
-      <div className="col-md-6 col-sm-6" id="divTitle"></div> 
-      </div>
-       
-      <div className={styles.formrow+" "+"form-group row"}>
-        <div className={styles.lbl+" "+styles.Reqdlabel+ ' '+ "col-md-3 col-sm-6"}>
-        Department
-        </div>      
-      <div className="col-md-6 col-sm-6" id="divDepartment">          
-      </div>    
-      </div>
-      
-      <div className={styles.formrow+" "+"form-group row"}>
-
-          <div className={styles.lbl+" "+styles.Reqdlabel+ ' '+ "col-md-3 col-sm-6"}>
-            Subject
+            <hr/>             
+            <div className={styles.formrow + " " + "form-group row"}>
+            <div  className='col-md-3'>
+              <label className={styles.lbl + " " + styles.Reqdlabel}>Note For</label>
+              </div>
+              <div className='col-md-9'>
+                <input  type="text" title="Enter Note For" placeholder="Enter Note For" id="txtNote"  className='form-control form-control-sm'/>                
+              </div>             
             </div>
 
-          <div className="col-md-6 col-sm-6">
-              <input type="text" title="Enter Subject" className='form-control form-control-sm' placeholder="Enter Subject"  id="txtSubject"/>
-          </div>
-
-     </div>
-     <div className={styles.formrow+" "+"form-group row"}>
-      <div className={styles.lbl+" "+styles.Reqdlabel+ ' '+ "col-md-3 col-sm-6"}>Note Type</div>
-      <div className="col-md-6 col-sm-6">
-          <select id="ddlSource" title="Select Note Type" className='form-control form-control-sm' placeholder="Select Note Type"  onChange={()=>this.SelectSource()}>
-          <option>Select</option>
-           
-        </select>
-      </div> 
-     
-       </div>
-  <div className='FinancialClass' style={{display:"none"}}>
-       <div className={styles.formrow+" "+"form-group row "} >
-      <div className={styles.lbl+" "+styles.Reqdlabel+ ' '+ "col-md-3 col-sm-6"}>Type of Financial Note</div>
-      <div className="col-md-6 col-sm-6">
-          <select id="ddlFinNote" placeholder="Select Financial Note" title="Select Financial Note">
-              <option>Select</option>
-                    </select>
-      </div> 
-      </div>
-      </div>
-
-      <div className='FinancialClass' style={{display:"none"}}>
-         <div className={styles.formrow+" "+"form-group row"}>
-      <div className={styles.lbl+" "+styles.Reqdlabel+ ' '+ "col-md-3 col-sm-6"}>Amount</div>
-      <div className="col-md-6 col-sm-6">
-          <input type="number"id="Amount"></input>
-      </div> 
-         </div>
-         </div>
-
-         <div className='FinancialClass' style={{display:"none"}}>
-         <div className={styles.formrow+" "+"form-group row "}>
-      <div className={styles.lbl+" "+styles.Reqdlabel+ ' '+ "col-md-3 col-sm-6"}>DOP Details</div>
-      <div className="col-md-6 col-sm-6">
-          <select id="ddlDOP" placeholder="Select Delegation of Power" title="Select DOP">
-              <option>Select</option>
-                    </select>
-      </div> 
-        </div>
-        </div>
-
-<div  id="divClient">
-     <div  className={styles.formrow+" "+"form-group row"} >
-                      <div  className={styles.lbl+" "+styles.Reqdlabel+ ' '+ "col-md-3 col-sm-6"}>Do you want to add Client?</div>
-                      <div className="col-md-6 col-sm-6">
-                      <label className="custom-radio">
-      <input id="CYes" name="radioAttach" onChange={() => this.Radibtnchangeevent("radioAttach","CYes")} value="CYes" type="radio" />
-      <span className="custom-control-indicator" style={{padding:"2px"}}></span>
-      <span className={"custom-control-description"}>Yes</span>
-    </label>
-    <label className="custom-radio" style={{padding:"8px"}}>
-      <input id="CNo" name="radioAttach" onChange={() =>this.Radibtnchangeevent("radioAttach","CNo")} value="CNo" type="radio" />
-      <span className="custom-control-indicator" style={{padding:"2px"}}></span>
-      <span className={"custom-control-description"}>No</span>
-    </label>
-                        </div>
-                      </div>
-                      </div>
-                     
-                     <div id="divClientName" style={{display:"none"}}>
-              <div className={styles.formrow+" "+"form-group row"} >
-             <div className={styles.lbl+" "+styles.Reqdlabel+ ' '+ "col-md-3 col-sm-6"}>Client Name/Vendor Name</div>
-             <div className="col-md-6 col-sm-6">
-             <input type="text" title="Enter Client/Vendor Name" placeholder="Enter Client Name"  id="txtClient"/>
+            <div className={styles.formrow + " " + "form-group row"}>
+            <div  className='col-md-3'>
+              <label className={styles.lbl + " " + styles.Reqdlabel}>Subject</label>
+              </div>
+              <div className='col-md-9'>
+                <input  type="text" title="Enter Subject" placeholder="Enter Subject" id="txtSubject"  className='form-control form-control-sm'/>                
+              </div>             
             </div>
-           </div>
-           </div>
 
-  <div id="divConfidential" style={{display:"none"}}>
-           <div  className={styles.formrow+" "+"form-group row"} >
-                      <div className={styles.lbl+" "+styles.Reqdlabel+ ' '+ "col-md-3 col-sm-6"}>Is it a Confidential Note?</div>
-                      <div className="col-md-6 col-sm-6">
-                      <label className="custom-radio">
-      <input id="ConfYes" name="radioConf" onChange={() => this.Radibtnchangeevent("radioConf","ConfYes")} value="ConfYes" type="radio" />
-      <span className="custom-control-indicator" style={{padding:"2px"}}></span>
-      <span className={"custom-control-description"}>Yes</span>
-    </label>
-    <label className="custom-radio" style={{padding:"8px"}}>
-      <input id="ConfNo" name="radioConf" onChange={() =>this.Radibtnchangeevent("radioConf","ConfNo")} value="ConfNo" type="radio" />
-      <span className="custom-control-indicator" style={{padding:"2px"}}></span>
-      <span className={"custom-control-description"}>No</span>
-    </label>
-                        </div>
-                        <br />
-                        <input type="text" id="txtConfidential" style={{display:"none"}}></input>
-                      </div>
-                      </div>
+            <div className={styles.formrow + " " + "form-group row"}>
+            <div  className='col-md-3'>
+              <label className={styles.lbl + " " + styles.Reqdlabel}>Purpose</label>
+              </div>
+              <div className='col-md-9'>
+                <input  type="text" title="Enter Purpose" placeholder="Enter Purpose" id="txtPurpose"  className='form-control form-control-sm'/>                
+              </div>             
+            </div>
+            
+            <div className={styles.formrow + " " + "form-group row"}>
+            <div  className='col-md-3'>
+              <label className={styles.lbl}>Product Name</label>
+              </div>
+              <div className='col-md-9'>
+                <input  type="text" title="Enter Product Name" placeholder="Enter Product Name" id="txtReturn"  className='form-control form-control-sm'/>                
+              </div>             
+            </div>
+            
+            <div className={styles.formrow + " " + "form-group row"}>
+            <div  className='col-md-3'>
+            <label className={styles.lbl + " " + styles.Reqdlabel}>Department Ownership</label>
+            </div>
+              <div className='col-md-9'>
+                <select className='form-control form-control-sm' id="ddlDepartment" title="Select Department" placeholder="Select Department">
+                  <option>Select</option>
+                </select>
+              </div>
+              <br />
+            </div>              
+
+            <div className={styles.formrow + " " + "form-group row"}>
+            <div  className='col-md-3'>
+              <label className={styles.lbl}>Referred Guidelines</label>
+              </div>
+              <div className='col-md-9'>
+                <input  type="text" title="Enter Referred Guidelines" placeholder="Enter Referred Guidelines" id="txtGuidelines"  className='form-control form-control-sm'/>                
+               </div>             
+            </div> 
+
+            <div className={styles.formrow + " " + "form-group row"}>
+            <div className="col-md-3">
+            <label className={styles.lbl}>{this.state.vettingobservation}</label>
+            </div>
+            <div className="col-md-9">
+            <textarea 
+            title={`Enter ${this.state.vettingobservation}`}
+            placeholder={`Enter ${this.state.vettingobservation}`}
+            id="txtVetting" 
+            className="form-control form-control-sm"
+            rows={4}
+            style={{}}             
+            />
+            </div>
+            </div>
 
 
-    <div className={styles.formrow+" "+"form-group row"} style={{display:"none"}}>
-          <div className={styles.lbl+ ' '+ "col-md-3 col-sm-6"}>Comments</div>
-          <div className="col-md-6 col-sm-6">
-              <textarea  id="txtComments"/>
-          </div>
-          <br/>
-     </div>
-     
-     
-        
-<div className={styles.container} >
-<div className={styles.formrow+" "+"form-group row"}>
-<div>
-<h3 className={"text-left"}  style={{backgroundColor:"#50B4E6",fontSize:"16px", padding:'5px 10px'}}>Recommender Details
-<span style={{position:"relative",marginLeft:"10px",color:"Red",fontSize:"14px",fontStyle:"italic"}}>*Note: Max.10 Recommenders can be added.</span>
-</h3>
+            <div>
+            {/* Checklist Input Field with given styles */}
+            <div className={styles.formrow + " " + "form-group row"}>
+            <div className="col-md-3">
+            <label className={styles.lbl}>{this.state.Checklistlabel}</label>
+            </div>
+            <div className="col-md-9">
+            <input
+            type="text"
+            title={`Enter ${this.state.Checklistlabel}`}
+            placeholder={`Enter ${this.state.Checklistlabel}`}
+            value={this.state.checklist}
+            onChange={(e) => this.setState({ checklist: e.target.value || '' })}
+            className="form-control form-control-sm"
+            />
+            </div>
+            </div>
 
-</div>
-</div>
-<div className={styles.formrow+" "+"form-group row"}>
-<div className={styles.lbl}>
-<table className={styles.tbl + ' '+ "table"} id="tblMain" style={{width:"100%"}}>
-<tr>
-      <td style={{width:"15%"}}>Recommender</td>
-      <td style={{width:"70%"}} id="RecommenderPPtd">
-      {/* <PeoplePicker 
-      context={this.props.context} 
-      peoplePickerCntrlclassName={styles.picker}
-      titleText=""
-      tooltipMessage={"Enter email address!"}
-      placeholder={"Person Name or Email address"}
-      groupName={""} // Leave this blank in case you want to filter from all users
-      showtooltip={true}
-      isRequired={false}
-      ensureUser={true}
-      disabled={false}
-      selectedItems={this._getReceivedFrom}    
-      defaultSelectedUsers= {this.state.RecpEmail}
-      errorMessageClassName={styles.hideElementManager}
-      /> */}
+            
+            <div className={styles.formrow + " " + "form-group row"}>
+            <div className="col-md-3">
+            <label className={styles.lbl}>Status</label>
+            </div>
+            <div className="col-md-9">
+            <Dropdown
+            selectedKey={this.state.status}
+            onChange={(e, option) => this.setState({ status: option?.key as string })}
+            options={statusOptions}
+            styles={{
+            root: { width: '100%' },
+            dropdown: { backgroundColor: '#fff' },
+            title: { borderRadius: '5px' },
+            }}
+            />
+            </div>
+            </div>
 
-      <PeoplePicker
-      context={peoplePickerContext}      
-      personSelectionLimit={100}
-      groupName={""} 
-      showtooltip={true}
-      required={true}
-      disabled={true}
-      searchTextLimit={5}
-      ensureUser={true}
-      onChange={this._getReceivedFrom}
-      showHiddenInUI={false}
-      principalTypes={[PrincipalType.User]}
-      resolveDelay={1000}
-      defaultSelectedUsers= {this.state.ManagerEmail}
-      errorMessageClassName={styles.hideElementManager}
-      />
-      </td>
-      <td style={{width:"15%"}}><PrimaryButton style={{width:"80pt",borderRadius:"5%",backgroundColor:"#50B4E6",display:"none"}} text="Add Recommender" onClick={() => { this.AddRecommender(); }} /></td>
-      </tr>
-      {this.state.dpselectedItems? this.state.dpselectedItems.map((data)=>{
-                    return  data;
-      }) :null}
-      
-           
-      </table>
-</div>
-</div>
-<hr />
-<div className={styles.formrow+" "+"form-group row"}>
-<div>
-<h3 className={styles.Reqdlabel+" "+"text-left"}  style={{backgroundColor:"#50B4E6",fontSize:"16px", padding:'5px 10px'}}>Approver Details
-<span style={{position:"relative",marginLeft:"10px",color:"Red",fontSize:"14px",fontStyle:"italic"}}>*Note: Max.10 Approvers can be added.</span>
-</h3>
-
-</div>
-</div>
-<div className={styles.formrow+" "+"form-group row"}>
-<div className={styles.lbl+" "+styles.Mcolumn}>
-<table className={styles.tbl} id="tblMain1" style={{width:"100%"}}>
-<tr>
-      <td style={{width:"15%"}}>Approver</td>
-      <td style={{width:"70%"}} id="ApproverPPtd">
-      {/* <PeoplePicker 
-      context={this.props.context} 
-      peoplePickerCntrlclassName={styles.picker}
-      titleText=" "
-      tooltipMessage={"Type and select from suggested names"}
-      placeholder={"Person Name or Email address"}
-      personSelectionLimit={1}
-      groupName={""} // Leave this blank in case you want to filter from all users
-      showtooltip={true}
-      isRequired={false}
-      ensureUser={true}
-      disabled={false}
-      selectedItems={this._getManager}
-      defaultSelectedUsers= {this.state.ManagerEmail}
-      errorMessageClassName={styles.hideElementManager}
-      /> */}
-      <PeoplePicker
-      context={peoplePickerContext}      
-      personSelectionLimit={100}
-      groupName={""} 
-      showtooltip={true}
-      required={true}
-      disabled={true}
-      searchTextLimit={5}
-      onChange={this._getManager}
-      showHiddenInUI={false}
-      ensureUser={true}
-      principalTypes={[PrincipalType.User]}
-      resolveDelay={1000}
-      defaultSelectedUsers= {this.state.ManagerEmail}
-      errorMessageClassName={styles.hideElementManager}
-      />
-      </td>
-      <td style={{width:"15%"}}><PrimaryButton style={{width:"80pt",borderRadius:"5%",backgroundColor:"#50B4E6",display:"none"}} id="btnAddApprover" text="Add Approver" onClick={() => { this.AddApprover(); }} /></td>
-      </tr>
-      {this.state.selectedItems? this.state.selectedItems.map((data)=>{
-                    return  data;
-      }) :null}
-      
-           
-      </table>
-</div>
-</div>
-<hr></hr>
-<div className={styles.formrow+" "+"form-group row FinancialClass"} style={{display:"none"}}>
-<div className={styles.Mcolumn }>
-<h3 className={styles.Reqdlabel+" "+"text-left"}  style={{backgroundColor:"#50B4E6",fontSize:"16px"}}>Controller Details
-<span style={{position:"relative",marginLeft:"10px",color:"Red",fontSize:"14px",fontStyle:"italic"}}>*Note: Only 1 Controller can be added.</span>
-</h3>
-
-</div>
-</div>
-<div className={styles.formrow+" "+"form-group row FinancialClass"} style={{display:"none"}}>
-<div className={styles.lbl+" "+styles.Mcolumn}>
-<table className={styles.tbl} id="tblMain1" style={{width:"100%"}}>
-<tr>
-      <td style={{width:"15%"}}>Controller</td>
-      <td style={{width:"70%"}} id="ControllerPPtd">
-            {/* <PeoplePicker 
-            context={this.props.context} 
-            peoplePickerCntrlclassName={styles.picker}
-            titleText={""}
-            personSelectionLimit={1}
-            tooltipMessage={"Type and select from suggested names"}
-            placeholder={"Person Name or Email address"}
-            groupName={""} // Leave this blank in case you want to filter from all users
-            showtooltip={true}
-            isRequired={false}
-            ensureUser={true}
-            disabled={false}
-            selectedItems={this._getCCPeople}    
-            defaultSelectedUsers= {this.state.ccEmail}
-            errorMessageClassName={styles.hideElementManager}
-            />                   */}
-            <PeoplePicker
-            context={peoplePickerContext}            
-            personSelectionLimit={100}
-            groupName={""} 
-            showtooltip={true}
-            required={true}
-            disabled={true}
-            searchTextLimit={5}
-            onChange={this._getCCPeople}
-            showHiddenInUI={false}
-            ensureUser={true}
-            principalTypes={[PrincipalType.User]}
-            resolveDelay={1000}
-            defaultSelectedUsers= {this.state.ManagerEmail}
-            errorMessageClassName={styles.hideElementManager}
+            {/* Add Button */}
+            <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '10px' , paddingRight: '35px'}}>
+            <PrimaryButton iconProps={{ iconName: 'Add' }} onClick={this.addItem} />
+            </div>
+            <br />            
+            
+            {/* Checklist Table */}
+            {this.state.items.length > 0 && (
+            <div style={{ overflowX: 'auto', width: '100%' }}>
+            <table className="table table-bordered" style={{ width: "100%", textAlign: "center" }}>
+            <thead style={{ backgroundColor: "#f4f4f4", fontWeight: "bold" }}>
+            <tr>
+            <th style={{ width: "10%", padding: "8px" }}>Sr No.</th>
+            <th style={{ width: "55%", padding: "8px", wordWrap: "break-word" }}>{this.state.Checklistlabel}</th>
+            <th style={{ width: "20%", padding: "8px" }}>Status</th>
+            <th style={{ width: "15%", padding: "8px" }}>Action</th>
+            </tr>
+            </thead>
+            <tbody>
+            {this.state.items.map((item, index) => (
+            <tr key={item.id}>
+            <td style={{ padding: "8px" }}>{index + 1}</td>
+            <td style={{ padding: "8px", wordWrap: "break-word" }}>{item.checklist}</td>
+            <td style={{ padding: "8px" }}>{item.status}</td>
+            <td style={{ padding: "8px" }}>
+            <PrimaryButton
+            iconProps={{ iconName: 'Delete' }}
+            text="Remove"
+            onClick={() => this.deleteItem(item.id,item.itemid)}
+            styles={{
+            root: { backgroundColor: "#d9534f", color: "#fff", borderRadius: "5px" },
+            rootHovered: { backgroundColor: "#c9302c" },
+            }}
             />
             </td>
-      <td style={{width:"15%"}}><label style={{display:"none"}} id="lblController"></label><PrimaryButton style={{width:"80pt",borderRadius:"5%",backgroundColor:"#50B4E6",display:"none"}} text="Add Controller" onClick={() => { this.AddController(); }} /></td>
-      </tr>
-      {this.state.selectedItems? this.state.ccSelectedItems.map((data)=>{
-                    return  data;
-      }) :null}
-      
-           
-      </table>
-      <br/>
-      </div>
-      </div>
-<div className={styles.formrow+" "+"form-group"}>
-<h3 style={{backgroundColor:"#50B4E6",fontSize:"16px", width:'100%', padding:'5px 10px', color:'#fff'}}>Attachments</h3>     
-</div>
-                                     
-           <div className={styles.formrow+" "+"form-group row"} id="divNote">
-             <div className={styles.lbl+" "+styles.Tcolumn}>Note</div>
-             <div className={styles.Vcolumn} >
-         <a id="NoteFile" href=""></a>
-         <span id="NoteDel" style={{display:"none"}}>
-          <img src={Delete} style={{width:"10pt",height:"10pt"}} onClick={() => this.DeleteNote(this.state.OutwarddocketnoSet)} />
-           </span>
+            </tr>
+            ))}
+            </tbody>
+            </table>
             </div>
-           </div>
-           
-           <div  className={styles.formrow+" "+"form-group row"} id="divAttach" style={{display:""}}>
-            
-            <div className={styles.lbl+" "+styles.Reqdlabel+" "+styles.Tcolumn}>
-             <a href="#"><img src={NoteAtt} style={{height:"16pt"}} onClick={() => { this.UploadAttach('Note'); }}></img></a>            
-          <small style={{color:'#f00'}}>(Note: Only pdf file can be attached)</small>
+            )}
+            </div>      
+      <div className={styles.formrow + " " + "form-group row"}>
+      <div  className='col-md-3'>
+      <label className={styles.lbl + " " + styles.Reqdlabel}>Note Type</label>
+      </div>
+      <div className='col-md-9'>
+      <select  className='form-control form-control-sm' id="ddlSource" title="Select Note Type" placeholder="Select Note Type" onChange={() => this.SelectSource()}>
+      <option>Select</option>
+      <option>Financial</option>
+      <option>Non-Financial</option>
+      </select>
+      </div>
+      <br />
+      </div>
+
+      <div className='FinancialClass' style={{ display: "none" }}>
+      <div className={styles.formrow + " " + "form-group row"}>
+      <div  className='col-md-3'>
+      <label className={styles.lbl + " " + styles.Reqdlabel}>Type of Financial Note</label>
+      </div>
+      <div className='col-md-9'>
+      <select  className='form-control form-control-sm' id="ddlFinNote" placeholder="Select Financial Note" title="Select Financial Note">
+      <option>Select</option>
+      </select>
+      </div>  
+      </div>
+
+      </div>
+      <div className='FinancialClass' style={{ display: "none" }}>
+      <div className={styles.formrow + " " + "form-group row "}>
+      <div className='col-md-3'>
+      <label className={styles.lbl + " " + styles.Reqdlabel}>Amount</label>
+      </div>
+      <div className='col-md-9'>
+      <input type="number" id="Amount"  className='form-control form-control-sm'></input>
+      </div>   
+      </div>           
+      </div>
+
+      <div className={styles.formrow + " " + "form-group row"} style={{ display: "none" }}>
+      <div className={styles.lbl}>Comments</div>
+      <div className={styles.Vcolumn}>
+      <textarea id="txtComments"   className='form-control form-control-sm'/>
+      </div>
+      <br />
+      </div>
+
+<div className={styles.container} style={{padding:'0px 8px'}}>
+              <div className={styles.formrow}>
+              <h3 className={"text-left"} style={{ backgroundColor: "#50B4E6", fontSize: "16px", padding:'5px 10px', color:'#fff', width:'100%' }}>Recommender Details
+                    <span style={{ position: "relative", marginLeft: "10px", color: "Red", fontSize: "14px", fontStyle: "italic" }}>*Note: Max.10 Recommenders can be added.</span>
+                  </h3>
+
+                  <table className={styles.tbl} id="tblMain" style={{ width: "100%" }}>
+                    <tr>
+                      <td style={{ width: "15%", paddingLeft:'10px', fontWeight:700}}>Recommender</td>
+                      <td style={{ width: "70%" }} id="RecommenderPPtd">                        
+                        <PeoplePicker
+                        context={peoplePickerContext}
+                        //titleText="People Picker"
+                        personSelectionLimit={100}
+                        groupName={""} 
+                        showtooltip={true}
+                        required={true}
+                        disabled={false}
+                        searchTextLimit={5}
+                        ensureUser={true}
+                        onChange={this._getReceivedFrom}
+                        showHiddenInUI={false}
+                        principalTypes={[PrincipalType.User]}
+                        resolveDelay={1000}
+                        defaultSelectedUsers= {this.state.RecpEmail}
+                        errorMessageClassName={styles.hideElementManager}                                              
+                        />
+                      </td>
+                      <td style={{ width: "10%" }}><PrimaryButton style={{ width: "80pt", borderRadius: "5%", backgroundColor: "#f00", display: "none" }} text="Add Recommender" onClick={() => { this.AddRecommender(); }} /></td>
+                    </tr>
+                    {this.state.dpselectedItems ? this.state.dpselectedItems.map((data) => {
+                      return data;
+                    }) : null}
+
+
+                  </table>
               </div>
-          <div className={styles.Vcolumn}>
-            <ul>
-          {this.state.Note.map((vals)=>{
-                let filename=vals.split("/")[1];
-              return (<span style={{position:"relative",padding:"5px"}}>
-          <a href={this.state.Absoluteurl+"/NoteAttach/"+vals}>{filename}</a>
-          <img src={Delete} style={{width:"10pt",height:"10pt"}} onClick={() => this.DeleteNote(vals)}  /></span>);
-                      
-              })}
-        </ul>
-          </div>
-            <div hidden className="ms-Grid-col ms-u-sm12 block hide" id="divAttachButton" style={{backgroundColor:"white", display:"none"}}>
-            <input type='file' style={{}} id='fileUploadInput' required={true} name='myfile' multiple onChange= {this.AttachLib}/>
-             </div>
-             </div>
-             <br/>
-            <div  className={styles.formrow+" "+"form-group row"}  style={{margin:"0px"}}>                  
-          <div className={styles.lbl+" "+styles.Tcolumn}>
-          <a href="#">
-            <img src={Annex} style={{height:"16pt"}} onClick={() => { this.UploadAttach('Annexures'); }} /></a>
-         
-          <small style={{color:'#f00'}}>(image,.pdf,.doc,.docx,.xlsx,.eml)</small>
-          <br />
-          <small style={{color:'#f00'}}>*Max 20 Annexures</small>
-          </div>
-          <div className={styles.Vcolumn}>
-            <ul>
-          {this.state.attachments.map((vals)=>{
-                let filename=vals.split("/")[1];
-                                return (<li style={{position:"relative",padding:"5px"}}>
-                                  <a href={this.state.Absoluteurl+"/NoteAnnexures/"+vals}>{filename}</a>
-                                <img src={Delete} style={{width:"10pt",height:"10pt", marginLeft:'10px' }} onClick={() => this.DeleteAttachment(vals)} />
-                                 </li>);
-                      
-              })}
-        </ul>
-          </div>
-         
-          </div>
-</div>
+            
+              <hr/>
+              <div className={styles.formrow}>
+              <h3 className={styles.Reqdlabel + " " + "text-left"} style={{ backgroundColor: "#50B4E6", fontSize: "16px", color:'#fff', padding:'5px 10px' }}>Approver Details
+                    <span style={{ position: "relative", marginLeft: "10px", color: "Red", fontSize: "14px", fontStyle: "italic" }}>*Note: Max.10 Approvers can be added.</span>
+                  </h3>
+
+                  <div className={styles.lbl}>
+                  <table className={styles.tbl} id="tblMain1" style={{ width: "100%" }}>
+                    <tr>
+                      <td style={{ width: "15%", paddingLeft:'10px', fontWeight:700}}>Approver</td>
+                      <td style={{ width: "70%" }} id="ApproverPPtd">                        
+                        <PeoplePicker
+                        context={peoplePickerContext}
+                        //titleText="People Picker"
+                        personSelectionLimit={100}
+                        groupName={""} 
+                        showtooltip={true}
+                        required={true}
+                        disabled={false}
+                        searchTextLimit={5}
+                        ensureUser={true}
+                        onChange={this._getManager}
+                        showHiddenInUI={false}                        
+                        principalTypes={[PrincipalType.User]}
+                        resolveDelay={1000}
+                        defaultSelectedUsers= {this.state.ManagerEmail}
+                        errorMessageClassName={styles.hideElementManager}
+                        />
+                      </td>
+                      <td style={{ width: "10%" }}><PrimaryButton style={{ width: "80pt", borderRadius: "5%", backgroundColor: "#50B4E6", display: "none" }} id="btnAddApprover" text="Add Approver" onClick={() => { this.AddApprover(); }} /></td>
+                    </tr>
+                    {this.state.selectedItems ? this.state.selectedItems.map((data) => {
+                      return data;
+                    }) : null}
+
+
+                  </table>
+                </div>
+              </div>
+            
+              <hr/>
+              <div className={styles.formrow + " " + "form-group FinancialClass"} style={{ display: "none" }}>
+              <h3 className={styles.Reqdlabel + " " + "text-left"} style={{ backgroundColor: "#50B4E6", fontSize: "16px" , color:'#fff', padding:'5px 10px', width:'100%'}}>Controller Details
+                    <span style={{ position: "relative", marginLeft: "10px", color: "Red", fontSize: "14px", fontStyle: "italic" }}>*Note: Only 1 Controller can be added.</span>
+                  </h3>
+              </div>
+              <div className={styles.formrow + " " + "form-group FinancialClass"} style={{ display: "none" }}>
+                <div>
+                  <table className={styles.tbl} id="tblMain1" style={{ width: "100%" }}>
+                    <tr>
+                      <td style={{ width: "15%", paddingLeft:'10px', fontWeight:700 }}>Controller</td>
+                      <td style={{ width: "70%" }} id="ControllerPPtd">                        
+                        <PeoplePicker
+                        context={peoplePickerContext}
+                        //titleText="People Picker"
+                        personSelectionLimit={1}
+                        groupName={""} 
+                        showtooltip={true}
+                        required={false}
+                        disabled={false}
+                        placeholder={"Person Name or Email address"}
+                        searchTextLimit={5}
+                        onChange={this._getCCPeople}
+                        showHiddenInUI={false}
+                        ensureUser={true}
+                        principalTypes={[PrincipalType.User]}
+                        resolveDelay={1000}
+                        defaultSelectedUsers= {this.state.ccEmail}
+                        errorMessageClassName={styles.hideElementManager}
+                        />
+                      </td>
+                      <td style={{ width: "10%" }}><label style={{ display: "none" }} id="lblController"></label>
+                      <PrimaryButton style={{ width: "80pt", borderRadius: "5%", backgroundColor: "#50B4E6", display: "none" }} 
+                      text="Add Controller" id="AddControllerBtn" onClick={() => { this.AddController(); }} />
+                      </td>
+                    </tr>
+                    {this.state.selectedItems ? this.state.ccSelectedItems.map((data) => {
+                      return data;
+                    }) : null}
+
+
+                  </table>
+                  <br />
+                </div>
+              </div>
+
+              <div className={styles.formrow + " " + "form-group"}>
+                
+                  <h3 className="text-left" style={{ backgroundColor: "#50b4e6", color:'#fff', fontSize: "16px", padding:'5px 10px', width:'100%' }}>Attachments</h3>
+               
+              </div>
+
+              <div className={styles.formrow + " " + "form-group row"} id="divNote" style={{ display: "" }}>
+                <div className={styles.lbl + " " + styles.Tcolumn}>Note</div>
+                <div className={styles.Vcolumn} >
+                  <a id="NoteFile" href=""></a><span id="NoteDel" style={{ display: "none" }}><img src={Delete} style={{ width: "10pt", height: "10pt", position: "absolute" }} onClick={() => this.DeleteNote(this.state.OutwarddocketnoSet)}></img></span>
+                </div>
+              </div>
+
+              <div className={styles.formrow + " " + "form-group row"} id="divAttach" style={{ display: "" }}>
+
+                <div className={styles.lbl + " " + styles.Reqdlabel + " " + styles.Tcolumn}>
+                  <a href="#"><img src={NoteAtt} style={{ height: "16pt", marginLeft: "10px" }} onClick={() => { this.UploadAttach('Note'); }}></img></a>
+                  <br></br>
+                  <label>(Note: Only pdf file can be attached)</label>
+                </div>
+                <div className={styles.Vcolumn}>
+                  {this.state.Note.map((vals) => {
+                    let filename = vals.split("/")[1];
+                    return (<span style={{ position: "relative", padding: "5px" }}><a href={this.state.Absoluteurl + "/ChecklistAttach/" + vals}>{filename}</a><img src={Delete} style={{ width: "10pt", height: "10pt", position: "absolute" }} onClick={() => this.DeleteNote(vals)}></img> </span>);
+
+                  })}
+
+                </div>
+                <div hidden className="ms-Grid-col ms-u-sm12 block hide" id="divAttachButton" style={{ backgroundColor: "white", display: "none" }}>
+                  <input type='file' style={{}} id='fileUploadInput' required={true} name='myfile' multiple onChange={this.AttachLib} />
+                </div>
+              </div>
+              <br />
+              <div className={styles.formrow + " " + "form-group row"} style={{ margin: "0px" }}>
+
+                <div className={styles.lbl + " " + styles.Tcolumn}>
+                  <a href="#"><img src={Annex} style={{ height: "16pt" }} onClick={() => { this.UploadAttach('Annexures'); }}></img></a>
+                  <br></br>
+                  <small style={{color:'#f00'}}>(image,.pdf,.doc,.docx,.xlsx,.eml)</small>
+                  <br></br>
+                  <label>*Max 20 Annexures</label>
+                </div>
+                <div className={styles.Vcolumn}>
+                  {this.state.attachments.map((vals) => {
+                    let filename = vals.split("/")[1];
+                    return (<span style={{ position: "relative", padding: "5px" }}><a href={this.state.Absoluteurl + "/ChecklistAnnexures/" + vals}>{filename}</a><img src={Delete} style={{ width: "10pt", height: "10pt", position: "absolute" }} onClick={() => this.DeleteAttachment(vals)}></img> </span>);
+
+                  })}
+
+                </div>
+
+              </div>
+            </div>
 </div>
 
                       <div className={styles.container} style={{marginTop:"5px"}}>
@@ -533,9 +622,9 @@ export default class PNoteForms extends React.Component<IPaperlessApprovalProps,
             <div className="ms-Grid-col ms-u-sm3 block" id="btnCreate" style={{display:"block"}} > 
             <PrimaryButton style={{width:"25pt",borderRadius:"5%",backgroundColor:"#50B4E6"}} text="Submit" onClick={() => { this.validateForm(); }} /> </div>
            
-            <div className="ms-Grid-col ms-u-sm3 block" id="btnDraft" style={{display:"none",borderRadius:"5px"}} >
-           
-               </div>
+           <div className="ms-Grid-col ms-u-sm3 block" id="btnDraft" style={{display:"block"}} >
+            <PrimaryButton style={{ width: "25pt", borderRadius: "5%", backgroundColor: "#50B4E6", color:'#fff'}} text="Save Draft" onClick={() => { this.SaveDraftNew(); }} />
+          </div>            
                    
             <div className="ms-Grid-col ms-u-sm3 block" id="btnCancel" style={{display:"block"}}>
               <PrimaryButton style={{width:"25pt",borderRadius:"5%",backgroundColor:"#50B4E6"}} text="Cancel" onClick={() => { this.cancel(); }} />
@@ -625,59 +714,177 @@ private off() {
 
 /*--Form On Load Function--*/
 public  componentDidMount(){
- var reacthandler=this;
-// get Currnt User's details
- //pnp.sp.web.currentUser.get().then((r: CurrentUser) => {  //To get current user details from site 
- pnp.sp.web.currentUser.get().then((r) => {
-   debugger;
-  let sitename=r['odata.id'].split("/_api")[0];
- let absoluteurl=sitename.split("com")[1]+"/Main";
- this.setState({Absoluteurl:absoluteurl});
-this.setState({Sitename:sitename});
-     const uname=r['UserPrincipalName'].split('@')[0];
-     let username=r['Title'];
-     let tdName = document.getElementById("tdName");
-     if(tdName){tdName.innerText=username;}
-     this.setState({name:username});
-     this.setState({UserID: r['Id'] });
-  let CurrUserEmail=r['LoginName'].split("|")[2];
-  this.setState({UserEmail:CurrUserEmail});
-  this.on();
-  let qstr=window.location.search.split('Pid=');
-  let uid=0;
-  if(qstr.length>1){uid= parseInt(qstr[1]);}
-   this.setFields(uid);
+    var reacthandler=this;
+    var qstrnew : string[] = window.location.search.includes('pid=') ? window.location.search.split('pid=') : window.location.search.split('Pid=');
+    // get Currnt User's details
+    //pnp.sp.web.currentUser.get().then((r: CurrentUser) => {  //To get current user details from site 
+    pnp.sp.web.currentUser.get().then((r) => {
+    debugger;
+    let sitename=r['odata.id'].split("/_api")[0];
+    let absoluteurl=sitename.split("com")[1]+"/Main";
+    this.setState({Absoluteurl:absoluteurl});
+    this.setState({Sitename:sitename});
+    const uname=r['UserPrincipalName'].split('@')[0];
+    let username=r['Title'];
+    let tdName = document.getElementById("tdName");
+    if(tdName){tdName.innerText=username;}
+    this.setState({name:username});
+    this.setState({UserID: r['Id'] });
+    let CurrUserEmail=r['LoginName'].split("|")[2];
+    this.setState({UserEmail:CurrUserEmail});
+    this.on();
+    let qstr=window.location.search.includes('pid=') ? window.location.search.split('pid=') : window.location.search.split('Pid=');  
+    let uid=0;
+    if(qstr.length>1){uid= parseInt(qstr[1]);}
+    this.setFields(uid);
 
- });
-/*-- for current date --*/
- let newDate = new Date();
-let date = newDate.getDate().toString();
-let month = (newDate.getMonth() + 1).toString();
-let year = newDate.getFullYear().toString();
+    });
+    /*-- for current date --*/
+    let newDate = new Date();
+    let date = newDate.getDate().toString();
+    let month = (newDate.getMonth() + 1).toString();
+    let year = newDate.getFullYear().toString();
 
-if(month.toString().length==1){month="0"+month.toString();}
-if(date.toString().length==1){date="0"+date.toString();}
+    if(month.toString().length==1){month="0"+month.toString();}
+    if(date.toString().length==1){date="0"+date.toString();}
 
-let fullDate=date+"-"+month+"-"+year;
-let tdDate = document.getElementById("tdDate");
-if(tdDate){tdDate.innerText=fullDate;}
-/*--End--*/
+    let fullDate=date+"-"+month+"-"+year;
+    let tdDate = document.getElementById("tdDate");
+    if(tdDate){tdDate.innerText=fullDate;}
+    /*--End--*/
 
-  /*-- To get details from masters(lists) --*/
- this.setFin();
-  this.getFinNotes();
-  this.getDOP();
-  this.getRestrictedEmails();
-  /*--End--*/
+    /*-- To get details from masters(lists) --*/
+    // this.setFin();
+    this.getFinNotes();
+    this.getDOP();
+    this.getRestrictedEmails();
+    this.fetchCounterData();
+    this.getDepartments();
+    this.addItemChecklist(qstrnew[1]);
+    /*--End--*/
  
                      
  }
+
+private SaveDraftNew(): void {
+debugger;
+this._onClosePanel();
+this.on();
+jQuery('#btnDraft').remove();    
+jQuery('#Createbutton').remove();
+jQuery('#Cancelbutton').remove();
+let FY = jQuery('#tdFY').text();       
+let Financial = jQuery('#ddlSource option:selected').text();
+let FinType = jQuery('#ddlFinNote').val();       
+let Amount = jQuery('#Amount').val();
+let Exceptional = jQuery('#txtExceptional').val();
+let Confidential = jQuery('#txtConfidential').val();            
+let Notefor = jQuery('#txtNote').val();
+let Purpose = jQuery('#txtPurpose').val();
+let ReturnName = jQuery('#txtReturn').val();
+let DeptOwnership = jQuery('#ddlDepartment option:selected').text();
+let VettingObservation = jQuery('#txtVetting').val();
+let RefferedGuidlines = jQuery('#txtGuidelines').val();       
+let Checklisttable = this.state.items;
+let qstr=window.location.search.includes('pid=') ? window.location.search.split('pid=') : window.location.search.split('Pid=');  
+let uid=0;
+if(qstr.length>1){uid= parseInt(qstr[1]);}
+if (Financial == 'Financial') {
+  Financial = String(FinType);
+}
+if (Amount == '') {
+  Amount = 0;
+}
+let Recommenders = this.state.dpselectedItems.length;
+
+let filename = this.state.Notefilename;           
+let Subj = jQuery('#txtSubject').val();
+let Comment = jQuery('#txtComments').val();      
+let client = jQuery('#txtClient').val();      
+let ControllerID = 0;
+var checklistId : number ;         
+
+if(this.state.ccIDS[0] != undefined){ControllerID = parseInt($('#lblController').text());}
+
+
+this.setState({ attachments: [] });                               
+let web = new Web('Main');
+let Approvers : Number[] = [];            
+console.log("SeqNo: "+this.state.seqno);
+  web.lists.getByTitle('ChecklistNote').items.getById(uid).update({              
+    SeqNo: this.state.seqno,
+    Subject: Subj,              
+    Comments: Comment,
+    Exceptional: Exceptional,
+    Confidential: Confidential,              
+    ApproversId: { results: Approvers },              
+    Amount: Amount,               
+    NoteFilename: filename,
+    NoteType: Financial,              
+    ClientName: client,
+    Migrate: "",
+    FY: FY,              
+    ControllerId: ControllerID,
+    Status: "Draft",
+    StatusNo: 12,
+    Notefor : Notefor,
+    Purpose : Purpose,
+    ReturnName : ReturnName,
+    DeptOwnership : DeptOwnership,
+    RefferedGuidlines:RefferedGuidlines,
+    VettingObservation:VettingObservation      
+  }).then((iar: ItemAddResult) => {
+    console.log(iar.data.ID);
+    let id = iar.data.ID;
+    checklistId = iar.data.ID;
+    pnp.sp.site.rootWeb.lists.getByTitle("ChecklistNote").items.getById(uid).update({                
+    Subject: Subj,                 
+    NoteType: Financial,
+    Exceptional: Exceptional,
+    Confidential: Confidential,
+    SeqNo: this.state.seqno,
+    PID: id,
+    FY: FY,                 
+    CurApproverTxt: this.state.MgrName,
+    ClientName: client,                                                  
+    NoteFilename: filename,
+    Sitename: 'Main',
+    Status: "Draft",
+    StatusNo: 12,
+    Notefor : Notefor,
+    Purpose : Purpose,
+    ReturnName : ReturnName,
+    DeptOwnership : DeptOwnership,
+    RefferedGuidlines:RefferedGuidlines,
+    VettingObservation:VettingObservation                                     
+  }).then((iar: ItemAddResult) =>{
+      for(var i=0;i<Checklisttable.length;i++)
+      {
+        if(Checklisttable[i].itemid == 0)
+        {
+          pnp.sp.site.rootWeb.lists.getByTitle('Checklist').items.add({
+          Title: this.state.Title,
+          SeqNo: this.state.seqno,
+          AppId: checklistId ,
+          Checklist:Checklisttable[i].checklist,
+          Status:Checklisttable[i].status
+          });
+        }
+      }                                
+      }).then(() => {                                    
+      this.AddWFHistory().then(() => {
+      this.redirect();
+      });
+    });                                       
+  });                                    
+}
+
  /*--To get saved data from Notes list and update to current form fields--*/
  private setFields(uid:number){
   debugger;
   let web=new Web('Main');  
   let fldr='';
-  web.lists.getByTitle('Notes').items.select("Title,Department,Subject,SeqNo,Comments,NoteFilename,DeptAlias,Amount,DOP,ClientName,Confidential,NoteType,CurApprover/ID,CurApprover/EMail,Requester/ID,Requester/EMail").expand('CurApprover,Requester').filter('ID eq '+uid).orderBy("ID asc").getAll().then((items: any[]) => {
+  web.lists.getByTitle('ChecklistNote').items.select("ID,Title,Department,Created,SeqNo,Status,StatusNo,Comments,Subject,NoteType,NoteFilename,DeptAlias,Amount,ClientName,Confidential,Requester/Title,Requester/EMail,Requester/Name,Requester/ID,CurApprover/EMail,CurApprover/Title,CurApprover/ID,CurApprover/Name,ReturnedBy/ID,ReturnedBy/Title,ReferredBy/ID,ReferredBy/Title,ReferredTo/ID,ReferredTo/Title,Controller/ID,Controller/EMail,Controller/Title,Approvers/ID,DOP,WorkflowFlag,Modified,RefCount,Notefor,Purpose,ReturnName,DeptOwnership,DueDate,Place,RefferedGuidlines,VettingObservation").expand('Requester,CurApprover,ReturnedBy,Controller,ReferredBy,ReferredTo,Approvers').filter('ID eq '+uid).orderBy("ID asc").getAll().then((items: any[]) => {
            if(items[0].SeqNo!=null){
         this.setState({seqno:items[0].SeqNo});
        }
@@ -689,9 +896,11 @@ if(tdDate){tdDate.innerText=fullDate;}
    }
     
     $("#txtSubject").val(items[0].Subject);
-    $('#divDepartment').text(items[0].Department);
-    $('#divTitle').text(items[0].Title);
-   // $("#ddlDepartment option:contains(" + items[0].Department + ")").attr('selected', 'selected');
+    $('#divDepartment').val(items[0].Department);
+    $('#ddlDepartment').val(items[0].Department);
+    //$('#divTitle').text(items[0].Title);
+   this.setState({Title:items[0].Title});
+   //$("#ddlDepartment option:contains(" + items[0].Department + ")").attr('selected', 'selected');
    $("#ddlDOP option:contains(" + items[0].DOP + ")").attr('selected', 'selected');
    let NoteType=items[0].NoteType;
    if(NoteType=='Non-Financial'){
@@ -738,12 +947,32 @@ if(tdDate){tdDate.innerText=fullDate;}
     curapprover=items[0].CurApprover.ID;
   }
  
-   if(this.state.UserID!=curapprover && curapprover>0){
+  // if(this.state.UserID!=curapprover && curapprover>0){
+  //  let btnCreate = document.getElementById("btnCreate");
+  //  if(btnCreate){btnCreate.style.display='none';}
+  //  // document.getElementById("btnDraft").style.display='none';     
+  // }
+
+  let requesterid = items[0].Requester.ID;
+  if(this.state.UserID!=requesterid && requesterid>0){
      let btnCreate = document.getElementById("btnCreate");
-     if(btnCreate){btnCreate.style.display='none';}
-     // document.getElementById("btnDraft").style.display='none';
-     
-   }
+     if(btnCreate){btnCreate.style.display='none';}     
+  }
+  
+
+   //added on 16/02/2025
+   let tdPurpose = document.getElementById("txtPurpose") as HTMLInputElement;;
+   if (tdPurpose) tdPurpose.value = items[0].Purpose;
+   let tdNotefor = document.getElementById("txtNote") as HTMLInputElement;;
+   if (tdNotefor) tdNotefor.value = items[0].Notefor;
+   let tdReturnName = document.getElementById("txtReturn") as HTMLInputElement;;
+   if (tdReturnName) tdReturnName.value = items[0].ReturnName;
+   let tdDeptOwnership = document.getElementById("ddlDepartment") as HTMLInputElement;;
+   if (tdDeptOwnership) tdDeptOwnership.value = items[0].DeptOwnership;
+   let tdreffered = document.getElementById("txtGuidelines") as HTMLInputElement;;
+   if (tdreffered) tdreffered.value = items[0].RefferedGuidlines;
+   let tdvetting = document.getElementById("txtVetting") as HTMLInputElement;;
+   if (tdvetting) tdvetting.value = items[0].VettingObservation;
 
   
 jQuery('#txtComments').val(items[0].Comments);
@@ -754,7 +983,7 @@ this.retrieveController();
 this.retrieveApprovers();
 this.getMainNote();    
 this.getAnnexures();   
-  this.off();
+this.off();
 
   });
 
@@ -763,7 +992,7 @@ this.getAnnexures();
  /*--get attachments for Notes--*/
 private getMainNote(){
   let web=new Web('Main');  
-  let fldURL='NoteAttach/'+this.state.seqno;
+  let fldURL='ChecklistAttach/'+this.state.seqno;
   web.getFolderByServerRelativeUrl(fldURL).files.get().then((result) => {
     let links:any[]=[];
  
@@ -779,7 +1008,7 @@ private getMainNote(){
 /*--get attachments for Annexures--*/
 private getAnnexures(){
   let web=new Web('Main');  
-  let fldURL='NoteAnnexures/'+this.state.seqno;
+  let fldURL='ChecklistAnnexures/'+this.state.seqno;
   web.getFolderByServerRelativeUrl(fldURL).files.get().then((result) => {
     let links:any[]=[];
  
@@ -802,7 +1031,7 @@ private getAnnexures(){
       // console.log(items);
       let links:string='';
                for(let i=0;i<items.length;i++){
-              links+= "<option value='" + items[i].Dept_Alias + "'>" + items[i].Title + "</option>";
+              links+= "<option value='" + items[i].Title + "'>" + items[i].Title + "</option>";
               }
           jQuery('select[id="ddlDepartment"]').append(links);
  
@@ -875,13 +1104,13 @@ private getAnnexures(){
     let restricedEmailsMsg=this.state.RestrictedEmailsMsg;
     if(this.state.RecpName[0]==''){
         alert('Kindly select username!');
-            $('#RecommenderPPtd >div>div>div>div>div>div>div>input').focus();
+            $('#RecommenderPPtd >div>div>div>div>div>div>div>input').trigger("focus");
         return;
     }
     else if(TotalRecomm.length==10){
       alert('Only 10 Recommenders can be added!');
-      $('#RecommenderPPtd >div>div>div>div>div>div>div>span>div>button>div>i').click();
-      $('#RecommenderPPtd >div>div>div>div>div>div>div>input').focus();
+      $('#RecommenderPPtd >div>div>div>div>div>div>div>span>div>button>div>i').trigger("click");
+      $('#RecommenderPPtd >div>div>div>div>div>div>div>input').trigger("focus");
       return;
     }
     else if(restricedEmails.indexOf(this.state.RecpEmail[0].toLowerCase())>=0){
@@ -889,14 +1118,14 @@ private getAnnexures(){
       let msg = restricedEmailsMsg[indx];
       alert(msg);
       //alert(this.state.RecpEmail[0] +' cannot be added, kindly select proper name id');
-      $('#RecommenderPPtd >div>div>div>div>div>div>div>span>div>button>div>i').click();
-      $('#RecommenderPPtd >div>div>div>div>div>div>div>input').focus();
+      $('#RecommenderPPtd >div>div>div>div>div>div>div>span>div>button>div>i').trigger("click");
+      $('#RecommenderPPtd >div>div>div>div>div>div>div>input').trigger("focus");
       return;
     }
     else if(userid==MgrID[0]){
       alert('Requester cannot be recommender!');
-      $('#RecommenderPPtd >div>div>div>div>div>div>div>span>div>button>div>i').click();
-      $('#RecommenderPPtd >div>div>div>div>div>div>div>input').focus();
+      $('#RecommenderPPtd >div>div>div>div>div>div>div>span>div>button>div>i').trigger("click");
+      $('#RecommenderPPtd >div>div>div>div>div>div>div>input').trigger("focus");
       return;
     }
     else{
@@ -909,7 +1138,7 @@ private getAnnexures(){
                           debugger;
                   let web=new Web('Main');
                  
-                  web.lists.getByTitle('Approvals').items.add({
+                  web.lists.getByTitle('ApprovalsChecklist').items.add({
                          Title:this.state.seqno,
                          Status:'Pending',
                             Seq:seqno,
@@ -920,14 +1149,14 @@ private getAnnexures(){
                      }).then((iar:ItemAddResult) => {
                        this.setState({ RecommSeqNo:seqno});
                        console.log(iar.data.ID);
-                       $("#RecommenderPPtd .ms-PickerItem-removeButton").click();
+                       $("#RecommenderPPtd .ms-PickerItem-removeButton").trigger("click");
                          this.retrieveRecommenders();
-                       $('#RecommenderPPtd >div>div>div>div>div>div>div>span>div>button>div>i').click();
+                       $('#RecommenderPPtd >div>div>div>div>div>div>div>span>div>button>div>i').trigger("click");
                                         });
                    }
                   else{
                     alert('Approver cannot be Recommender!');
-                    $('#RecommenderPPtd >div>div>div>div>div>div>div>span>div>button>div>i').click();
+                    $('#RecommenderPPtd >div>div>div>div>div>div>div>span>div>button>div>i').trigger("click");
       
                     return;
                   }
@@ -935,7 +1164,7 @@ private getAnnexures(){
                     }
                   else{
                    alert('Recommender has already been added!');
-               $('#RecommenderPPtd >div>div>div>div>div>div>div>span>div>button>div>i').click();
+               $('#RecommenderPPtd >div>div>div>div>div>div>div>span>div>button>div>i').trigger("click");
           
       
                 return;
@@ -965,7 +1194,7 @@ private getAnnexures(){
     if(this.state.MgrName==''){
         alert('Kindly select username!');
         
-      $('#ApproverPPtd >div>div>div>div>div>div>div>input').focus();
+      $('#ApproverPPtd >div>div>div>div>div>div>div>input').trigger("focus");
         return;
     }
     else if(restricedEmails.indexOf(this.state.ManagerEmail[0].toLowerCase())>=0){
@@ -973,20 +1202,20 @@ private getAnnexures(){
       let msg = restricedEmailsMsg[indx];
       alert(msg);
       //alert(this.state.ManagerEmail[0] +' cannot be added, kindly select proper name id');
-          $('#ApproverPPtd >div>div>div>div>div>div>div>span>div>button>div>i').click();
-     $('#ApproverPPtd >div>div>div>div>div>div>div>input').focus();
+          $('#ApproverPPtd >div>div>div>div>div>div>div>span>div>button>div>i').trigger("click");
+     $('#ApproverPPtd >div>div>div>div>div>div>div>input').trigger("focus");
       return;
     }
     else if(TotalApp.length==10){
       alert('Only 10 Approvers can be added!');
-        $('#ApproverPPtd >div>div>div>div>div>div>div>span>div>button>div>i').click();
-      $('#ApproverPPtd >div>div>div>div>div>div>div>input').focus();
+        $('#ApproverPPtd >div>div>div>div>div>div>div>span>div>button>div>i').trigger("click");
+      $('#ApproverPPtd >div>div>div>div>div>div>div>input').trigger("focus");
       return;
     }
     else if(userid==MgrID[0] && controllerflag != 'Yes'){
       alert('Requester cannot be approver!');
-      $('#ApproverPPtd >div>div>div>div>div>div>div>span>div>button>div>i').click();
-      $('#ApproverPPtd >div>div>div>div>div>div>div>input').focus();
+      $('#ApproverPPtd >div>div>div>div>div>div>div>span>div>button>div>i').trigger("click");
+      $('#ApproverPPtd >div>div>div>div>div>div>div>input').trigger("focus");
       return;
     }
     else{
@@ -1003,7 +1232,7 @@ private getAnnexures(){
          let SeqNo=this.state.seqno;
          let web=new Web('Main');
             debugger;
-            web.lists.getByTitle('FApprovals').items.add({
+            web.lists.getByTitle('FApprovalsChecklist').items.add({
               Title:this.state.seqno,
               Status:'Pending',
                  Seq:seqno,
@@ -1015,12 +1244,13 @@ private getAnnexures(){
             this.setState({ AppSeqNo:seqno});
             console.log(iar.data.ID);
                this.retrieveApprovers();
-            $('#ApproverPPtd >div>div>div>div>div>div>div>span>div>button>div>i').click();
+               $("#ApproverPPtd .ms-PickerItem-removeButton").trigger("click");
+            $('#ApproverPPtd >div>div>div>div>div>div>div>span>div>button>div>i').trigger("click");
                     });
         }
         else{
           alert('Recommender cannot be Approver!');
-          $('#ApproverPPtd >div>div>div>div>div>div>div>span>div>button>div>i').click();
+          $('#ApproverPPtd >div>div>div>div>div>div>div>span>div>button>div>i').trigger("click");
              return;
         }
       });
@@ -1029,7 +1259,7 @@ private getAnnexures(){
          
           else{
             alert('Approver has already been added!');
-            $('#ApproverPPtd >div>div>div>div>div>div>div>span>div>button>div>i').click();
+            $('#ApproverPPtd >div>div>div>div>div>div>div>span>div>button>div>i').trigger("click");
              return;
   
   
@@ -1055,13 +1285,13 @@ private getAnnexures(){
     if(this.state.ccName[0]==''){
         alert('Kindly select username!');
         //jQuery('input[aria-label="People Picker"]').focus();
-        $('#ControllerPPtd >div>div>div>div>div>div>div>input').focus();
+        $('#ControllerPPtd >div>div>div>div>div>div>div>input').trigger("focus");
         return;
     }
     else if(Controllers.length>0){
       alert('Only 1 Controller can be added!');
-      $('#ControllerPPtd >div>div>div>div>div>div>div>span>div>button>div>i').click();
-      $('#ControllerPPtd >div>div>div>div>div>div>div>input').focus();
+      $('#ControllerPPtd >div>div>div>div>div>div>div>span>div>button>div>i').trigger("click");
+      $('#ControllerPPtd >div>div>div>div>div>div>div>input').trigger("focus");
   //      $('#selected-items-id__59 > div>button>div>i').click();
       return;
     }
@@ -1070,13 +1300,13 @@ private getAnnexures(){
       let msg = restricedEmailsMsg[indx];
       alert(msg);
       //alert(this.state.ccEmail[0] +' cannot be added, kindly select proper name id');
-      $('#ControllerPPtd >div>div>div>div>div>div>div>input').focus();
+      $('#ControllerPPtd >div>div>div>div>div>div>div>input').trigger("focus");
       return;
     }
     else if(userid==MgrID[0]){
       alert('Requester cannot be Controller!');
-      $('#ControllerPPtd >div>div>div>div>div>div>div>span>div>button>div>i').click();
-      $('#ControllerPPtd >div>div>div>div>div>div>div>input').focus();
+      $('#ControllerPPtd >div>div>div>div>div>div>div>span>div>button>div>i').trigger("click");
+      $('#ControllerPPtd >div>div>div>div>div>div>div>input').trigger("focus");
       return;
     }
     else{
@@ -1094,28 +1324,28 @@ private getAnnexures(){
          let SeqNo=this.state.seqno;
          let web=new Web('Main');
             debugger;
-            web.lists.getByTitle('CApprovals').items.add({
-              Title:this.state.seqno,
-              Status:'Pending',
-                 Seq:seqno,
-              // LikedById: {results:[this.state.userManagerIDs[0]]},
-              // Views: 1,
-                ApproverId: this.state.ccIDS[0],
-                AppID:this.state.ccIDS[0],
-              AppName:this.state.ccName[0],
-              AppEmail:this.state.ccEmail[0]             
+            web.lists.getByTitle('CApprovalsChecklist').items.add({
+            Title:this.state.seqno,
+            Status:'Pending',
+            Seq:seqno,
+            // LikedById: {results:[this.state.userManagerIDs[0]]},
+            // Views: 1,
+            ApproverId: this.state.ccIDS[0],
+            AppID:this.state.ccIDS[0],
+            AppName:this.state.ccName[0],
+            AppEmail:this.state.ccEmail[0]             
           }).then((iar: ItemAddResult) => {
             this.setState({ AppSeqNo:seqno});
             console.log(iar.data.ID);
           //  jQuery('i[data-icon-name="Cancel"]').click();
             this.retrieveController();
-            $('#ControllerPPtd >div>div>div>div>div>div>div>span>div>button>div>i').click();
+            $('#ControllerPPtd >div>div>div>div>div>div>div>span>div>button>div>i').trigger("click");
             //$('#selected-items-id__59 > div>button>div>i').click();
           });
         }
         else{
               alert('Recommender cannot be Controller!');
-              $('#ControllerPPtd >div>div>div>div>div>div>div>span>div>button>div>i').click();
+              $('#ControllerPPtd >div>div>div>div>div>div>div>span>div>button>div>i').trigger("click");
              return;
         }
       });
@@ -1124,7 +1354,7 @@ private getAnnexures(){
          
           else{
             alert('Approver has already been added!');
-            $('#ControllerPPtd >div>div>div>div>div>div>div>span>div>button>div>i').click();
+            $('#ControllerPPtd >div>div>div>div>div>div>div>span>div>button>div>i').trigger("click");
              return;
   
   
@@ -1142,7 +1372,7 @@ private getAnnexures(){
      let title=this.state.seqno;
     let len=0;
     let web=new Web('Main');
-      return web.lists.getByTitle('FApprovals').items.select("ID,Title,AppName,AppEmail").filter("Title eq '"+title+"'").orderBy("Seq asc").getAll().then((items: any[]) => {
+      return web.lists.getByTitle('FApprovalsChecklist').items.select("ID,Title,AppName,AppEmail").filter("Title eq '"+title+"'").orderBy("Seq asc").getAll().then((items: any[]) => {
        
     for(let i=0;i<items.length;i++){
       if(items[i].AppEmail==appemail){
@@ -1161,7 +1391,7 @@ private getAnnexures(){
        let title=this.state.seqno;
       let len=0;
       let web=new Web('Main');
-      return web.lists.getByTitle('Approvals').items.select("ID,Title,AppName,AppEmail").filter("Title eq '"+title+"'").orderBy("Seq asc").getAll().then((items: any[]) => {
+      return web.lists.getByTitle('ApprovalsChecklist').items.select("ID,Title,AppName,AppEmail").filter("Title eq '"+title+"'").orderBy("Seq asc").getAll().then((items: any[]) => {
          
       for(let i=0;i<items.length;i++){
         if(items[i].AppEmail==appemail){
@@ -1183,7 +1413,7 @@ private getAnnexures(){
     // let data=[];
     let data: any[] = [];
     let web=new Web('Main');
-     web.lists.getByTitle('FApprovals').items.select("ID,Title,AppName").filter("Title eq '"+title+"' ").orderBy("Seq asc").getAll().then((items: any[]) => {
+     web.lists.getByTitle('FApprovalsChecklist').items.select("ID,Title,AppName").filter("Title eq '"+title+"' ").orderBy("Seq asc").getAll().then((items: any[]) => {
       debugger;
       if(items.length>0){
         for(let i=0;i<items.length;i++){
@@ -1203,7 +1433,7 @@ private getAnnexures(){
     // let data=[];
     let data: any[] = [];
     let web=new Web('Main');
-    web.lists.getByTitle('Approvals').items.select("ID,Title,AppName").filter("Title eq '"+title+"' ").orderBy("Seq asc").getAll().then((items: any[]) => {
+    web.lists.getByTitle('ApprovalsChecklist').items.select("ID,Title,AppName").filter("Title eq '"+title+"' ").orderBy("Seq asc").getAll().then((items: any[]) => {
       debugger;
       if(items.length>0){
         for(let i=0;i<items.length;i++){
@@ -1224,7 +1454,7 @@ private getAnnexures(){
     let data: any[] = [];
     let ControllerID=this.state.ccIDS;
     let web=new Web('Main');
-     web.lists.getByTitle('CApprovals').items.select("ID,Title,AppName").filter("Title eq '"+title+"'").orderBy("Seq asc").getAll().then((items: any[]) => {
+     web.lists.getByTitle('CApprovalsChecklist').items.select("ID,Title,AppName").filter("Title eq '"+title+"'").orderBy("Seq asc").getAll().then((items: any[]) => {
       debugger;
       if(items.length>0){
         for(let i=0;i<items.length;i++){
@@ -1244,7 +1474,7 @@ private getAnnexures(){
     event?.preventDefault();
     let web=new Web('Main');
      
-    let list =web.lists.getByTitle('FApprovals');
+    let list =web.lists.getByTitle('FApprovalsChecklist');
     list.items.getById(uid).delete().then(() => {console.log('List Item Deleted');
     this.retrieveApprovers();
   });
@@ -1257,7 +1487,7 @@ private getAnnexures(){
     event?.preventDefault();
     let web=new Web('Main');
      
-    let list =web.lists.getByTitle('CApprovals');
+    let list =web.lists.getByTitle('CApprovalsChecklist');
     list.items.getById(uid).delete().then(() => {console.log('List Item Deleted');
     this.retrieveController();
     this.setState({ccSelectedItems:[]});
@@ -1272,7 +1502,7 @@ private getAnnexures(){
     event?.preventDefault();
     let web=new Web('Main');
      
-    let list =web.lists.getByTitle('Approvals');
+    let list =web.lists.getByTitle('ApprovalsChecklist');
     list.items.getById(uid).delete().then(() => {console.log('List Item Deleted');
     this.retrieveRecommenders();
   });
@@ -1286,23 +1516,21 @@ private getAnnexures(){
     // let approverID=[];
     let approverID: any[] = [];
     let web=new Web('Main');
-        return web.lists.getByTitle('FApprovals').items.select("ID,Title,AppName,Approver/ID,Approver/Title").filter("Title eq '"+title+"'").expand("Approver").orderBy("ID asc").getAll().then((items: any[]) => {
+      return web.lists.getByTitle('FApprovalsChecklist').items.select("ID,Title,AppName,Approver/ID,Approver/Title").filter("Title eq '"+title+"'").expand("Approver").orderBy("ID asc").getAll().then((items: any[]) => {
       debugger;
       this.setState({MgrName:items[0].Approver.Title});
       approverID[0]=items[0].Approver.ID;
       approverID[1]=items[0].ID;
       return approverID;
      
-    });
-   
-   
-//    return data;
+    }); 
+  //return data;
   }
   /*--End--*/
 /*-- To update  first approver in FApprovals List--*/
   private updateFirstApprover(uid:number):Promise<any[]>{
     let web=new Web('Main');
-        return web.lists.getByTitle('FApprovals').items.getById(uid).update({
+        return web.lists.getByTitle('FApprovalsChecklist').items.getById(uid).update({
        Status: 'Submitted'
      }).then(() => {
        console.log('Approver updated');
@@ -1318,7 +1546,7 @@ private getAnnexures(){
       // let approverID=[];
       let approverID: any[] = [];
       let web=new Web('Main');
-      return web.lists.getByTitle('Approvals').items.select("ID,Title,AppName,Approver/ID,Approver/Title").filter("Title eq '"+title+"'").expand("Approver").orderBy("ID asc").getAll().then((items: any[]) => {
+      return web.lists.getByTitle('ApprovalsChecklist').items.select("ID,Title,AppName,Approver/ID,Approver/Title").filter("Title eq '"+title+"'").expand("Approver").orderBy("ID asc").getAll().then((items: any[]) => {
         debugger;
         this.setState({MgrName:items[0].Approver.Title});
         approverID[0]=items[0].Approver.ID;
@@ -1334,7 +1562,7 @@ private getAnnexures(){
 /*-- To update  first recommander in Approvals List--*/
     private updateFirstRecommender(uid:number):Promise<any[]>{
       let web=new Web('Main');
-      return web.lists.getByTitle('Approvals').items.getById(uid).update({
+      return web.lists.getByTitle('ApprovalsChecklist').items.getById(uid).update({
          Status: 'Submitted'
        }).then(() => {
          console.log('Approver updated');
@@ -1546,131 +1774,82 @@ private _onShowPanel = () => {
 
  /*--Form Submit validation--*/
  private validateForm(): void {
-   debugger;
-   let allowCreate: boolean = true;
-   this.setState({ onSubmission: true });
-   let template=jQuery('#ddlTemplate option:selected').val();
-  debugger;
-  let Financial=jQuery('#ddlSource option:selected').val();
-  let FinType=jQuery('#ddlFinNote option:selected').val();
-  let Amount=jQuery('#Amount').val();
-  let DOP=jQuery('#ddlDOP option:selected').val();
-  let Department=jQuery('#ddlDepartment option:selected').val();
-  let Confidential=jQuery('#txtConfidential').val();
-   let Client = $('#txtClient').val();
-  let Approvers=this.state.selectedItems;
-  let filename=this.state.Notefilename;
-  let notetype=this.state.NoteType.toLowerCase();
-  let ClientCheck=this.state.RadioClient;
-  let recpName=this.state.RecpName;
-  let recpEmail=this.state.RecpEmail;
-  let Subject=jQuery('#txtSubject').val();
+  this.setState({ onSubmission: true });
+  let allowCreate = true;
+  
+  const getValue = (selector: string): string => String(jQuery(selector).val() || '');
+  const focusElement = (selector: string): void => {
+    jQuery(selector).focus();
+};
+  const showAlert = (message: string, selector: string): void => {
+      alert(message);
+      focusElement(selector);
+  };
+  
+  const Notefor = getValue('#txtNote');
+  const Subject = getValue('#txtSubject');
+  const Purpose = getValue('#txtPurpose');
+  const Productname = getValue('#txtReturn');
+  const ddlDeptOwnership = getValue('#ddlDepartment');
+  const referredguidelines = getValue('#txtGuidelines');
+  const Vetting = getValue('#txtVetting');
+  const Financial = getValue('#ddlSource');
+  const FinType = getValue('#ddlFinNote');
+  const Amount = getValue('#Amount');
+  //const DOP = getValue('#ddlDOP');
+  const Approvers = this.state.selectedItems;
+  const filename = this.state.Notefilename;
+  const Checklisttable = this.state.items;
+  const regx = /^[A-Za-z0-9 !@#$()_.-]+$/;
+  
+  if (!Notefor) { showAlert('Kindly enter Note For!', '#txtNote'); return; }
+  if (!Subject) { showAlert('Kindly enter Subject!', '#txtSubject'); return; }
+  if (Subject.indexOf('http://') > -1 || Subject.indexOf('https://') > -1) {
+      showAlert('Kindly do not enter URLs in Subject!', '#txtSubject'); return;
+  }
+  // if (!regx.test(Subject)) { showAlert('Subject contains special characters!', '#txtSubject'); return; }
+  if (Subject.length > 250) { showAlert('Max 250 chars are allowed in Subject!', '#txtSubject'); return; }
+  if (!Purpose) { showAlert('Kindly enter Purpose!', '#txtPurpose'); return; }
+  //if (!Productname) { showAlert('Kindly enter Product Name!', '#txtReturn'); return; }
+  if (ddlDeptOwnership === 'Select') { showAlert('Kindly select the Department Ownership!', '#ddlDepartment'); return; }
+  //if (!referredguidelines) { showAlert('Kindly enter the Referred Guidelines!', '#txtGuidelines'); return; }
+  //if (!Vetting) { showAlert('Kindly enter Vetting Observation!', '#txtVetting'); return; }
+  //if (Checklisttable.length === 0) { showAlert('Kindly enter Checklist!', '#ddlDeptOwnership'); return; }
+  
+  if (Financial === 'Select') { showAlert('Kindly select the Note Type!', '#ddlSource'); return; }
+  if (Financial !== 'Financial' && Financial !== 'Non-Financial') { showAlert('Invalid Note Type selected!', '#ddlSource'); return; }
+  if (Financial === 'Financial' && FinType === 'Select') { showAlert('Kindly select the Financial Note Type!', '#ddlFinNote'); return; }
+  if (Financial === 'Financial' && (isNaN(Number(Amount)) || !Amount || Amount === '0')) {
+      showAlert('Kindly enter a valid Amount!', '#Amount'); return;
+  }
+  //if (Financial === 'Financial' && DOP === 'Select') { showAlert('Kindly select the DOP details!', '#ddlDOP'); return; }
+  
+  if (Approvers.length === 0) { showAlert('Kindly select at least one Approver!', '#btnAddApprover'); return; }
+  if (!filename) { showAlert('Kindly select at least one Main Note!', '#ddlTemplate'); return; }
+  
+  // If all validations pass
+  this._onShowPanel();
+}
+
+ fetchCounterData = async () => {
+     const num = await this.getCounter();
+     if(num[3] == 'Compliance')
+     {this.setState({ vettingobservation: 'Vetting Observation' });
+     this.setState({Checklistlabel: 'Checklist'});}
+     else{this.setState({ vettingobservation: 'Remarks' });
+     this.setState({Checklistlabel: 'Annexure'});}    
+   };
  
-  if(Department=='Select'){
-    alert('Kindly select the Department!');
-    let department = document.getElementById('ddlDepartment');
-    if(department){department.focus();}
-     allowCreate = false;
-      return;
-  }
-  
-  else if(Subject==''){
-    alert('Kindly enter Subject!');
-    // document.getElementById('txtSubject').focus();
-    let txtSubject = document.getElementById('txtSubject');
-    if(txtSubject){txtSubject.focus();}
-     allowCreate = false;
-      return;
-  }
-  
-  else if(String(Subject).length>250){
-    alert('Max 250 chars are allowed in Subject!');
-    // document.getElementById('txtSubject').focus();
-    let txtSubject = document.getElementById('txtSubject');
-    if(txtSubject){txtSubject.focus();}
-     allowCreate = false;
-      return;
-  }
-   else if(Financial=='Select'){
-    alert('Kindly select the Note Type!');
-    // document.getElementById('ddlSource').focus();
-    let ddlSource = document.getElementById('ddlSource');
-    if(ddlSource){ddlSource.focus();}
-     allowCreate = false;
-      return;
-  }
-  else if(Financial=='Financial' && FinType=='Select'){
-    alert('Kindly select the Financial Note Type!');
-    //document.getElementById('ddlFinNote').focus();
-    let ddlFinNote = document.getElementById('ddlFinNote');
-    if(ddlFinNote){ddlFinNote.focus();}
-     allowCreate = false;
-      return;
-  }
-  else if(Financial=='Financial' && ( isNaN(Number(Amount)) ||Amount==''|| Amount=='0')){
-    alert('Kindly enter the Amount!');
-    // document.getElementById('Amount').focus();
-    let Amount = document.getElementById('Amount');
-    if(Amount){Amount.focus();}
-     allowCreate = false;
-      return;
-  }
-  else if(Financial=='Financial' && DOP=='Select' ){
-    alert('Kindly Select the DOP details!');
-    // document.getElementById('ddlDOP').focus();
-    let ddlDOP = document.getElementById('ddlDOP');
-    if(ddlDOP){ddlDOP.focus();}
-     allowCreate = false;
-      return;
-  }
-  else if(ClientCheck=='' ){
-    alert('Kindly Select if client name is required!');
-    // document.getElementById('CYes').focus();
-    let CYes = document.getElementById('CYes');
-    if(CYes){CYes.focus();}
-     allowCreate = false;
-      return;
-  }
-  else if( ClientCheck=='CYes' && String(Client).trim()=='' ){
-    alert('Kindly enter client name!');
-    // document.getElementById('txtClient').focus();
-    let txtClient = document.getElementById('txtClient');
-    if(txtClient){txtClient.focus();}
-     allowCreate = false;
-      return;
-  }
-  else if(Department=='HRD' && String(Confidential).trim()==''){
-    alert('Kindly select if the note is Confidential!');
-    //document.getElementById('ConfYes').focus();
-    let ConfYes = document.getElementById('ConfYes');
-    if(ConfYes){ConfYes.focus();}
-
-     allowCreate = false;
-     return;
-  }
-  else if(Approvers.length==0){
-    alert('Kindly select at least 1 Approver!');
-    // document.getElementById('btnAddApprover').focus();
-    let btnAddApprover = document.getElementById('btnAddApprover');
-    if(btnAddApprover){btnAddApprover.focus();}
-     allowCreate = false;
-     return;
-  }
-  else if( filename==''){
-    alert('Kindly select at least 1 Main Note!');
-    // document.getElementById('ddlTemplate').focus();
-    let ddlTemplate = document.getElementById('ddlTemplate');
-    if(ddlTemplate){ddlTemplate.focus();}
-      allowCreate = false;
-      return;
-  }
-  else 
-  {allowCreate=true ;
-     this._onShowPanel();
+   private getCounter(): Promise<any[]> {
+         let num : Number[] = [];
+         return pnp.sp.site.rootWeb.lists.getByTitle('Counter').items.select("ID,Title,NoteId,MemoCounter,Department,GroupID").orderBy("ID asc").getAll().then((items: any[]) => {
+           num[0] = parseInt(items[0].NoteId) + 1;
+           num[1] = items[0].ID;
+           num[2] = items[0].GroupID;
+           num[3] = items[0].Department;
+           return num;
+         });  
    }
-   
- }
-
 
 /*--End--*/
 
@@ -1681,9 +1860,9 @@ private createItem(): void {
   this.on();
   jQuery('#Createbutton').remove();
   jQuery('#Cancelbutton').remove();
-  let title=jQuery('#divTitle').text();
+  //let title=jQuery('#divTitle').text();
   let dept=jQuery('#divDepartment').text();
-  let qstr=window.location.search.split('Pid=');
+  let qstr=window.location.search.includes('pid=') ? window.location.search.split('pid=') : window.location.search.split('Pid=');  
   let uid=0;
   if(qstr.length>1){uid= parseInt(qstr[1]);}
   let Financial=jQuery('#ddlSource option:selected').text();
@@ -1700,14 +1879,29 @@ private createItem(): void {
   let Recommenders=this.state.dpselectedItems.length;
  
   let filename=this.state.Notefilename;
- 
+  
+  //added on 16/02/2025
+  let Notefor = jQuery('#txtNote').val();
+  let Purpose = jQuery('#txtPurpose').val();
+  let ReturnName = jQuery('#txtReturn').val();
+  let DeptOwnership = jQuery('#ddlDepartment option:selected').text();
+  let VettingObservation = jQuery('#txtVetting').val();
+  let RefferedGuidlines = jQuery('#txtGuidelines').val();
+  let Checklisttable = this.state.items;
+  var checklistId : number ;
+  //
+
     
-   let Subj=jQuery('#txtSubject').val();
-   let Comment=jQuery('#txtComments').val();
-   let client=jQuery('#txtClient').val();
-   let requester=this.state.UserID;     
-   let ControllerID=$('#lblController').text();
-   if(ControllerID==''){ControllerID=String(this.state.ccIDS[0]);}
+  let Subj=jQuery('#txtSubject').val();
+  let Comment=jQuery('#txtComments').val();
+  let client=jQuery('#txtClient').val();
+  let requester=this.state.UserID;     
+  // let ControllerID=$('#lblController').text();
+  // if(ControllerID==''){ControllerID=String(this.state.ccIDS[0]);}
+  let ControllerID = 0;
+  var checklistId : number ;        
+  if(this.state.ccIDS[0] != undefined){ControllerID = parseInt($('#lblController').text());}
+
   if(Recommenders>0){
     this.retrieveFirstRecommender().then((Appid)=>{
       var approverID: Number[] = [];
@@ -1717,9 +1911,9 @@ private createItem(): void {
       let web=new Web('Main');    
       let Approvers: any[] = [];
        Approvers.push(approverID);        
-      web.lists.getByTitle('Notes').items.getById(uid).update({
+      web.lists.getByTitle('ChecklistNote').items.getById(uid).update({
         Subject:Subj,
-         Comments:Comment,
+        Comments:Comment,
         Confidential:Confidential,
         CurApproverId:approverID,
         NotifyId:approverID,
@@ -1732,28 +1926,40 @@ private createItem(): void {
         Migrate:"",
         ControllerId:ControllerID,
         Status:"Submitted to Recommender#1",
-        StatusNo:1
+        StatusNo:1,
+        Notefor : Notefor,
+        Purpose : Purpose,
+        ReturnName : ReturnName,
+        DeptOwnership : DeptOwnership,
+        RefferedGuidlines:RefferedGuidlines,
+        VettingObservation:VettingObservation
           }).then((iar: ItemAddResult) => {
             console.log(iar.data.ID);
             let id=iar.data.ID;
-            pnp.sp.site.rootWeb.lists.getByTitle("Notes").items.select('Title','ID','PID').filter("PID eq "+uid ).get().then(r=>{
+            pnp.sp.site.rootWeb.lists.getByTitle("ChecklistNote").items.select('Title','ID','PID').filter("PID eq "+uid ).get().then(r=>{
               let Approverid=r[0].ID;
-              pnp.sp.site.rootWeb.lists.getByTitle('Notes').items.getById(Approverid).update({
-                      Subject:Subj,
-                      NoteType:Financial,
-             Confidential:Confidential,
-               CurApproverTxt:this.state.MgrName,
-             ClientName:client,
-                 CurApproverId:approverID,
-                  NoteFilename:filename,
-             Sitename:'Main',
-               Status:"Submitted to Recommender#1",
-        StatusNo:1
+              pnp.sp.site.rootWeb.lists.getByTitle('ChecklistNote').items.getById(Approverid).update({
+              Subject:Subj,
+              NoteType:Financial,
+              Confidential:Confidential,
+              CurApproverTxt:this.state.MgrName,
+              ClientName:client,
+              CurApproverId:approverID,
+              NoteFilename:filename,
+              Sitename:'Main',
+              Status:"Submitted to Recommender#1",
+              StatusNo:1,
+              Notefor : Notefor,
+              Purpose : Purpose,
+              ReturnName : ReturnName,
+              DeptOwnership : DeptOwnership,
+              RefferedGuidlines:RefferedGuidlines,
+              VettingObservation:VettingObservation
              }).then((iar1: ItemAddResult) => {
               let WFweb=new Web('WF');  
-              WFweb.lists.getByTitle('NotesNotifications').items.add({
-                Title:title,
-                        SeqNo:this.state.seqno,
+              WFweb.lists.getByTitle('ChecklistNoteNotifications').items.add({
+                Title:this.state.Title,
+                SeqNo:this.state.seqno,
                 Subject:Subj,
                 Department:dept,
                 Comments:Comment,
@@ -1763,7 +1969,7 @@ private createItem(): void {
                 ApproversId:{results:Approvers},
                 Amount:Amount,
                 MainRecID:uid,
-               RequesterId:requester,
+                RequesterId:requester,
                 NoteFilename:filename,
                 NoteType:Financial,
                 DOP:DOP,
@@ -1771,18 +1977,39 @@ private createItem(): void {
                 Migrate:"",
                 ControllerId:this.state.ccIDS[0],
                 Status:"Submitted to Recommender#1",
-                StatusNo:1
-                  }).then((iar2: ItemAddResult) => {
-           this.updateFirstRecommender(Number(AppItemid)).then(()=>{
-        this.AddWFHistory().then(()=>{
-                this.redirect();
+                StatusNo:1,
+                Notefor : Notefor,
+                Purpose : Purpose,
+                ReturnName : ReturnName,
+                DeptOwnership : DeptOwnership,
+                RefferedGuidlines:RefferedGuidlines,
+                VettingObservation:VettingObservation
+                  }).then((iar2: ItemAddResult) =>{
+                    checklistId = iar1.data.ID;
+                  for(var i=0;i<Checklisttable.length;i++)
+                  {
+                    if(Checklisttable[i].itemid == 0)
+                    {
+                      pnp.sp.site.rootWeb.lists.getByTitle('Checklist').items.add({
+                      Title: this.state.Title,
+                      SeqNo: this.state.seqno,
+                      AppId: uid ,
+                      Checklist:Checklisttable[i].checklist,
+                      Status:Checklisttable[i].status
                       });
-                    });
+                    }
+                  }                                
+                }).then(() => {
+                    this.updateFirstRecommender(Number(AppItemid)).then(()=>{
+                    this.AddWFHistory().then(()=>{
+                    this.redirect();
+                });
+              });
+            });
           });
         });
       });
-      });
-      }); 
+    }); 
 
   }else{
     this.retrieveFirstApprover().then((Appid)=>{
@@ -1794,68 +2021,98 @@ private createItem(): void {
       let web=new Web('Main');  
       let Approvers:Number[] = [];
       Approvers.push(approverID);           
-      web.lists.getByTitle('Notes').items.getById(uid).update({
-           Subject:Subj,
-           Comments:Comment,
+      web.lists.getByTitle('ChecklistNote').items.getById(uid).update({
+        Subject:Subj,
+        Comments:Comment,
         CurApproverId:approverID,
         NotifyId:approverID,
         ApproversId:{results:Approvers},
         Amount:Amount,
-          NoteFilename:filename,
+        NoteFilename:filename,
         NoteType:Financial,
         ClientName:client,
         Migrate:"",
         ControllerId:this.state.ccIDS[0],
         Status:"Submitted to Approver#1",
-        StatusNo:6
+        StatusNo:6,
+        Notefor : Notefor,
+        Purpose : Purpose,
+        ReturnName : ReturnName,
+        DeptOwnership : DeptOwnership,
+        RefferedGuidlines:RefferedGuidlines,
+        VettingObservation:VettingObservation
           }).then((iar: ItemAddResult) => {
             console.log(iar.data.ID);
             let id=iar.data.ID;
-            pnp.sp.site.rootWeb.lists.getByTitle("Notes").items.select('Title','ID','PID').filter("PID eq "+uid ).get().then(Appr=>{
+            pnp.sp.site.rootWeb.lists.getByTitle("ChecklistNote").items.select('Title','ID','PID').filter("PID eq "+uid ).get().then(Appr=>{
               let Appruverid=Appr[0].ID;
-              pnp.sp.site.rootWeb.lists.getByTitle('Notes').items.getById(Appruverid).update({
-                   Subject:Subj,
-             NoteType:Financial,
-                  CurApproverTxt:this.state.MgrName,
-                   CurApproverId:approverID,
-                 NoteFilename:filename,
-                 Status:"Submitted to Approver#1",
-             StatusNo:6
+              pnp.sp.site.rootWeb.lists.getByTitle('ChecklistNote').items.getById(Appruverid).update({
+              Subject:Subj,
+              NoteType:Financial,
+              CurApproverTxt:this.state.MgrName,
+              CurApproverId:approverID,
+              NoteFilename:filename,
+              Status:"Submitted to Approver#1",                 
+              StatusNo:6,
+              Notefor : Notefor,
+              Purpose : Purpose,
+              ReturnName : ReturnName,
+              DeptOwnership : DeptOwnership,
+              RefferedGuidlines:RefferedGuidlines,
+              VettingObservation:VettingObservation
              }).then((iar1: ItemAddResult) => {
               let WFweb=new Web('WF');  
-              WFweb.lists.getByTitle('NotesNotifications').items.add({
-                Title:title,
-                                SeqNo:this.state.seqno,
-                 MainRecID:uid,
-                           Subject:Subj,
-                 Department:dept,
-                RequesterId:requester,
-                           Comments:Comment,
-                        CurApproverId:approverID,
-                        NotifyId:approverID,
-                        ApproversId:{results:Approvers},
-                        Amount:Amount,
-                          NoteFilename:filename,
-                        NoteType:Financial,
-                        ClientName:client,
-                        Migrate:"",
-                        ControllerId:this.state.ccIDS[0],
-                        Status:"Submitted to Approver#1",
-                        StatusNo:6
-                          }).then((iar2: ItemAddResult) => {
-            this.updateFirstApprover(Number(AppItemid)).then(()=>{
-        this.AddWFHistory().then(()=>{
-                this.redirect();
-                      });
+              WFweb.lists.getByTitle('ChecklistNoteNotifications').items.add({
+              Title:this.state.Title,
+              SeqNo:this.state.seqno,
+              MainRecID:uid,
+              Subject:Subj,
+              Department:dept,
+              RequesterId:requester,
+              Comments:Comment,
+              CurApproverId:approverID,
+              NotifyId:approverID,
+              ApproversId:{results:Approvers},
+              Amount:Amount,
+              NoteFilename:filename,
+              NoteType:Financial,
+              ClientName:client,
+              Migrate:"",
+              ControllerId:this.state.ccIDS[0],
+              Status:"Submitted to Approver#1",
+              StatusNo:6,
+              Notefor : Notefor,
+              Purpose : Purpose,
+              ReturnName : ReturnName,
+              DeptOwnership : DeptOwnership,
+              RefferedGuidlines:RefferedGuidlines,
+              VettingObservation:VettingObservation
+              }).then((iar2: ItemAddResult) =>{
+                checklistId = iar1.data.ID;
+                for(var i=0;i<Checklisttable.length;i++)
+                {
+                  if(Checklisttable[i].itemid == 0){
+                    pnp.sp.site.rootWeb.lists.getByTitle('Checklist').items.add({
+                    Title: this.state.Title,
+                    SeqNo: this.state.seqno,
+                    AppId: checklistId ,
+                    Checklist:Checklisttable[i].checklist,
+                    Status:Checklisttable[i].status
                     });
+                  }
+                }                                
+            }).then(() => {
+                this.updateFirstApprover(Number(AppItemid)).then(()=>{
+                this.AddWFHistory().then(()=>{
+                this.redirect();
+                });
+              });
             });
+          });
         });
       });
-      });
-      }); 
+    }); 
   }
-
-
 }
 /*--End Function--*/
  
@@ -1866,7 +2123,7 @@ private createItem(): void {
  }
 
 
-   /*--Delete Attachment in NoteAnnexures library for Annexures attachment--*/
+   /*--Delete Attachment in ChecklistAnnexures library for Annexures attachment--*/
    public DeleteAttachment(vals : string):void{
      debugger;
      this.setState({
@@ -1874,9 +2131,9 @@ private createItem(): void {
      });
      let sitename=this.state.Absoluteurl;
      let web=new Web('Main'); 
-     let url=sitename+'/NoteAnnexures/'+vals;
+     let url=sitename+'/ChecklistAnnexures/'+vals;
      let fldr=vals.split("/")[0];
-     let fldURL=sitename+'/NoteAnnexures/'+fldr;
+     let fldURL=sitename+'/ChecklistAnnexures/'+fldr;
      web.getFileByServerRelativeUrl(url).recycle().then(data=> {  
        console.log("File Deleted " + vals) ;
        web.getFolderByServerRelativeUrl(fldURL).files.get().then((result) => {
@@ -1901,16 +2158,16 @@ private createItem(): void {
    }
  /*--End--*/
 
-/*--Delete Attachment in NoteAttach library for Note attachment--*/
+/*--Delete Attachment in ChecklistAttach library for Note attachment--*/
    public DeleteNote(vals : string):void{
     debugger;
     this.setState({
       Note:[]
     });
     let sitename=this.state.Absoluteurl;
-    let url=sitename+'/NoteAttach/'+vals;
+    let url=sitename+'/ChecklistAttach/'+vals;
     let fldr=vals.split("/")[0];
-    let fldURL=sitename+'/NoteAttach/'+fldr;
+    let fldURL=sitename+'/ChecklistAttach/'+fldr;
     let web=new Web('Main');           
     web.getFileByServerRelativeUrl(url).recycle().then(data=> {  
       console.log("File Deleted " + vals) ;
@@ -1958,7 +2215,7 @@ private createItem(): void {
     let fileSplit=file.name.split(".");
     let fileType=this.state.AttachType;
     let PermissibleExtns=['pdf'];
-    let listName='NoteAttach';
+    let listName='ChecklistAttach';
     let NoteCount=this.state.Note.length;
     let TotalAnnexures=this.state.attachments.length;
     let notetype=this.state.NoteType;
@@ -1968,7 +2225,7 @@ private createItem(): void {
 
      if(fileType!='Note'){
        PermissibleExtns=['png','jpeg','jpg','gif','pdf','doc','docx','xls','xlsx','.eml'];
-       listName='NoteAnnexures';
+       listName='ChecklistAnnexures';
      }
      else {
       PermissibleExtns=['pdf'];

@@ -34,31 +34,36 @@ export default class EasyApprovalChecklistWebPart extends BaseClientSideWebPart<
       jQuery('div [data-automation-id="pageHeader"]').hide();
       jQuery('.commandBarWrapper').hide();
     }
-  public render(): void {
-    debugger;
-    let qstr=window.location.search.split('uid=');
-    let qstrNid=window.location.search.split('Nid=');
-    let qstrPid=window.location.search.split('Pid=');
- let qstring='';
- let qstringNid='';
- let qstringPid='';
- if(qstrNid.length>1){qstringNid=qstr[1];}
- if(qstrPid.length>1){qstringPid=qstr[1];}
-   if(qstr.length>1){qstring=qstr[1];}
-    const element: React.ReactElement<IEasyApprovalChecklistProps > = React.createElement(
-      //(qstring=='')?PNoteForms:PNoteFormEditable,
-      (qstring=='' && qstringNid=='' && qstringPid=='')?PNoteForms:(qstringNid =='' && qstringPid=='')?PNoteFormsEdit:PNoteDraft,
-      {
-        context: this.context,
-        description: this.properties.description,
-        siteUrl: this.context.pageContext.web.absoluteUrl,
-      }
-    );
-    ReactDom.render(element, this.domElement);
-    // ReactDom.unmountComponentAtNode(this.domElement);
-    // ReactDom.render(element, this.domElement);
-
+    public render(): void {
+      debugger;
+      let qstr = window.location.search.includes('uid=') ? window.location.search.split('uid=') : window.location.search.split('Uid=');
+      let qstrNid = window.location.search.includes('nid=') ? window.location.search.split('nid=') : window.location.search.split('Nid=');
+      let qstrPid = window.location.search.includes('pid=') ? window.location.search.split('pid=') : window.location.search.split('Pid=');
+      
+      let qstring = '';
+      let qstringNid = '';
+      let qstringPid = '';
+  
+      if (qstrNid.length > 1) { qstringNid = qstrNid[1]; }
+      if (qstrPid.length > 1) { qstringPid = qstrPid[1]; }
+      if (qstr.length > 1) { qstring = qstr[1]; }
+  
+      const element: React.ReactElement<IEasyApprovalChecklistProps> = React.createElement(
+        (qstring == '' && qstringNid == '' && qstringPid == '') 
+          ? PNoteForms 
+          : (qstringNid == '' && qstringPid == '') 
+            ? PNoteFormsEdit 
+            : PNoteDraft,
+        {
+          context: this.context,
+          description: this.properties.description,
+          siteUrl: this.context.pageContext.web.absoluteUrl,
+        }
+      );
+  
+      ReactDom.render(element, this.domElement);
   }
+  
 
   protected onDispose(): void {
     ReactDom.unmountComponentAtNode(this.domElement);

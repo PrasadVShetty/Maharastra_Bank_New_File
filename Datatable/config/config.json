@@ -1,0 +1,118 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/spfx-build/config.2.0.schema.json",
+  "version": "2.0",
+  "bundles": {
+    "easy-approval-all-notes-view-web-part": {
+      "components": [
+        {
+          "entrypoint": "./lib/webparts/easyApprovalAllNotesView/EasyApprovalAllNotesViewWebPart.js",
+          "manifest": "./src/webparts/easyApprovalAllNotesView/EasyApprovalAllNotesViewWebPart.manifest.json"
+        }
+      ]
+    },
+    "easy-approval-approved-notes-web-part": {
+      "components": [
+        {
+          "entrypoint": "./lib/webparts/easyApprovalApprovedNotes/EasyApprovalApprovedNotesWebPart.js",
+          "manifest": "./src/webparts/easyApprovalApprovedNotes/EasyApprovalApprovedNotesWebPart.manifest.json"
+        }
+      ]
+    },
+    "easy-approval-blank-web-part": {
+      "components": [
+        {
+          "entrypoint": "./lib/webparts/easyApprovalBlank/EasyApprovalBlankWebPart.js",
+          "manifest": "./src/webparts/easyApprovalBlank/EasyApprovalBlankWebPart.manifest.json"
+        }
+      ]
+    },
+    "easy-approval-documents-view-web-part": {
+      "components": [
+        {
+          "entrypoint": "./lib/webparts/easyApprovalDocumentsView/EasyApprovalDocumentsViewWebPart.js",
+          "manifest": "./src/webparts/easyApprovalDocumentsView/EasyApprovalDocumentsViewWebPart.manifest.json"
+        }
+      ]
+    },
+    "easy-approval-memo-view-web-part": {
+      "components": [
+        {
+          "entrypoint": "./lib/webparts/easyApprovalMemoView/EasyApprovalMemoViewWebPart.js",
+          "manifest": "./src/webparts/easyApprovalMemoView/EasyApprovalMemoViewWebPart.manifest.json"
+        }
+      ]
+    },
+    "easy-approval-my-notes-view-web-part": {
+      "components": [
+        {
+          "entrypoint": "./lib/webparts/easyApprovalMyNotesView/EasyApprovalMyNotesViewWebPart.js",
+          "manifest": "./src/webparts/easyApprovalMyNotesView/EasyApprovalMyNotesViewWebPart.manifest.json"
+        }
+      ]
+    },
+    "easy-approval-my-pending-notes-view-web-part": {
+      "components": [
+        {
+          "entrypoint": "./lib/webparts/easyApprovalMyPendingNotesView/EasyApprovalMyPendingNotesViewWebPart.js",
+          "manifest": "./src/webparts/easyApprovalMyPendingNotesView/EasyApprovalMyPendingNotesViewWebPart.manifest.json"
+        }
+      ]
+    },
+    "easy-approval-note-in-progress-web-part": {
+      "components": [
+        {
+          "entrypoint": "./lib/webparts/easyApprovalNoteInProgress/EasyApprovalNoteInProgressWebPart.js",
+          "manifest": "./src/webparts/easyApprovalNoteInProgress/EasyApprovalNoteInProgressWebPart.manifest.json"
+        }
+      ]
+    },
+    "easy-approval-search-notes-web-part": {
+      "components": [
+        {
+          "entrypoint": "./lib/webparts/easyApprovalSearchNotes/EasyApprovalSearchNotesWebPart.js",
+          "manifest": "./src/webparts/easyApprovalSearchNotes/EasyApprovalSearchNotesWebPart.manifest.json"
+        }
+      ]
+    },
+    "easy-approval-notes-tat-web-part": {
+      "components": [
+        {
+          "entrypoint": "./lib/webparts/easyApprovalNotesTat/EasyApprovalNotesTatWebPart.js",
+          "manifest": "./src/webparts/easyApprovalNotesTat/EasyApprovalNotesTatWebPart.manifest.json"
+        }
+      ]
+    },
+    "easy-approval-all-notes-checklist-view-web-part": {
+      "components": [
+        {
+          "entrypoint": "./lib/webparts/easyApprovalAllNotesChecklistView/EasyApprovalAllNotesChecklistViewWebPart.js",
+          "manifest": "./src/webparts/easyApprovalAllNotesChecklistView/EasyApprovalAllNotesChecklistViewWebPart.manifest.json"
+        }
+      ]
+    },
+    "easy-approval-my-pending-notes-checklist-view-web-part": {
+      "components": [
+        {
+          "entrypoint": "./lib/webparts/easyApprovalMyPendingNotesChecklistView/EasyApprovalMyPendingNotesChecklistViewWebPart.js",
+          "manifest": "./src/webparts/easyApprovalMyPendingNotesChecklistView/EasyApprovalMyPendingNotesChecklistViewWebPart.manifest.json"
+        }
+      ]
+    }
+  },
+  "externals": {},
+  "localizedResources": {
+    "EasyApprovalAllNotesViewWebPartStrings": "lib/webparts/easyApprovalAllNotesView/loc/{locale}.js",
+    "EasyApprovalApprovedNotesWebPartStrings": "lib/webparts/easyApprovalApprovedNotes/loc/{locale}.js",
+    "EasyApprovalBlankWebPartStrings": "lib/webparts/easyApprovalBlank/loc/{locale}.js",
+    "EasyApprovalDocumentsViewWebPartStrings": "lib/webparts/easyApprovalDocumentsView/loc/{locale}.js",
+    "EasyApprovalMemoViewWebPartStrings": "lib/webparts/easyApprovalMemoView/loc/{locale}.js",
+    "EasyApprovalMyNotesViewWebPartStrings": "lib/webparts/easyApprovalMyNotesView/loc/{locale}.js",
+    "EasyApprovalMyPendingNotesViewWebPartStrings": "lib/webparts/easyApprovalMyPendingNotesView/loc/{locale}.js",
+    "EasyApprovalNoteInProgressWebPartStrings": "lib/webparts/easyApprovalNoteInProgress/loc/{locale}.js",
+    "EasyApprovalNotesTatWebPartStrings": "lib/webparts/easyApprovalNotesTat/loc/{locale}.js",
+    "EasyApprovalSearchNotesWebPartStrings": "lib/webparts/easyApprovalSearchNotes/loc/{locale}.js",
+    "ControlStrings": "node_modules/@pnp/spfx-controls-react/lib/loc/{locale}.js",
+    "EasyApprovalAllNotesChecklistViewWebPartStrings": "lib/webparts/easyApprovalAllNotesChecklistView/loc/{locale}.js",
+    "EasyApprovalMyPendingNotesChecklistViewWebPartStrings": "lib/webparts/easyApprovalMyPendingNotesChecklistView/loc/{locale}.js"    
+  }
+}
