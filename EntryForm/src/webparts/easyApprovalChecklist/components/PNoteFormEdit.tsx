@@ -133,7 +133,7 @@ export default class PNoteFormsEdit extends React.Component<IPaperlessApprovalPr
     };
   }
   public render(): React.ReactElement<IPaperlessApprovalProps> {
-    debugger;
+    
     const { dpselectedItem, dpselectedItems } = this.state;
     const { name, description } = this.state;
     pnp.setup({
@@ -1439,7 +1439,7 @@ export default class PNoteFormsEdit extends React.Component<IPaperlessApprovalPr
     // get Logged-in user's details
     // pnp.sp.web.currentUser.get().then((r: CurrentUser) => { //To get current user details from site 
     pnp.sp.web.currentUser.get().then((r) => {
-      debugger;
+      
       let sitename = r['odata.id'].split("/_api")[0];
       this.setState({ Sitename: sitename });
       const uname = r['UserPrincipalName'].split('@')[0];
@@ -1491,7 +1491,7 @@ export default class PNoteFormsEdit extends React.Component<IPaperlessApprovalPr
   
   /*--Add comments in Commentslog list logic --*/
   public AddComments() {
-    debugger;
+    
     let comment = String(jQuery('#txtComments').val()).trim();
     let page = String(jQuery('#txtPage').val()).trim();
     let ref = String(jQuery('#txtRef').val()).trim();
@@ -1536,7 +1536,7 @@ export default class PNoteFormsEdit extends React.Component<IPaperlessApprovalPr
     else {
       let SeqNo = this.state.seqno;
 
-      debugger;
+      
       let web = new Web('Main');
       web.lists.getByTitle("CommentsLog").items.add({
         Title: this.state.seqno,
@@ -1581,7 +1581,7 @@ export default class PNoteFormsEdit extends React.Component<IPaperlessApprovalPr
     let userEmail = this.state.UserEmail;
     let web = new Web('Main');
     web.lists.getByTitle('CommentsLog').items.select("ID,Title,Page,Docref,Comments,Appname,Appemail,Created").filter("Title eq '" + title + "' and Appemail eq '" + userEmail + "'").orderBy("ID asc").getAll().then((items: any[]) => {
-      debugger;
+      
       let tbldata = '';
 
       let ModifiedDate = this.state.ModifiedDate;
@@ -1608,7 +1608,7 @@ export default class PNoteFormsEdit extends React.Component<IPaperlessApprovalPr
     let data: any[] = [];
     let web = new Web('Main');
     web.lists.getByTitle('CommentsLog').items.select("ID,Title,Page,Docref,Comments,Appname,Appemail,Created").filter("Title eq '" + title + "'").orderBy("Created", false).get().then((items: any[]) => {
-      debugger;
+      
       let tbldata = '';
       let createDate = '';
       for (let i = 0; i < items.length; i++) {
@@ -1633,7 +1633,7 @@ export default class PNoteFormsEdit extends React.Component<IPaperlessApprovalPr
 
   /*--Delete Comments in Commentlog List--*/
   public DeleteComments(uid: number, event?: React.MouseEvent<HTMLButtonElement>): void {
-    debugger;
+    
     event?.preventDefault();
     let web = new Web('Main');
     let list = web.lists.getByTitle("CommentsLog");
@@ -1651,7 +1651,7 @@ export default class PNoteFormsEdit extends React.Component<IPaperlessApprovalPr
     let data: any[] = [];
     let web = new Web('Main');
     web.lists.getByTitle('FApprovalsChecklist').items.select("ID,Title,AppName,Status,AppEmail,Created,Modified,Seq").filter("Title eq '" + title + "'").orderBy("Seq asc").getAll().then((items: any[]) => {
-      debugger;
+      
 
       for (let i = 0; i < items.length; i++) {
 
@@ -1681,7 +1681,7 @@ export default class PNoteFormsEdit extends React.Component<IPaperlessApprovalPr
     let data: any[] = [];
     let web = new Web('Main');
     web.lists.getByTitle('ApprovalsChecklist').items.select("ID,Title,AppName,Status,AppEmail,Created,Modified,Seq").filter("Title eq '" + title + "'").orderBy("Seq asc").getAll().then((items: any[]) => {
-      debugger;
+      
 
       for (let i = 0; i < items.length; i++) {
         if (items[i].Status == 'Approved' || items[i].Status == 'Returned Back' || items[i].Status == 'Referred Back') {
@@ -1715,7 +1715,7 @@ export default class PNoteFormsEdit extends React.Component<IPaperlessApprovalPr
     let title = this.state.seqno;
     let approverID : Number[] = [];
     return web.lists.getByTitle('FApprovalsChecklist').items.select("ID,Title,AppName,AppEmail,Approver/ID,Approver/EMail").filter("Title eq '" + title + "'").expand("Approver").orderBy("ID asc").getAll().then((items: any[]) => {
-      debugger;
+      
       let indx = 0;
       if (items.length > 0) {
         approverID[0] = items[0].Approver.ID;
@@ -1739,7 +1739,7 @@ export default class PNoteFormsEdit extends React.Component<IPaperlessApprovalPr
     let web = new Web('Main');
     let approverID : Number[] = [];
     return web.lists.getByTitle('FApprovalsChecklist').items.select("ID,Title,AppName,AppEmail,Approver/ID,Approver/EMail").filter("Title eq '" + title + "'").expand("Approver").orderBy("ID asc").getAll().then((items: any[]) => {
-      debugger;
+      
       let indx = 0;
 
       if (items.length > 0) {
@@ -1792,7 +1792,7 @@ export default class PNoteFormsEdit extends React.Component<IPaperlessApprovalPr
     let approverID : Number[] = [];
     let web = new Web('Main');
     return web.lists.getByTitle('ApprovalsChecklist').items.select("ID,Title,AppName,AppEmail,Approver/ID,Approver/EMail").filter("Title eq '" + title + "'").expand("Approver").orderBy("ID asc").getAll().then((items: any[]) => {
-      debugger;
+      
       let indx = 0;
       for (let i = 0; i < items.length; i++) {
         if (items.length > 0) {
@@ -1888,7 +1888,7 @@ export default class PNoteFormsEdit extends React.Component<IPaperlessApprovalPr
 
   /*-- Old code to update recommender--*/
   private updateAllRecommenders(uid: number, n: number, i: number): Promise<any[]> {
-    debugger;
+    
     let web = new Web('Main');
     if (n == 0 && i == 0) {
       return web.lists.getByTitle('ApprovalsChecklist').items.getById(uid).update({
@@ -1930,7 +1930,7 @@ export default class PNoteFormsEdit extends React.Component<IPaperlessApprovalPr
 
   /*-- update approvers status--*/
   private updateAllApprovers(uid: number, n: number, i: number): Promise<any[]> {
-    debugger;
+    
     let web = new Web('Main');
     if (n == 0 && i == 0) {
       return web.lists.getByTitle('FApprovalsChecklist').items.getById(uid).update({
@@ -1972,10 +1972,10 @@ export default class PNoteFormsEdit extends React.Component<IPaperlessApprovalPr
 
   /*-- Old code to get Dept Alias--*/
   private getDepartmentAlias(deptname: string): Promise<any[]> {
-    debugger;
+    
     let web = new Web('Main');
     return web.lists.getByTitle('Departments').items.select("ID,Title,Dept_Alias,GroupName").filter("Title eq '" + deptname + "'").orderBy("ID asc").getAll().then((items: any[]) => {
-      debugger;
+      
       let dept = items[0].GroupName;
       this.setState({ description: dept });
       return Promise.resolve([dept]);
@@ -1985,7 +1985,7 @@ export default class PNoteFormsEdit extends React.Component<IPaperlessApprovalPr
 
   /*--To get saved data from Notes list and update to current form fields--*/
   private setFields(uid: number) {
-    debugger;
+    
     let fldr = '';
     let web = new Web('Main');
     pnp.sp.site.rootWeb.lists.getByTitle("Checklist").items.select("ID,Title,SeqNo,Checklist,AppId,Status").filter(`AppId eq ${uid}`).orderBy("ID", true).get().then((items: any[]) => {
@@ -1995,7 +1995,7 @@ export default class PNoteFormsEdit extends React.Component<IPaperlessApprovalPr
               this.setState({ ChecklistselectedItems: [] });
           }
       }).then(()=>{web.lists.getByTitle("ChecklistNote").items.select("ID,Title,Department,Created,SeqNo,Status,StatusNo,Comments,Subject,NoteType,NoteFilename,DeptAlias,Amount,ClientName,Confidential,Requester/Title,Requester/EMail,Requester/Name,Requester/ID,CurApprover/EMail,CurApprover/Title,CurApprover/ID,CurApprover/Name,ReturnedBy/ID,ReturnedBy/Title,ReferredBy/ID,ReferredBy/Title,ReferredTo/ID,ReferredTo/Title,Controller/ID,Controller/EMail,Controller/Title,Approvers/ID,DOP,WorkflowFlag,Modified,RefCount,Notefor,Purpose,ReturnName,DeptOwnership,DueDate,Place,RefferedGuidlines,VettingObservation").expand('Requester,CurApprover,ReturnedBy,Controller,ReferredBy,ReferredTo,Approvers').filter('ID eq ' + uid).orderBy("ID asc").getAll().then((items: any[]) => {
-      debugger;
+      
       console.log(items);
       let statusno = items[0].StatusNo;
       this.setState({ statusno: statusno });
@@ -2295,20 +2295,33 @@ export default class PNoteFormsEdit extends React.Component<IPaperlessApprovalPr
         this.setState({ Appstatus: items[0].Status });
 
 
-        let ownersGroup : String[] = [];
-        let sitename = this.state.Sitename;
-        if (sitename.indexOf('CapApprovals') != -1) {
-          ownersGroup[0] = "CapApprovals Owners";
-          ownersGroup[1] = "CapApprovals " + DeptAlias;
-        }
-        else { ownersGroup[0] = "BOMCompliance Owners"; ownersGroup[1] = "BOMCompliance " + DeptAlias; }
-        pnp.sp.web.siteUsers.getById(this.state.UserID).groups.get().then((grps: any) => {
-          for (let i = 0; i < grps.length; i++) {
-            if (ownersGroup.indexOf(grps[i].Title) != -1) {
-              this.setState({ AdminFlag: 'Yes' });
-              break;
-            }
-          }
+        // let ownersGroup : String[] = [];
+        // let sitename = this.state.Sitename;
+        // if (sitename.indexOf('CapApprovals') != -1) {
+        //   ownersGroup[0] = "CapApprovals Owners";
+        //   ownersGroup[1] = "CapApprovals " + DeptAlias;
+        // }
+        // else { ownersGroup[0] = "BOMCompliance Owners"; ownersGroup[1] = "BOMCompliance " + DeptAlias; }
+        // pnp.sp.web.siteUsers.getById(this.state.UserID).groups.get().then((grps: any) => {
+        //   for (let i = 0; i < grps.length; i++) {
+        //     if (ownersGroup.indexOf(grps[i].Title) != -1) {
+        //       this.setState({ AdminFlag: 'Yes' });
+        //       break;
+        //     }
+        //   }
+
+        //commented on 08/05/2025
+          let ownersGroup : String[] = [];
+          let sitename = this.state.Sitename;
+          let sitenamesliced = this.state.Sitename.split("/").pop();
+          ownersGroup[0] = sitenamesliced+" Owners";
+          pnp.sp.web.siteUsers.getById(this.state.UserID).groups.get().then((grps: any) => {
+          // for (let i = 0; i < grps.length; i++) {
+          //   if (ownersGroup.indexOf(grps[i].Title) != -1) {
+          //     this.setState({ AdminFlag: 'Yes' });
+          //     break;
+          //   }
+          // }
 
           if (items[0].Status == 'Approved' || items[0].Status == 'Closed') {
             // document.getElementById('btnApprove').style.display = 'none';
@@ -2432,7 +2445,7 @@ export default class PNoteFormsEdit extends React.Component<IPaperlessApprovalPr
             }
             // else if (CAppEmail == this.state.UserEmail && statusno == 4) {
               else if (CAppID == this.state.UserID && statusno == 4) {
-              debugger;
+              
               this.setState({ ReferredByID: items[0].ReferredBy.ID });
               this.setState({ ReferredByName: items[0].ReferredBy.Title });
               // document.getElementById('btnApprove').style.display = 'none';
@@ -2600,7 +2613,7 @@ export default class PNoteFormsEdit extends React.Component<IPaperlessApprovalPr
 
   /*-- To save name,email and id for refer people picker--*/
   /*private _getManager(items: any[]) {
-    debugger;
+    
     this.state.userManagerIDs.length = 0;
     let tempuserMngArr = [];
     let MgrEmail=[];
@@ -2623,9 +2636,9 @@ export default class PNoteFormsEdit extends React.Component<IPaperlessApprovalPr
 
   //Restricted Emails
   // private getRestrictedEmails() {
-  //   debugger;
+  //   
   //   pnp.sp.site.rootWeb.lists.getByTitle('RestrictedEmails').items.select("ID,Title").orderBy("ID asc").getAll().then((items: any[]) => {
-  //     debugger;
+  //     
   //     let links: string[];
   //     for (let i = 0; i < items.length; i++) {
   //       links += items[i].Title;
@@ -2636,9 +2649,9 @@ export default class PNoteFormsEdit extends React.Component<IPaperlessApprovalPr
   // }
 
   private getRestrictedEmails() {
-    debugger;
+    
     pnp.sp.site.rootWeb.lists.getByTitle('RestrictedEmails').items.select("ID,Title").orderBy("ID asc").getAll().then((items: any[]) => {
-        debugger;
+        
         let links: string[] = []; // Initialize the array before using it
         for (let i = 0; i < items.length; i++) {
             links.push(items[i].Title); // Use push to add items to the array
@@ -2650,7 +2663,7 @@ export default class PNoteFormsEdit extends React.Component<IPaperlessApprovalPr
 
   /*-- To save name,email and id for refer people picker--*/
   private _getManager(items: any[]) {
-    debugger;
+    
     this.state.userManagerIDs.length = 0;
     let tempuserMngArr = [];
     let MgrEmail = [];
@@ -2685,7 +2698,7 @@ export default class PNoteFormsEdit extends React.Component<IPaperlessApprovalPr
 
   /*-- To save name,email and id for Change Current Approver people picker--*/
   private _getAdmin(items: any[]) {
-    debugger;
+    
     this.state.userManagerIDs.length = 0;
     let tempuserMngArr = [];
     let MgrEmail = [];
@@ -2833,7 +2846,7 @@ export default class PNoteFormsEdit extends React.Component<IPaperlessApprovalPr
   }
   /*--old code--*/
   private createItem(): void {
-    debugger;
+    
     jQuery('#Createbutton').remove();
     jQuery('#Cancelbutton').remove();
     let web = new Web('Main');
@@ -2974,7 +2987,7 @@ export default class PNoteFormsEdit extends React.Component<IPaperlessApprovalPr
   /**
    **/
   private async Approve() {
-    debugger;
+    
     let web = new Web('Main'); // Initialize SharePoint Web instance
     let Controller = this.state.ccName;
     const query = window.location.search.split('uid=')[1]; // Extract UID from URL
@@ -2991,7 +3004,7 @@ export default class PNoteFormsEdit extends React.Component<IPaperlessApprovalPr
         let Appid = await this.retrieveFirstApprover(); // Retrieve next approver details
 
         if (Appid[0] !== 999) { // If there is a next approver
-            debugger;
+            
             let [approverID, AppItemid, AppCount, AppEmail] = Appid;
             let CurrUser = this.state.name;
             let Appname = this.state.MgrName;
@@ -3025,7 +3038,7 @@ export default class PNoteFormsEdit extends React.Component<IPaperlessApprovalPr
             await this.dummyHistory();
             this.redirect();
         } else { // If no next approver, check for Controller
-            debugger;
+            
             let ccID = this.state.ccIDS;
             let ccEmail = this.state.ccEmail;
             let curApprover = this.state.UserID;
@@ -3057,7 +3070,7 @@ export default class PNoteFormsEdit extends React.Component<IPaperlessApprovalPr
                 await this.dummyHistory();
                 this.redirect();
             } else { // Final Approval Step
-                debugger;
+                
                 await web.lists.getByTitle("ChecklistNote").items.getById(uid).update({
                     Migrate: "",
                     NotifyId: -1,
@@ -3115,7 +3128,7 @@ export default class PNoteFormsEdit extends React.Component<IPaperlessApprovalPr
 
   /*--Cancel button click logic--*/
   private Cancelled() {
-    debugger;
+    
     let web = new Web('Main');
     this._onClosePanel();
     // let Comments = String(jQuery('#txtAppComments').val()).trim();
@@ -3175,7 +3188,7 @@ export default class PNoteFormsEdit extends React.Component<IPaperlessApprovalPr
 
   /*--Reject button click logic--*/
   private Rejected() {
-    debugger;
+    
     let web = new Web('Main');
     this._onClosePanel();
     // let Comments = String(jQuery('#txtAppComments').val()).trim();
@@ -3332,7 +3345,7 @@ export default class PNoteFormsEdit extends React.Component<IPaperlessApprovalPr
 
   /*--Reffered functionality--*/
   private referred() {
-    debugger;
+    
     let web = new Web('Main');
     // let Comments = String(jQuery('#txtAppComments').val()).trim();
     let Comments: string = '';
@@ -3372,7 +3385,7 @@ export default class PNoteFormsEdit extends React.Component<IPaperlessApprovalPr
 
       }
       else {
-        debugger;
+        
         let mgrEmail = ReferEmail[0];
         this._onClosePanel();
         this.on();
@@ -3451,7 +3464,7 @@ export default class PNoteFormsEdit extends React.Component<IPaperlessApprovalPr
   /*--End--*/
   /*--referback functionality--*/
   private referBack() {
-    debugger;
+    
     let web = new Web('Main');
     //  let Comments=this.state.selectedItems;
     // let Comments = String(jQuery('#txtAppComments').val()).trim();
@@ -3472,7 +3485,7 @@ export default class PNoteFormsEdit extends React.Component<IPaperlessApprovalPr
       // let curruser=this.state.UserID;
       console.log(ReturnById);
 
-      debugger;
+      
       let seqno = this.state.seqno;
       let UserEmail = this.state.UserEmail;
       let userid = this.state.UserID;
@@ -3503,7 +3516,7 @@ export default class PNoteFormsEdit extends React.Component<IPaperlessApprovalPr
           let ApproverId = 0;
           let createdId = 0;
           web.lists.getByTitle(listname).items.select('Title', 'ID', 'Seq', 'Approver/ID', 'Approver/Title', 'Author/ID', 'Author/Title').expand('Approver', 'Author').filter("Title eq '" + seqno + "' and Status eq 'Referred'").orderBy('ID', false).get().then(refbackapp => {
-            debugger;
+            
 
             if (refbackapp.length > 0) {
               ApproverId = refbackapp[0].Approver.ID;
@@ -3587,7 +3600,7 @@ export default class PNoteFormsEdit extends React.Component<IPaperlessApprovalPr
 
   /*--returned logic--*/
   private returned() {
-    debugger;
+    
     let web = new Web('Main');
     // let Comments = String(jQuery('#txtAppComments').val()).trim();
     let Comments: string = '';
@@ -3629,7 +3642,7 @@ export default class PNoteFormsEdit extends React.Component<IPaperlessApprovalPr
             console.log(result);
             UserID = result.Id;
           }).then(() => {
-            debugger;
+            
             let seqno = this.state.seqno;
             let userID = this.state.UserID;
             let UserEmail = this.state.UserEmail;
@@ -3693,7 +3706,7 @@ export default class PNoteFormsEdit extends React.Component<IPaperlessApprovalPr
 
   /*--return back logic--*/
   private returnBack() {
-    debugger;
+    
     let web = new Web('Main');
     // let Comments = String(jQuery('#txtAppComments').val()).trim();
     let Comments: string = '';
@@ -3711,7 +3724,7 @@ export default class PNoteFormsEdit extends React.Component<IPaperlessApprovalPr
       let curruser = this.state.UserID;
       console.log(ReturnById);
 
-      debugger;
+      
       let seqno = this.state.seqno;
       let UserEmail = this.state.UserEmail;
       const query = window.location.search.split('uid=')[1];
@@ -3806,7 +3819,7 @@ export default class PNoteFormsEdit extends React.Component<IPaperlessApprovalPr
 
   /*--change approver functionality--*/
   private ChangeApprover() {
-    debugger;
+    
     let web = new Web('Main');
     // let Comments = String(jQuery('#txtAppComments').val()).trim();
     let Comments: string = '';
@@ -3825,7 +3838,10 @@ export default class PNoteFormsEdit extends React.Component<IPaperlessApprovalPr
       let currUser = this.state.UserID;
       let ReqID = this.state.ReqID;
       let CurrApproverEmail = this.state.CurrApproverEmail.toLowerCase();
-      let ccEmail = this.state.ccEmail.toLowerCase();
+      let ccEmail = '';
+      if(this.state.ccEmail != null)
+      {ccEmail = this.state.ccEmail.toLowerCase();}
+      
 
       if (curStatusNo == 1) {
         listname = 'ApprovalsChecklist';
@@ -3840,7 +3856,7 @@ export default class PNoteFormsEdit extends React.Component<IPaperlessApprovalPr
         listname = 'FApprovalsChecklist';
       }
 
-      debugger;
+      
       if (this.state.MgrName == '') {
         alert('Kindly select username!');
         jQuery('input[aria-label="People Picker"]').focus();
@@ -3995,7 +4011,7 @@ export default class PNoteFormsEdit extends React.Component<IPaperlessApprovalPr
 
   /*--save comments in  Commentslog list--*/
   private AddAppComments(): Promise<any[]> {
-    debugger;
+    
 
     let SeqNo = this.state.seqno;
     // let comment = String(jQuery('#txtAppComments').val()).trim();
@@ -4004,7 +4020,7 @@ export default class PNoteFormsEdit extends React.Component<IPaperlessApprovalPr
     if (Comments2) {
         Comments = Comments2.value.trim();
     }
-    debugger;
+    
     let web = new Web('Main');
     return web.lists.getByTitle("CommentsLog").items.add({
       Title: this.state.seqno,
@@ -4023,7 +4039,7 @@ export default class PNoteFormsEdit extends React.Component<IPaperlessApprovalPr
 
   /*--Save workflow history in wfhistory list--*/
   private AddWFHistory(status: string): Promise<any[]> {
-    debugger;
+    
     let web = new Web('Main');
     let dt = new Date();
     let mnth = (dt.getMonth() + 1).toString();
@@ -4107,7 +4123,7 @@ export default class PNoteFormsEdit extends React.Component<IPaperlessApprovalPr
     let data = [];
     let web = new Web('Main');
     return web.lists.getByTitle('WFHistory').items.select("ID,Title,AuditLog").filter("Title eq '" + title + "'").orderBy("Created", false).getAll().then((items: any[]) => {
-      debugger;
+      
       return Promise.resolve(items);
 
     });
@@ -4122,7 +4138,7 @@ export default class PNoteFormsEdit extends React.Component<IPaperlessApprovalPr
     let data: any[] = [];
 
     web.lists.getByTitle('WFHistory').items.select("ID,Title,AuditLog,Modified").filter("Title eq '" + title + "'").orderBy("Modified", false).get().then((items: any[]) => {
-      debugger;
+      
       let tbldata = '';
 
       for (let i = 0; i < items.length; i++) {
@@ -4145,7 +4161,7 @@ export default class PNoteFormsEdit extends React.Component<IPaperlessApprovalPr
 
   /*--Delete attachments for Annexures--*/
   public DeleteAttachment(vals : string): void {
-    debugger;
+    
     let web = new Web('Main');
     this.setState({ AppAttachments: [] });
     let sitename = this.state.Sitename.split(".com")[1];
@@ -4181,7 +4197,7 @@ export default class PNoteFormsEdit extends React.Component<IPaperlessApprovalPr
 
   /*--Add attachments for annexures--*/
   public AttachLib = (event : any) => {    
-    debugger;
+    
     let web = new Web('Main');
     var uploadFlag = true;
     //in case of multiple files,iterate or else upload the first file.
@@ -4540,9 +4556,9 @@ export default class PNoteFormsEdit extends React.Component<IPaperlessApprovalPr
         }
       }
     }
-    debugger;
+    
     if (this.state.statusno == 4) {
-      debugger;
+      
       const btnApprove = document.getElementById("btnApprove");
       if (btnApprove) {
           btnApprove.style.display = 'none';
@@ -4597,7 +4613,7 @@ export default class PNoteFormsEdit extends React.Component<IPaperlessApprovalPr
 
   /*--To check adding persons already approver or not--*/
   private checkApprover(appemail: string): Promise<number> {
-    debugger;
+    
     let title = this.state.seqno;
     let len = 0;
     let web = new Web('Main');
@@ -4617,7 +4633,7 @@ export default class PNoteFormsEdit extends React.Component<IPaperlessApprovalPr
 
   /*--To check adding persons already recommander or not*/
   private checkRecommender(appemail: string): Promise<number> {
-    debugger;
+    
     let title = this.state.seqno;
     let len = 0;
     let web = new Web('Main');
@@ -4636,7 +4652,7 @@ export default class PNoteFormsEdit extends React.Component<IPaperlessApprovalPr
 
   /*--To check adding persons already referrer or not*/
   private checkRefApprover(appID: number): Promise<string> {
-    debugger;
+    
     let title = this.state.seqno;
     let App = '';
     let web = new Web('Main');
@@ -4659,7 +4675,7 @@ export default class PNoteFormsEdit extends React.Component<IPaperlessApprovalPr
     let data: any[] = []; 
     let web = new Web('Main');
     web.lists.getByTitle('RApprovalsChecklist').items.select("ID,Title,AppName,Status,AppEmail,Created,Modified,Author/Title,Seq").expand('Author').filter("Title eq '" + title + "'").orderBy("Seq asc").getAll().then((items: any[]) => {
-      debugger;
+      
 
       for (let i = 0; i < items.length; i++) {
 
@@ -4689,7 +4705,7 @@ export default class PNoteFormsEdit extends React.Component<IPaperlessApprovalPr
     let data: any[] = []; 
     let web = new Web('Main');
     web.lists.getByTitle('CApprovalsChecklist').items.select("ID,Title,AppName,Status,AppEmail,Created,Modified,Author/Title,Seq").expand('Author').filter("Title eq '" + title + "'").orderBy("Seq asc").getAll().then((items: any[]) => {
-      debugger;
+      
 
       for (let i = 0; i < items.length; i++) {
 
@@ -4716,7 +4732,7 @@ export default class PNoteFormsEdit extends React.Component<IPaperlessApprovalPr
 
   // Add Referee before submission
   private AddRefer() {
-    debugger;
+    
     let seqno = 1;
     let RequesterID = this.state.ReqID;
     let ReturnVal = this.state.userManagerIDs;
@@ -4743,7 +4759,7 @@ export default class PNoteFormsEdit extends React.Component<IPaperlessApprovalPr
             if (len1 == 0) {
               let SeqNo = this.state.seqno;
               let web = new Web('Main');
-              debugger;
+              
               web.lists.getByTitle('RApprovalsChecklist').items.add({
                 Title: this.state.seqno,
                 Status: 'Pending',
@@ -4781,7 +4797,7 @@ export default class PNoteFormsEdit extends React.Component<IPaperlessApprovalPr
 
   /*-- To Add Mark for Info Recipients--*/
   private AddMarkforInfo() {
-    debugger;
+    
     let seqno = 1;
     let MgrID = this.state.MarkIDs;
     let userid = this.state.UserID;
@@ -4810,7 +4826,7 @@ export default class PNoteFormsEdit extends React.Component<IPaperlessApprovalPr
       }
       let SeqNo = this.state.seqno;
       let web = new Web('Main');
-      debugger;
+      
       web.lists.getByTitle('MarkRecipients').items.add({
         Title: title,
         SeqNo: SeqNo,
@@ -4835,7 +4851,7 @@ export default class PNoteFormsEdit extends React.Component<IPaperlessApprovalPr
     let data: any[] = []; 
     let web = new Web('Main');
     web.lists.getByTitle('MarkRecipients').items.select("ID,Title,Recipient/Title,Requester/Title,Created").expand('Recipient,Requester').filter("SeqNo eq '" + title + "' ").orderBy("ID asc").getAll().then((items: any[]) => {
-      debugger;
+      
       if (this.state.ReqID == this.state.UserID) {
         data.push(<tr><th>SNo</th><th>Recipient</th><th>Marked On</th><th>Action</th></tr>);
       }
@@ -4878,7 +4894,7 @@ export default class PNoteFormsEdit extends React.Component<IPaperlessApprovalPr
 
   /*-- To Delete Mark for Info Recipients--*/
   public DeleteMark(uid: number, event?: React.MouseEvent<HTMLButtonElement>): void {
-    debugger;
+    
     event?.preventDefault();
     let web = new Web('Main');
 
@@ -4893,7 +4909,7 @@ export default class PNoteFormsEdit extends React.Component<IPaperlessApprovalPr
 
   /*-- To save name,email and id for controller people picker--*/
   private _getCCPeople(items: any[]) {
-    debugger;
+    
     this.state.MarkIDs.length = 0;
     let Recpid = [];
     let Recpname = [];
@@ -4912,7 +4928,7 @@ export default class PNoteFormsEdit extends React.Component<IPaperlessApprovalPr
 
   /*-- To save name,email and id for recommander people picker--*/
   private _getRecommender(items: any[]) {
-    debugger;
+    
     this.state.RecpID.length = 0;
     let Recpid = [];
     let Recpname = [];
@@ -4937,7 +4953,7 @@ export default class PNoteFormsEdit extends React.Component<IPaperlessApprovalPr
 
   /*-- To Update Recommanders in Approvals list--*/
   private AddRecommender() {
-    debugger;
+    
     let seqno = this.state.RecomselectedItems.length + this.state.RecomNewselectedItems.length + 1;
     let MgrID = this.state.RecpID;
     let userid = this.state.UserID;
@@ -4975,7 +4991,7 @@ export default class PNoteFormsEdit extends React.Component<IPaperlessApprovalPr
           this.checkApprover(mgrEmail).then((len1) => {
             if (len1 == 0) {
               let SeqNo = this.state.seqno;
-              debugger;
+              
               let web = new Web('Main');
 
               web.lists.getByTitle('ApprovalsChecklist').items.add({
@@ -5015,14 +5031,14 @@ export default class PNoteFormsEdit extends React.Component<IPaperlessApprovalPr
 
   /*-- To retieve all Recommenders in Approvals list--*/
   private retrieveRecommendersNew() {
-    debugger;
+    
     let title = this.state.seqno;
     // let data = [];
     let data: any[] = []; 
     let web = new Web('Main');
     let userID = this.state.UserID;
     web.lists.getByTitle('ApprovalsChecklist').items.select("ID,Title,Status,Modified,AppName,Author/ID").expand('Author').filter("Title eq '" + title + "'").orderBy("Seq asc").getAll().then((items: any[]) => {
-      debugger;
+      
       if (items.length > 0) {
         for (let i = 0; i < items.length; i++) {
           if (items[i].Author.ID == userID) {
@@ -5056,7 +5072,7 @@ export default class PNoteFormsEdit extends React.Component<IPaperlessApprovalPr
 
   /*-- To delete Recommanders in Approvals list--*/
   public DeleteRecommender(uid: number, event?: React.MouseEvent<HTMLButtonElement>): void {
-    debugger;
+    
     event?.preventDefault();
     let web = new Web('Main');
     let list = web.lists.getByTitle('ApprovalsChecklist');
@@ -5140,7 +5156,7 @@ export default class PNoteFormsEdit extends React.Component<IPaperlessApprovalPr
   /*--End--*/
   /*--Save Email Notifications in NotesNotifications list--*/
   private AddNotesNotifications(status: string, approverID: number): Promise<any[]> {
-    debugger;
+    
     let web = new Web('WF');
     let statusno = parseInt(status.split("-")[0]);
     let statustxt = status.split("-")[1];
